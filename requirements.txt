@@ -1,0 +1,4 @@
+numpy
+otools
+python-binance
+tqdm
