@@ -1,4 +1,5 @@
 numpy
 otools
 python-binance
+redis
 tqdm
