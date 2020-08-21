@@ -24,6 +24,11 @@ extensions = [
     "btrader.core.*",
     ["btrader/core/*.py"],
   ),
+  Extension(
+    "btrader.extensions",
+    sources=["btrader/src/extensions.cpp"],
+    libraries=["boost_python3"],
+  )
 ]
 
 setup(

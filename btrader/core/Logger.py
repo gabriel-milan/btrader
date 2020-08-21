@@ -75,3 +75,6 @@ class Logger (logging.Logger):
 
   def critical (self, msg, *args, **kwargs):
     self.__executor.submit(super().critical, msg, *args, **kwargs)
+
+  def shutdown (self):
+    self.__executor.shutdown()
