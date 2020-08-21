@@ -12,7 +12,7 @@ SHELL [ "/bin/bash", "-c" ]
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Dependencies
-RUN apt update && apt upgrade -y && apt install -y git python3 python3-pip
+RUN apt update && apt upgrade -y && apt install -y git python3 python3-pip libboost-all-dev
 
 # Get bot
 RUN python3 -m pip install btrader
