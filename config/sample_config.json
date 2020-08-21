@@ -1,0 +1,46 @@
+{
+  "KEYS": {
+    "API": "your-api-key-here",
+    "SECRET": "your-api-secret-here"
+  },
+
+  "INVESTMENT": {
+    "BASE": "BTC",
+    "MIN": 0.0006,
+    "MAX": 0.0015,
+    "STEP": 0.0001
+  },
+
+  "TRADING": {
+    "ENABLED": false,
+    "EXECUTION_STRATEGY": "linear",
+    "EXECUTION_TEMPLATE": ["BUY", "SELL", "SELL"],
+    "EXECUTION_CAP": 1,
+    "TAKER_FEE": 0.1,
+    "PROFIT_THRESHOLD": -10.0,
+    "AGE_THRESHOLD": 100,
+    "WHITELIST": []
+  },
+
+  "HUD": {
+    "ENABLED": true,
+    "ARB_COUNT": 10
+  },
+
+  "LOG": {
+    "LEVEL": "debug",
+    "PRETTY_PRINT": true
+  },
+
+  "DEPTH": {
+    "SIZE": 20,
+    "PRUNE": true,
+    "INITIALIZATION_INTERVAL": 75
+  },
+
+  "TIMING": {
+    "RECEIVE_WINDOW": 5000,
+    "USE_SERVER_TIME": false,
+    "CALCULATION_COOLDOWN": 250
+  }
+}

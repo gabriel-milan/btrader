@@ -35,16 +35,18 @@ setup(
   name = 'btrader',
   version = '0.1.0',
   license='GPL-3.0',
-  description = '',
+  description = 'Arbitrage trading bot for Binance, based on https://github.com/bmino/binance-triangle-arbitrage',
   long_description = long_description,
   long_description_content_type="text/markdown",
   packages=find_packages(),
   author = 'Gabriel Gazola Milan',
   author_email = 'gabriel.gazola@poli.ufrj.br',
   url = 'https://github.com/gabriel-milan/btrader',
-  keywords = [],
+  keywords = ['bot', 'algotrading', 'cryptocurrencies', 'binance', 'bitcoin', 'arbitrage'],
   install_requires=[
-   'cython'
+   'Cython>=0.29.17',
+   'python_binance>=0.7.5',
+   'numpy>=1.18.1'
   ],
   classifiers=[
     'Development Status :: 4 - Beta',
@@ -58,5 +60,5 @@ setup(
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
   ],
-  ext_modules = cythonize(extensions)
+  ext_modules = cythonize(extensions, language_level = "3")
 )

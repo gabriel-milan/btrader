@@ -1,9 +1,5 @@
 __all__ = []
 
-from . import TraderMatrix
-__all__.extend(TraderMatrix.__all__)
-from .TraderMatrix import *
-
 from . import TradingPair
 __all__.extend(TradingPair.__all__)
 from .TradingPair import *

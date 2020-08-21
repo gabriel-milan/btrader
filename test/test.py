@@ -8,6 +8,5 @@ if LOG_TO_FILE:
 else:
   log_file=None
 
-a = bTrader('config.json', log_file=log_file)
-a.setDaemon(False)
-a.start()
+a = bTrader('test/config.json', log_file=log_file)
+a.run()

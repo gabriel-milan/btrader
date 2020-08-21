@@ -21,7 +21,7 @@ END: Cython Metadata */
 #else
 #define CYTHON_ABI "0_29_17"
 #define CYTHON_HEX_VERSION 0x001D11F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -1236,6 +1236,7 @@ static const char __pyx_k_Thread_class_with_a_stop_method[] = "Thread class with
 static const char __pyx_k_btrader_core_StoppableThread_py[] = "btrader/core/StoppableThread.py";
 static PyObject *__pyx_n_s_Event;
 static PyObject *__pyx_n_s_StoppableThread;
+static PyObject *__pyx_n_u_StoppableThread;
 static PyObject *__pyx_n_s_StoppableThread___init;
 static PyObject *__pyx_n_s_StoppableThread_running;
 static PyObject *__pyx_n_s_StoppableThread_stop;
@@ -1656,6 +1657,7 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Event, __pyx_k_Event, sizeof(__pyx_k_Event), 0, 0, 1, 1},
   {&__pyx_n_s_StoppableThread, __pyx_k_StoppableThread, sizeof(__pyx_k_StoppableThread), 0, 0, 1, 1},
+  {&__pyx_n_u_StoppableThread, __pyx_k_StoppableThread, sizeof(__pyx_k_StoppableThread), 0, 1, 0, 1},
   {&__pyx_n_s_StoppableThread___init, __pyx_k_StoppableThread___init, sizeof(__pyx_k_StoppableThread___init), 0, 0, 1, 1},
   {&__pyx_n_s_StoppableThread_running, __pyx_k_StoppableThread_running, sizeof(__pyx_k_StoppableThread_running), 0, 0, 1, 1},
   {&__pyx_n_s_StoppableThread_stop, __pyx_k_StoppableThread_stop, sizeof(__pyx_k_StoppableThread_stop), 0, 0, 1, 1},
@@ -2020,9 +2022,9 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_StoppableThread);
-  __Pyx_GIVEREF(__pyx_n_s_StoppableThread);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_StoppableThread);
+  __Pyx_INCREF(__pyx_n_u_StoppableThread);
+  __Pyx_GIVEREF(__pyx_n_u_StoppableThread);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_StoppableThread);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -2041,7 +2043,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_Event);
   __Pyx_GIVEREF(__pyx_n_s_Event);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_Event);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_threading, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_threading, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Thread); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
@@ -2126,7 +2128,7 @@ if (!__Pyx_RefNanny) {
  *   """Thread class with a stop() method. The thread itself has to check
  *   regularly for the running() condition."""
  */
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_StoppableThread, __pyx_t_1, __pyx_t_3, NULL, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_StoppableThread, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_StoppableThread, __pyx_t_5) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;

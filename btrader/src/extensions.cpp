@@ -49,6 +49,26 @@ inline boost::python::list to_py_list(std::vector<T> vector)
   return list;
 }
 
+// 1D vector <std::string> --> 1D vector <double>
+std::vector<double> strToDouble1DVector(std::vector<std::string> strVec)
+{
+  std::vector<double> doubleVec(strVec.size());
+  std::transform(strVec.begin(), strVec.end(), doubleVec.begin(), [](const std::string &val) {
+    return std::stod(val);
+  });
+  return doubleVec;
+}
+
+// 2D vector <std::string> --> 2D vector <double>
+std::vector<std::vector<double>> strToDouble2DVector(std::vector<std::vector<std::string>> strVec)
+{
+  std::vector<std::vector<double>> doubleVec(strVec.size());
+  std::transform(strVec.begin(), strVec.end(), doubleVec.begin(), [](const std::vector<std::string> &val) {
+    return strToDouble1DVector(val);
+  });
+  return doubleVec;
+}
+
 /*
  *  Trading pair wrapper
  */
@@ -61,11 +81,14 @@ public:
     this->timestamp = 0;
   };
 
-  void update(double timestamp, std::vector<std::vector<double>> asks, std::vector<std::vector<double>> bids)
+  void update(double timestamp, std::vector<std::vector<std::string>> asks, std::vector<std::vector<std::string>> bids)
   {
+    std::vector<std::vector<double>> asksDouble = strToDouble2DVector(asks);
+    std::vector<std::vector<double>> bidsDouble = strToDouble2DVector(bids);
+    this->initialized = true;
     this->timestamp = timestamp;
-    this->asks = asks;
-    this->bids = bids;
+    this->asks = asksDouble;
+    this->bids = bidsDouble;
   }
 
   double getTimestamp()
@@ -83,7 +106,13 @@ public:
     return this->bids;
   }
 
+  bool isInitialized()
+  {
+    return this->initialized;
+  }
+
 private:
+  bool initialized = false;
   std::string symbol;
   double timestamp;
   std::vector<std::vector<double>> asks;
@@ -112,7 +141,18 @@ public:
     return this->actions;
   }
 
+  void setInitialized()
+  {
+    this->initialized = true;
+  }
+
+  bool isInitialized()
+  {
+    return this->initialized;
+  }
+
 private:
+  bool initialized = false;
   std::vector<std::string> pairs;
   std::vector<std::string> actions;
 };
@@ -120,10 +160,10 @@ private:
 /*
  *  Main class
  */
-struct ClassWithNoName
+struct TraderMatrix
 {
 public:
-  ClassWithNoName(double fee, boost::python::object quantityRange)
+  TraderMatrix(double fee, boost::python::object quantityRange)
   {
     this->fee = fee;
     this->feeMultiplier = pow((100 - fee) / 100, 3);
@@ -144,16 +184,16 @@ public:
 
   void updatePair(std::string symbol, double timestamp, boost::python::list asks, boost::python::list bids)
   {
-    std::vector<std::vector<double>> vecAsks = to_2d_vector<double>(asks);
-    std::vector<std::vector<double>> vecBids = to_2d_vector<double>(bids);
+    std::vector<std::vector<std::string>> vecAsks = to_2d_vector<std::string>(asks);
+    std::vector<std::vector<std::string>> vecBids = to_2d_vector<std::string>(bids);
     this->pairs[symbol]->update(timestamp, vecAsks, vecBids);
   }
 
   boost::python::list computeRelationship(std::string relationshipName)
   {
 
-    double bestQty = std::numeric_limits<double>::min();
-    double bestProfit = std::numeric_limits<double>::min();
+    double bestQty = -1;
+    double bestProfit = -1;
     Relationship *rel = this->relationships[relationshipName];
     std::vector<std::string> pairNames = rel->getPairs();
     std::vector<std::string> pairActions = rel->getActions();
@@ -163,6 +203,23 @@ public:
     double currentQuantity = 0;  // This will be used to compute quantities across currencies
     double helperQuantity = 0;   // This will be used to check for quantities across prices
     std::vector<double> results; // This will hold values before they are converted to PyList
+
+    if (!rel->isInitialized())
+    {
+      bool initialize = true;
+      for (unsigned short i = 0; i < pairNames.size(); i++)
+        if (!this->pairs[pairNames[i]]->isInitialized())
+          initialize = false;
+      if (initialize)
+        rel->setInitialized();
+      else
+      {
+        results.push_back(-1);
+        results.push_back(-1);
+        results.push_back(-1);
+        return to_py_list<double>(results);
+      }
+    }
 
     for (unsigned short i = 0; i < this->qtyRange.size(); i++)
     {
@@ -234,9 +291,9 @@ private:
 
 BOOST_PYTHON_MODULE(extensions)
 {
-  class_<ClassWithNoName>("ClassWithNoName", init<double, boost::python::object>())
-      .def("createPair", &ClassWithNoName::createPair)
-      .def("createRelationship", &ClassWithNoName::createRelationship)
-      .def("updatePair", &ClassWithNoName::updatePair)
-      .def("computeRelationship", &ClassWithNoName::computeRelationship);
+  class_<TraderMatrix>("TraderMatrix", init<double, boost::python::object>())
+      .def("createPair", &TraderMatrix::createPair)
+      .def("createRelationship", &TraderMatrix::createRelationship)
+      .def("updatePair", &TraderMatrix::updatePair)
+      .def("computeRelationship", &TraderMatrix::computeRelationship);
 }
