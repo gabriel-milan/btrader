@@ -3,12 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "name": "btrader.core.Logger",
+        "name": "btrader.core.TradeWorker",
         "sources": [
-            "btrader/core/Logger.py"
+            "btrader/core/TradeWorker.py"
         ]
     },
-    "module_name": "btrader.core.Logger"
+    "module_name": "btrader.core.TradeWorker"
 }
 END: Cython Metadata */
 
@@ -604,8 +604,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__btrader__core__Logger
-#define __PYX_HAVE_API__btrader__core__Logger
+#define __PYX_HAVE__btrader__core__TradeWorker
+#define __PYX_HAVE_API__btrader__core__TradeWorker
 /* Early includes */
 #ifdef _OPENMP
 #include <omp.h>
@@ -815,7 +815,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "btrader/core/Logger.py",
+  "btrader/core/TradeWorker.py",
 };
 
 /*--- Type declarations ---*/
@@ -911,54 +911,6 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
 
-/* PyCFunctionFastCall.proto */
-#if CYTHON_FAST_PYCCALL
-static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
-#else
-#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
-#endif
-
-/* PyFunctionFastCall.proto */
-#if CYTHON_FAST_PYCALL
-#define __Pyx_PyFunction_FastCall(func, args, nargs)\
-    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
-#if 1 || PY_VERSION_HEX < 0x030600B1
-static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, Py_ssize_t nargs, PyObject *kwargs);
-#else
-#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
-#endif
-#define __Pyx_BUILD_ASSERT_EXPR(cond)\
-    (sizeof(char [1 - 2*!(cond)]) - 1)
-#ifndef Py_MEMBER_SIZE
-#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
-#endif
-  static size_t __pyx_pyframe_localsplus_offset = 0;
-  #include "frameobject.h"
-  #define __Pxy_PyFrame_Initialize_Offsets()\
-    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
-     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
-  #define __Pyx_PyFrame_GetLocalsplus(frame)\
-    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
-#endif
-
-/* PyObjectCall.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
-#else
-#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
-#endif
-
-/* PyObjectCall2Args.proto */
-static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
-
-/* PyObjectCallMethO.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
-#endif
-
-/* PyObjectCallOneArg.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
-
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -1006,18 +958,12 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
 
-/* PyObjectCallNoArg.proto */
+/* PyObjectCall.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
 #else
-#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
-
-/* PySequenceContains.proto */
-static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
-    int result = PySequence_Contains(seq, item);
-    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
-}
 
 /* PyObjectSetAttrStr.proto */
 #if CYTHON_USE_TYPE_SLOTS
@@ -1028,22 +974,62 @@ static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr
 #define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
 #endif
 
+/* PyCFunctionFastCall.proto */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
+#else
+#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
+#endif
+
+/* PyFunctionFastCall.proto */
+#if CYTHON_FAST_PYCALL
+#define __Pyx_PyFunction_FastCall(func, args, nargs)\
+    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, Py_ssize_t nargs, PyObject *kwargs);
+#else
+#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
+#endif
+#define __Pyx_BUILD_ASSERT_EXPR(cond)\
+    (sizeof(char [1 - 2*!(cond)]) - 1)
+#ifndef Py_MEMBER_SIZE
+#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
+#endif
+  static size_t __pyx_pyframe_localsplus_offset = 0;
+  #include "frameobject.h"
+  #define __Pxy_PyFrame_Initialize_Offsets()\
+    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
+     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
+  #define __Pyx_PyFrame_GetLocalsplus(frame)\
+    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
+#endif
+
+/* PyObjectCall2Args.proto */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+
+/* PyObjectCallMethO.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+/* PyObjectCallNoArg.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
+#else
+#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
+#endif
+
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
+/* ImportFrom.proto */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
+
 /* CalculateMetaclass.proto */
 static PyObject *__Pyx_CalculateMetaclass(PyTypeObject *metaclass, PyObject *bases);
-
-/* SetNameInClass.proto */
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-#define __Pyx_SetNameInClass(ns, name, value)\
-    (likely(PyDict_CheckExact(ns)) ? _PyDict_SetItem_KnownHash(ns, name, value, ((PyASCIIObject *) name)->hash) : PyObject_SetItem(ns, name, value))
-#elif CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_SetNameInClass(ns, name, value)\
-    (likely(PyDict_CheckExact(ns)) ? PyDict_SetItem(ns, name, value) : PyObject_SetItem(ns, name, value))
-#else
-#define __Pyx_SetNameInClass(ns, name, value)  PyObject_SetItem(ns, name, value)
-#endif
 
 /* FetchCommonType.proto */
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
@@ -1108,14 +1094,22 @@ static PyObject *__Pyx_CyFunction_New(PyMethodDef *ml,
                                       PyObject *module, PyObject *globals,
                                       PyObject* code);
 
+/* SetNameInClass.proto */
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+#define __Pyx_SetNameInClass(ns, name, value)\
+    (likely(PyDict_CheckExact(ns)) ? _PyDict_SetItem_KnownHash(ns, name, value, ((PyASCIIObject *) name)->hash) : PyObject_SetItem(ns, name, value))
+#elif CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_SetNameInClass(ns, name, value)\
+    (likely(PyDict_CheckExact(ns)) ? PyDict_SetItem(ns, name, value) : PyObject_SetItem(ns, name, value))
+#else
+#define __Pyx_SetNameInClass(ns, name, value)  PyObject_SetItem(ns, name, value)
+#endif
+
 /* Py3ClassCreate.proto */
 static PyObject *__Pyx_Py3MetaclassPrepare(PyObject *metaclass, PyObject *bases, PyObject *name, PyObject *qualname,
                                            PyObject *mkw, PyObject *modname, PyObject *doc);
 static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObject *bases, PyObject *dict,
                                       PyObject *mkw, int calculate_metaclass, int allow_py2_metaclass);
-
-/* CyFunctionClassCell.proto */
-static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *classobj);
 
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1208,470 +1202,196 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'btrader.core.Logger' */
-#define __Pyx_MODULE_NAME "btrader.core.Logger"
-extern int __pyx_module_is_main_btrader__core__Logger;
-int __pyx_module_is_main_btrader__core__Logger = 0;
+/* Module declarations from 'btrader.core.TradeWorker' */
+#define __Pyx_MODULE_NAME "btrader.core.TradeWorker"
+extern int __pyx_module_is_main_btrader__core__TradeWorker;
+int __pyx_module_is_main_btrader__core__TradeWorker = 0;
 
-/* Implementation of 'btrader.core.Logger' */
+/* Implementation of 'btrader.core.TradeWorker' */
+static PyObject *__pyx_builtin_property;
 static PyObject *__pyx_builtin_super;
-static const char __pyx_k_0m[] = "\033[0m";
-static const char __pyx_k_ch[] = "ch";
-static const char __pyx_k_fl[] = "fl";
+static const char __pyx_k_[] = "--------------------";
 static const char __pyx_k_all[] = "__all__";
 static const char __pyx_k_doc[] = "__doc__";
-static const char __pyx_k_get[] = "get";
-static const char __pyx_k_log[] = ".log";
-static const char __pyx_k_msg[] = "msg";
-static const char __pyx_k_red[] = "red";
-static const char __pyx_k_INFO[] = "INFO";
+static const char __pyx_k_run[] = "run";
 static const char __pyx_k_args[] = "args";
-static const char __pyx_k_blue[] = "blue";
-static const char __pyx_k_cyan[] = "cyan";
+static const char __pyx_k_deal[] = "deal";
 static const char __pyx_k_info[] = "info";
 static const char __pyx_k_init[] = "__init__";
+static const char __pyx_k_kill[] = "kill";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_self[] = "self";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_0_30m[] = "\033[0;30m";
-static const char __pyx_k_0_31m[] = "\033[0;31m";
-static const char __pyx_k_0_32m[] = "\033[0;32m";
-static const char __pyx_k_0_33m[] = "\033[0;33m";
-static const char __pyx_k_0_34m[] = "\033[0;34m";
-static const char __pyx_k_0_35m[] = "\033[0;35m";
-static const char __pyx_k_0_36m[] = "\033[0;36m";
-static const char __pyx_k_0_37m[] = "\033[0;37m";
-static const char __pyx_k_1_30m[] = "\033[1;30m";
-static const char __pyx_k_1_31m[] = "\033[1;31m";
-static const char __pyx_k_1_32m[] = "\033[1;32m";
-static const char __pyx_k_1_33m[] = "\033[1;33m";
-static const char __pyx_k_1_34m[] = "\033[1;34m";
-static const char __pyx_k_1_35m[] = "\033[1;35m";
-static const char __pyx_k_1_36m[] = "\033[1;36m";
-static const char __pyx_k_1_37m[] = "\033[1;37m";
 static const char __pyx_k_DEBUG[] = "DEBUG";
-static const char __pyx_k_ERROR[] = "ERROR";
-static const char __pyx_k_black[] = "black";
-static const char __pyx_k_debug[] = "debug";
-static const char __pyx_k_error[] = "error";
-static const char __pyx_k_green[] = "green";
 static const char __pyx_k_level[] = "level";
 static const char __pyx_k_super[] = "super";
-static const char __pyx_k_white[] = "white";
 static const char __pyx_k_Logger[] = "Logger";
+static const char __pyx_k_action[] = "action";
+static const char __pyx_k_client[] = "client";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_kwargs[] = "kwargs";
+static const char __pyx_k_logger[] = "logger";
 static const char __pyx_k_module[] = "__module__";
 static const char __pyx_k_name_2[] = "__name__";
-static const char __pyx_k_record[] = "record";
-static const char __pyx_k_submit[] = "submit";
-static const char __pyx_k_yellow[] = "yellow";
-static const char __pyx_k_FORMATS[] = "FORMATS";
-static const char __pyx_k_WARNING[] = "WARNING";
-static const char __pyx_k_futures[] = "futures";
-static const char __pyx_k_levelno[] = "levelno";
-static const char __pyx_k_log_fmt[] = "log_fmt";
+static const char __pyx_k_trader[] = "trader";
+static const char __pyx_k_btrader[] = "btrader";
+static const char __pyx_k_execute[] = "execute";
+static const char __pyx_k_getPair[] = "getPair";
 static const char __pyx_k_logging[] = "logging";
-static const char __pyx_k_magenta[] = "magenta";
 static const char __pyx_k_prepare[] = "__prepare__";
-static const char __pyx_k_warning[] = "warning";
-static const char __pyx_k_CRITICAL[] = "CRITICAL";
-static const char __pyx_k_bold_red[] = "bold_red";
-static const char __pyx_k_critical[] = "critical";
+static const char __pyx_k_running[] = "running";
 static const char __pyx_k_filename[] = "filename";
+static const char __pyx_k_finalize[] = "finalize";
+static const char __pyx_k_log_file[] = "log_file";
+static const char __pyx_k_property[] = "property";
 static const char __pyx_k_qualname[] = "__qualname__";
-static const char __pyx_k_setLevel[] = "setLevel";
-static const char __pyx_k_shutdown[] = "shutdown";
-static const char __pyx_k_Formatter[] = "Formatter";
-static const char __pyx_k_bold_blue[] = "bold_blue";
-static const char __pyx_k_bold_cyan[] = "bold_cyan";
-static const char __pyx_k_formatter[] = "formatter";
+static const char __pyx_k_from_pair[] = "{} {} from pair {}";
+static const char __pyx_k_getAction[] = "getAction";
 static const char __pyx_k_metaclass[] = "__metaclass__";
-static const char __pyx_k_reset_seq[] = "reset_seq";
-static const char __pyx_k_addHandler[] = "addHandler";
-static const char __pyx_k_bold_black[] = "bold_black";
-static const char __pyx_k_bold_green[] = "bold_green";
-static const char __pyx_k_bold_white[] = "bold_white";
-static const char __pyx_k_concurrent[] = "concurrent";
-static const char __pyx_k_FileHandler[] = "FileHandler";
-static const char __pyx_k_Logger_info[] = "Logger.info";
-static const char __pyx_k_bold_yellow[] = "bold_yellow";
-static const char __pyx_k_max_workers[] = "max_workers";
-static const char __pyx_k_LogFormatter[] = "LogFormatter";
-static const char __pyx_k_Logger_debug[] = "Logger.debug";
-static const char __pyx_k_Logger_error[] = "Logger.error";
-static const char __pyx_k_bold_magenta[] = "bold_magenta";
-static const char __pyx_k_setFormatter[] = "setFormatter";
-static const char __pyx_k_Logger___init[] = "Logger.__init__";
-static const char __pyx_k_StreamHandler[] = "StreamHandler";
-static const char __pyx_k_Logger_warning[] = "Logger.warning";
-static const char __pyx_k_Logger_critical[] = "Logger.critical";
-static const char __pyx_k_Logger_shutdown[] = "Logger.shutdown";
-static const char __pyx_k_Logger__executor[] = "_Logger__executor";
-static const char __pyx_k_ThreadPoolExecutor[] = "ThreadPoolExecutor";
+static const char __pyx_k_printDeal[] = "printDeal";
+static const char __pyx_k_getActions[] = "getActions";
+static const char __pyx_k_TradeWorker[] = "TradeWorker";
+static const char __pyx_k_getQuantity[] = "getQuantity";
+static const char __pyx_k_trading_lock[] = "trading_lock";
+static const char __pyx_k_trading_queue[] = "trading_queue";
+static const char __pyx_k_StoppableThread[] = "StoppableThread";
+static const char __pyx_k_TradeWorker_run[] = "TradeWorker.run";
+static const char __pyx_k_TradeWorker_kill[] = "TradeWorker.kill";
+static const char __pyx_k_TradeWorker___init[] = "TradeWorker.__init__";
+static const char __pyx_k_TradeWorker_client[] = "TradeWorker.client";
+static const char __pyx_k_TradeWorker_logger[] = "TradeWorker.logger";
+static const char __pyx_k_TradeWorker_trader[] = "TradeWorker.trader";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_concurrent_futures[] = "concurrent.futures";
-static const char __pyx_k_LogFormatter_format[] = "LogFormatter.format";
+static const char __pyx_k_TradeWorker__client[] = "_TradeWorker__client";
+static const char __pyx_k_TradeWorker__logger[] = "_TradeWorker__logger";
+static const char __pyx_k_TradeWorker_execute[] = "TradeWorker.execute";
 static const char __pyx_k_btrader_core_Logger[] = "btrader.core.Logger";
-static const char __pyx_k_btrader_core_Logger_py[] = "btrader/core/Logger.py";
-static const char __pyx_k_asctime_s_name_9_9s_levelname_8[] = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s";
-static PyObject *__pyx_kp_u_0_30m;
-static PyObject *__pyx_kp_u_0_31m;
-static PyObject *__pyx_kp_u_0_32m;
-static PyObject *__pyx_kp_u_0_33m;
-static PyObject *__pyx_kp_u_0_34m;
-static PyObject *__pyx_kp_u_0_35m;
-static PyObject *__pyx_kp_u_0_36m;
-static PyObject *__pyx_kp_u_0_37m;
-static PyObject *__pyx_kp_u_0m;
-static PyObject *__pyx_kp_u_1_30m;
-static PyObject *__pyx_kp_u_1_31m;
-static PyObject *__pyx_kp_u_1_32m;
-static PyObject *__pyx_kp_u_1_33m;
-static PyObject *__pyx_kp_u_1_34m;
-static PyObject *__pyx_kp_u_1_35m;
-static PyObject *__pyx_kp_u_1_36m;
-static PyObject *__pyx_kp_u_1_37m;
-static PyObject *__pyx_n_s_CRITICAL;
+static const char __pyx_k_TradeWorker__btrader[] = "_TradeWorker__btrader";
+static const char __pyx_k_TradeWorker_printDeal[] = "TradeWorker.printDeal";
+static const char __pyx_k_TradeWorker__tradingLock[] = "_TradeWorker__tradingLock";
+static const char __pyx_k_btrader_core_TradeWorker[] = "btrader.core.TradeWorker";
+static const char __pyx_k_TradeWorker__tradingQueue[] = "_TradeWorker__tradingQueue";
+static const char __pyx_k_btrader_core_TradeWorker_py[] = "btrader/core/TradeWorker.py";
+static const char __pyx_k_btrader_core_StoppableThread[] = "btrader.core.StoppableThread";
+static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_DEBUG;
-static PyObject *__pyx_n_s_ERROR;
-static PyObject *__pyx_n_s_FORMATS;
-static PyObject *__pyx_n_s_FileHandler;
-static PyObject *__pyx_n_s_Formatter;
-static PyObject *__pyx_n_s_INFO;
-static PyObject *__pyx_n_s_LogFormatter;
-static PyObject *__pyx_n_s_LogFormatter_format;
 static PyObject *__pyx_n_s_Logger;
-static PyObject *__pyx_n_u_Logger;
-static PyObject *__pyx_n_s_Logger___init;
-static PyObject *__pyx_n_s_Logger__executor;
-static PyObject *__pyx_n_s_Logger_critical;
-static PyObject *__pyx_n_s_Logger_debug;
-static PyObject *__pyx_n_s_Logger_error;
-static PyObject *__pyx_n_s_Logger_info;
-static PyObject *__pyx_n_s_Logger_shutdown;
-static PyObject *__pyx_n_s_Logger_warning;
-static PyObject *__pyx_n_s_StreamHandler;
-static PyObject *__pyx_n_s_ThreadPoolExecutor;
-static PyObject *__pyx_n_s_WARNING;
-static PyObject *__pyx_n_s_addHandler;
+static PyObject *__pyx_n_s_StoppableThread;
+static PyObject *__pyx_n_s_TradeWorker;
+static PyObject *__pyx_n_u_TradeWorker;
+static PyObject *__pyx_n_s_TradeWorker___init;
+static PyObject *__pyx_n_s_TradeWorker__btrader;
+static PyObject *__pyx_n_s_TradeWorker__client;
+static PyObject *__pyx_n_s_TradeWorker__logger;
+static PyObject *__pyx_n_s_TradeWorker__tradingLock;
+static PyObject *__pyx_n_s_TradeWorker__tradingQueue;
+static PyObject *__pyx_n_s_TradeWorker_client;
+static PyObject *__pyx_n_s_TradeWorker_execute;
+static PyObject *__pyx_n_s_TradeWorker_kill;
+static PyObject *__pyx_n_s_TradeWorker_logger;
+static PyObject *__pyx_n_s_TradeWorker_printDeal;
+static PyObject *__pyx_n_s_TradeWorker_run;
+static PyObject *__pyx_n_s_TradeWorker_trader;
+static PyObject *__pyx_n_s_action;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_args;
-static PyObject *__pyx_kp_u_asctime_s_name_9_9s_levelname_8;
-static PyObject *__pyx_n_s_black;
-static PyObject *__pyx_n_s_blue;
-static PyObject *__pyx_n_s_bold_black;
-static PyObject *__pyx_n_s_bold_blue;
-static PyObject *__pyx_n_s_bold_cyan;
-static PyObject *__pyx_n_s_bold_green;
-static PyObject *__pyx_n_s_bold_magenta;
-static PyObject *__pyx_n_s_bold_red;
-static PyObject *__pyx_n_s_bold_white;
-static PyObject *__pyx_n_s_bold_yellow;
+static PyObject *__pyx_n_s_btrader;
 static PyObject *__pyx_n_s_btrader_core_Logger;
-static PyObject *__pyx_kp_s_btrader_core_Logger_py;
-static PyObject *__pyx_n_s_ch;
+static PyObject *__pyx_n_s_btrader_core_StoppableThread;
+static PyObject *__pyx_n_s_btrader_core_TradeWorker;
+static PyObject *__pyx_kp_s_btrader_core_TradeWorker_py;
+static PyObject *__pyx_n_s_client;
 static PyObject *__pyx_n_s_cline_in_traceback;
-static PyObject *__pyx_n_s_concurrent;
-static PyObject *__pyx_n_s_concurrent_futures;
-static PyObject *__pyx_n_s_critical;
-static PyObject *__pyx_n_s_cyan;
-static PyObject *__pyx_n_s_debug;
+static PyObject *__pyx_n_s_deal;
 static PyObject *__pyx_n_s_doc;
-static PyObject *__pyx_n_s_error;
+static PyObject *__pyx_n_s_execute;
 static PyObject *__pyx_n_s_filename;
-static PyObject *__pyx_n_s_fl;
+static PyObject *__pyx_n_s_finalize;
 static PyObject *__pyx_n_s_format;
-static PyObject *__pyx_n_s_formatter;
-static PyObject *__pyx_n_s_futures;
-static PyObject *__pyx_n_s_get;
-static PyObject *__pyx_n_s_green;
+static PyObject *__pyx_kp_u_from_pair;
+static PyObject *__pyx_n_s_getAction;
+static PyObject *__pyx_n_s_getActions;
+static PyObject *__pyx_n_s_getPair;
+static PyObject *__pyx_n_s_getQuantity;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_info;
 static PyObject *__pyx_n_s_init;
+static PyObject *__pyx_n_s_kill;
 static PyObject *__pyx_n_s_kwargs;
 static PyObject *__pyx_n_s_level;
-static PyObject *__pyx_n_s_levelno;
-static PyObject *__pyx_kp_u_log;
-static PyObject *__pyx_n_s_log_fmt;
+static PyObject *__pyx_n_s_log_file;
+static PyObject *__pyx_n_s_logger;
 static PyObject *__pyx_n_s_logging;
-static PyObject *__pyx_n_s_magenta;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_max_workers;
 static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_module;
-static PyObject *__pyx_n_s_msg;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_prepare;
+static PyObject *__pyx_n_s_printDeal;
+static PyObject *__pyx_n_s_property;
 static PyObject *__pyx_n_s_qualname;
-static PyObject *__pyx_n_s_record;
-static PyObject *__pyx_n_s_red;
-static PyObject *__pyx_n_s_reset_seq;
+static PyObject *__pyx_n_s_run;
+static PyObject *__pyx_n_s_running;
 static PyObject *__pyx_n_s_self;
-static PyObject *__pyx_n_s_setFormatter;
-static PyObject *__pyx_n_s_setLevel;
-static PyObject *__pyx_n_s_shutdown;
-static PyObject *__pyx_n_s_submit;
 static PyObject *__pyx_n_s_super;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_warning;
-static PyObject *__pyx_n_s_white;
-static PyObject *__pyx_n_s_yellow;
-static PyObject *__pyx_pf_7btrader_4core_6Logger_12LogFormatter_format(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_record); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger___defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_level, PyObject *__pyx_v_filename); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_2debug(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_4info(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_6warning(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_8error(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_10critical(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_12shutdown(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_int_1;
-static PyObject *__pyx_tuple_;
-static PyObject *__pyx_tuple__3;
-static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__7;
-static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_tuple__11;
-static PyObject *__pyx_tuple__13;
-static PyObject *__pyx_tuple__15;
-static PyObject *__pyx_codeobj__2;
-static PyObject *__pyx_codeobj__4;
-static PyObject *__pyx_codeobj__6;
-static PyObject *__pyx_codeobj__8;
-static PyObject *__pyx_codeobj__10;
-static PyObject *__pyx_codeobj__12;
-static PyObject *__pyx_codeobj__14;
-static PyObject *__pyx_codeobj__16;
+static PyObject *__pyx_n_s_trader;
+static PyObject *__pyx_n_s_trading_lock;
+static PyObject *__pyx_n_s_trading_queue;
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker___defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_client, PyObject *__pyx_v_btrader, PyObject *__pyx_v_trading_lock, PyObject *__pyx_v_trading_queue, PyObject *__pyx_v_level, PyObject *__pyx_v_log_file, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_2client(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_4trader(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_6logger(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_8execute(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_deal); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_10run(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_12printDeal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_deal); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_14kill(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_tuple__2;
+static PyObject *__pyx_tuple__4;
+static PyObject *__pyx_tuple__6;
+static PyObject *__pyx_tuple__8;
+static PyObject *__pyx_tuple__10;
+static PyObject *__pyx_tuple__12;
+static PyObject *__pyx_tuple__14;
+static PyObject *__pyx_tuple__16;
+static PyObject *__pyx_codeobj__3;
+static PyObject *__pyx_codeobj__5;
+static PyObject *__pyx_codeobj__7;
+static PyObject *__pyx_codeobj__9;
+static PyObject *__pyx_codeobj__11;
+static PyObject *__pyx_codeobj__13;
+static PyObject *__pyx_codeobj__15;
+static PyObject *__pyx_codeobj__17;
 /* Late includes */
 
-/* "btrader/core/Logger.py":41
- *   }
+/* "btrader/core/TradeWorker.py":11
+ * class TradeWorker (StoppableThread):
  * 
- *   def format(self, record):             # <<<<<<<<<<<<<<
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
  */
 
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_12LogFormatter_1format(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_12LogFormatter_1format = {"format", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_12LogFormatter_1format, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_12LogFormatter_1format(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_record = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("format (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_record,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_record)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("format", 1, 2, 2, 1); __PYX_ERR(0, 41, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "format") < 0)) __PYX_ERR(0, 41, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_record = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("format", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 41, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("btrader.core.Logger.LogFormatter.format", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_12LogFormatter_format(__pyx_self, __pyx_v_self, __pyx_v_record);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_12LogFormatter_format(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_record) {
-  PyObject *__pyx_v_log_fmt = NULL;
-  PyObject *__pyx_v_formatter = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_RefNannySetupContext("format", 0);
-
-  /* "btrader/core/Logger.py":42
- * 
- *   def format(self, record):
- *     log_fmt = self.FORMATS.get(record.levelno)             # <<<<<<<<<<<<<<
- *     formatter = logging.Formatter(log_fmt)
- *     return formatter.format(record)
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_FORMATS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_record, __pyx_n_s_levelno); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_log_fmt = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":43
- *   def format(self, record):
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)             # <<<<<<<<<<<<<<
- *     return formatter.format(record)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_logging); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_Formatter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_log_fmt) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_log_fmt);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_formatter = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":44
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)
- *     return formatter.format(record)             # <<<<<<<<<<<<<<
- * 
- * class Logger (logging.Logger):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_formatter, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_record) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_record);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "btrader/core/Logger.py":41
- *   }
- * 
- *   def format(self, record):             # <<<<<<<<<<<<<<
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("btrader.core.Logger.LogFormatter.format", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_log_fmt);
-  __Pyx_XDECREF(__pyx_v_formatter);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":48
- * class Logger (logging.Logger):
- * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):             # <<<<<<<<<<<<<<
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)
- */
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger___defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker___defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject*)__pyx_n_u_Logger));
-  __Pyx_GIVEREF(((PyObject*)__pyx_n_u_Logger));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject*)__pyx_n_u_Logger));
   __Pyx_INCREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_level);
   __Pyx_GIVEREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_level);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_level);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_level);
   __Pyx_INCREF(((PyObject *)Py_None));
   __Pyx_GIVEREF(((PyObject *)Py_None));
-  PyTuple_SET_ITEM(__pyx_t_1, 2, ((PyObject *)Py_None));
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject *)Py_None));
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -1687,7 +1407,7 @@ static PyObject *__pyx_pf_7btrader_4core_6Logger___defaults__(CYTHON_UNUSED PyOb
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("btrader.core.Logger.__defaults__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.__defaults__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1696,27 +1416,51 @@ static PyObject *__pyx_pf_7btrader_4core_6Logger___defaults__(CYTHON_UNUSED PyOb
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_1__init__, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_1__init__ = {"__init__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_1__init__, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_1__init__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_name = 0;
+  PyObject *__pyx_v_client = 0;
+  PyObject *__pyx_v_btrader = 0;
+  PyObject *__pyx_v_trading_lock = 0;
+  PyObject *__pyx_v_trading_queue = 0;
   PyObject *__pyx_v_level = 0;
-  PyObject *__pyx_v_filename = 0;
+  PyObject *__pyx_v_log_file = 0;
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
+  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
+  __Pyx_GOTREF(__pyx_v_kwargs);
+  if (PyTuple_GET_SIZE(__pyx_args) > 7) {
+    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 7, PyTuple_GET_SIZE(__pyx_args));
+    if (unlikely(!__pyx_v_args)) {
+      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
+      __Pyx_RefNannyFinishContext();
+      return NULL;
+    }
+    __Pyx_GOTREF(__pyx_v_args);
+  } else {
+    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
+  }
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_name,&__pyx_n_s_level,&__pyx_n_s_filename,0};
-    PyObject* values[4] = {0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_client,&__pyx_n_s_btrader,&__pyx_n_s_trading_lock,&__pyx_n_s_trading_queue,&__pyx_n_s_level,&__pyx_n_s_log_file,0};
+    PyObject* values[7] = {0,0,0,0,0,0,0};
     __pyx_defaults *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self);
-    values[1] = ((PyObject *)((PyObject*)__pyx_n_u_Logger));
-    values[2] = __pyx_dynamic_args->__pyx_arg_level;
-    values[3] = ((PyObject *)((PyObject *)Py_None));
+    values[5] = __pyx_dynamic_args->__pyx_arg_level;
+    values[6] = ((PyObject *)((PyObject *)Py_None));
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        default:
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         CYTHON_FALLTHROUGH;
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
@@ -1726,7 +1470,6 @@ static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_1__init__(PyObject *__p
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         CYTHON_FALLTHROUGH;
         case  0: break;
-        default: goto __pyx_L5_argtuple_error;
       }
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
@@ -1735,85 +1478,111 @@ static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_1__init__(PyObject *__p
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name);
-          if (value) { values[1] = value; kw_args--; }
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_client)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 5, 7, 1); __PYX_ERR(0, 11, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_level);
-          if (value) { values[2] = value; kw_args--; }
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_btrader)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 5, 7, 2); __PYX_ERR(0, 11, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trading_lock)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 5, 7, 3); __PYX_ERR(0, 11, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trading_queue)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 5, 7, 4); __PYX_ERR(0, 11, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_filename);
-          if (value) { values[3] = value; kw_args--; }
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_level);
+          if (value) { values[5] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  6:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_log_file);
+          if (value) { values[6] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 48, __pyx_L3_error)
+        const Py_ssize_t used_pos_args = (pos_args < 7) ? pos_args : 7;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "__init__") < 0)) __PYX_ERR(0, 11, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        default:
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
         CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
         break;
-        default: goto __pyx_L5_argtuple_error;
+        case  4:
+        case  3:
+        case  2:
+        case  1:
+        case  0:
+        goto __pyx_L5_argtuple_error;
       }
     }
     __pyx_v_self = values[0];
-    __pyx_v_name = values[1];
-    __pyx_v_level = values[2];
-    __pyx_v_filename = values[3];
+    __pyx_v_client = values[1];
+    __pyx_v_btrader = values[2];
+    __pyx_v_trading_lock = values[3];
+    __pyx_v_trading_queue = values[4];
+    __pyx_v_level = values[5];
+    __pyx_v_log_file = values[6];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 48, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 5, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 11, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
+  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger___init__(__pyx_self, __pyx_v_self, __pyx_v_name, __pyx_v_level, __pyx_v_filename);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker___init__(__pyx_self, __pyx_v_self, __pyx_v_client, __pyx_v_btrader, __pyx_v_trading_lock, __pyx_v_trading_queue, __pyx_v_level, __pyx_v_log_file, __pyx_v_args, __pyx_v_kwargs);
 
   /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_level, PyObject *__pyx_v_filename) {
-  PyObject *__pyx_v_ch = NULL;
-  PyObject *__pyx_v_fl = NULL;
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_client, PyObject *__pyx_v_btrader, PyObject *__pyx_v_trading_lock, PyObject *__pyx_v_trading_queue, PyObject *__pyx_v_level, PyObject *__pyx_v_log_file, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  int __pyx_t_7;
   __Pyx_RefNannySetupContext("__init__", 0);
-  __Pyx_INCREF(__pyx_v_filename);
 
-  /* "btrader/core/Logger.py":49
+  /* "btrader/core/TradeWorker.py":12
  * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):
- *     super().__init__(name=name, level=level)             # <<<<<<<<<<<<<<
- *     self.setLevel(level)
- *     ch = logging.StreamHandler()
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):
+ *     super(TradeWorker, self).__init__(*args, **kwargs)             # <<<<<<<<<<<<<<
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
+ *     self.__client         = client
  */
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 49, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TradeWorker); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -1821,382 +1590,834 @@ static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger___init__(CYTHON_UNUSED 
   __Pyx_GIVEREF(__pyx_v_self);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_self);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_init); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_init); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_name, __pyx_v_name) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_level, __pyx_v_level) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "btrader/core/TradeWorker.py":13
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)             # <<<<<<<<<<<<<<
+ *     self.__client         = client
+ *     self.__btrader        = btrader
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_name, __pyx_n_u_TradeWorker) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_level, __pyx_v_level) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_filename, __pyx_v_log_file) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__logger, __pyx_t_3) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "btrader/core/Logger.py":50
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)             # <<<<<<<<<<<<<<
- *     ch = logging.StreamHandler()
- *     ch.setLevel(level)
+  /* "btrader/core/TradeWorker.py":14
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
+ *     self.__client         = client             # <<<<<<<<<<<<<<
+ *     self.__btrader        = btrader
+ *     self.__tradingLock    = trading_lock
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_setLevel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__client, __pyx_v_client) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+
+  /* "btrader/core/TradeWorker.py":15
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
+ *     self.__client         = client
+ *     self.__btrader        = btrader             # <<<<<<<<<<<<<<
+ *     self.__tradingLock    = trading_lock
+ *     self.__tradingQueue   = trading_queue
+ */
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__btrader, __pyx_v_btrader) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+
+  /* "btrader/core/TradeWorker.py":16
+ *     self.__client         = client
+ *     self.__btrader        = btrader
+ *     self.__tradingLock    = trading_lock             # <<<<<<<<<<<<<<
+ *     self.__tradingQueue   = trading_queue
+ * 
+ */
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__tradingLock, __pyx_v_trading_lock) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
+
+  /* "btrader/core/TradeWorker.py":17
+ *     self.__btrader        = btrader
+ *     self.__tradingLock    = trading_lock
+ *     self.__tradingQueue   = trading_queue             # <<<<<<<<<<<<<<
+ * 
+ *   @property
+ */
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__tradingQueue, __pyx_v_trading_queue) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
+
+  /* "btrader/core/TradeWorker.py":11
+ * class TradeWorker (StoppableThread):
+ * 
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":20
+ * 
+ *   @property
+ *   def client (self):             # <<<<<<<<<<<<<<
+ *     return self.__client
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_3client(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_3client = {"client", (PyCFunction)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_3client, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_3client(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("client (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_2client(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_2client(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("client", 0);
+
+  /* "btrader/core/TradeWorker.py":21
+ *   @property
+ *   def client (self):
+ *     return self.__client             # <<<<<<<<<<<<<<
+ * 
+ *   @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__client); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "btrader/core/TradeWorker.py":20
+ * 
+ *   @property
+ *   def client (self):             # <<<<<<<<<<<<<<
+ *     return self.__client
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.client", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":24
+ * 
+ *   @property
+ *   def trader (self):             # <<<<<<<<<<<<<<
+ *     return self.__btrader
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_5trader(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_5trader = {"trader", (PyCFunction)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_5trader, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_5trader(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("trader (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_4trader(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_4trader(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("trader", 0);
+
+  /* "btrader/core/TradeWorker.py":25
+ *   @property
+ *   def trader (self):
+ *     return self.__btrader             # <<<<<<<<<<<<<<
+ * 
+ *   @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__btrader); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "btrader/core/TradeWorker.py":24
+ * 
+ *   @property
+ *   def trader (self):             # <<<<<<<<<<<<<<
+ *     return self.__btrader
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.trader", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":28
+ * 
+ *   @property
+ *   def logger (self):             # <<<<<<<<<<<<<<
+ *     return self.__logger
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_7logger(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_7logger = {"logger", (PyCFunction)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_7logger, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_7logger(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("logger (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_6logger(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_6logger(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("logger", 0);
+
+  /* "btrader/core/TradeWorker.py":29
+ *   @property
+ *   def logger (self):
+ *     return self.__logger             # <<<<<<<<<<<<<<
+ * 
+ *   def execute (self, deal):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradeWorker__logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "btrader/core/TradeWorker.py":28
+ * 
+ *   @property
+ *   def logger (self):             # <<<<<<<<<<<<<<
+ *     return self.__logger
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.logger", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":31
+ *     return self.__logger
+ * 
+ *   def execute (self, deal):             # <<<<<<<<<<<<<<
+ *     # TODO: Implement here
+ *     self.printDeal(deal)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_9execute(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_9execute = {"execute", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_9execute, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_9execute(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_self = 0;
+  PyObject *__pyx_v_deal = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("execute (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_deal,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_deal)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("execute", 1, 2, 2, 1); __PYX_ERR(0, 31, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "execute") < 0)) __PYX_ERR(0, 31, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_self = values[0];
+    __pyx_v_deal = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("execute", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 31, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.execute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_8execute(__pyx_self, __pyx_v_self, __pyx_v_deal);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_8execute(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_deal) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  __Pyx_RefNannySetupContext("execute", 0);
+
+  /* "btrader/core/TradeWorker.py":33
+ *   def execute (self, deal):
+ *     # TODO: Implement here
+ *     self.printDeal(deal)             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_printDeal); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_deal) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_deal);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "btrader/core/TradeWorker.py":31
+ *     return self.__logger
+ * 
+ *   def execute (self, deal):             # <<<<<<<<<<<<<<
+ *     # TODO: Implement here
+ *     self.printDeal(deal)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.execute", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":36
+ *     pass
+ * 
+ *   def run (self):             # <<<<<<<<<<<<<<
+ *     while self.running:
+ *       pass
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_11run(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_11run = {"run", (PyCFunction)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_11run, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_11run(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("run (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_10run(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_10run(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  __Pyx_RefNannySetupContext("run", 0);
+
+  /* "btrader/core/TradeWorker.py":37
+ * 
+ *   def run (self):
+ *     while self.running:             # <<<<<<<<<<<<<<
+ *       pass
+ *       # self.logger.info("A")
+ */
+  while (1) {
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_running); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (!__pyx_t_2) break;
+  }
+
+  /* "btrader/core/TradeWorker.py":36
+ *     pass
+ * 
+ *   def run (self):             # <<<<<<<<<<<<<<
+ *     while self.running:
+ *       pass
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.run", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradeWorker.py":45
+ *         # self.kill()
+ * 
+ *   def printDeal (self, deal):             # <<<<<<<<<<<<<<
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_13printDeal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_13printDeal = {"printDeal", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_13printDeal, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_13printDeal(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_self = 0;
+  PyObject *__pyx_v_deal = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("printDeal (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_deal,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_deal)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("printDeal", 1, 2, 2, 1); __PYX_ERR(0, 45, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "printDeal") < 0)) __PYX_ERR(0, 45, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_self = values[0];
+    __pyx_v_deal = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("printDeal", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 45, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.printDeal", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_12printDeal(__pyx_self, __pyx_v_self, __pyx_v_deal);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_12printDeal(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_deal) {
+  PyObject *__pyx_v_action = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
+  int __pyx_t_13;
+  __Pyx_RefNannySetupContext("printDeal", 0);
+
+  /* "btrader/core/TradeWorker.py":46
+ * 
+ *   def printDeal (self, deal):
+ *     self.logger.info("--------------------")             # <<<<<<<<<<<<<<
+ *     for action in deal.getActions():
+ *       self.logger.info ("{} {} from pair {}".format(
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
     if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_level) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_level);
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_kp_u_) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_u_);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "btrader/core/Logger.py":51
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)
- *     ch = logging.StreamHandler()             # <<<<<<<<<<<<<<
- *     ch.setLevel(level)
- *     ch.setFormatter(LogFormatter())
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_logging); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_StreamHandler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_ch = __pyx_t_3;
-  __pyx_t_3 = 0;
-
-  /* "btrader/core/Logger.py":52
- *     self.setLevel(level)
- *     ch = logging.StreamHandler()
- *     ch.setLevel(level)             # <<<<<<<<<<<<<<
- *     ch.setFormatter(LogFormatter())
- *     self.addHandler(ch)
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_ch, __pyx_n_s_setLevel); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_1, __pyx_v_level) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_level);
-  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "btrader/core/Logger.py":53
- *     ch = logging.StreamHandler()
- *     ch.setLevel(level)
- *     ch.setFormatter(LogFormatter())             # <<<<<<<<<<<<<<
- *     self.addHandler(ch)
- *     if filename:
+  /* "btrader/core/TradeWorker.py":47
+ *   def printDeal (self, deal):
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():             # <<<<<<<<<<<<<<
+ *       self.logger.info ("{} {} from pair {}".format(
+ *         action.getAction(),
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_ch, __pyx_n_s_setFormatter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_LogFormatter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_deal, __pyx_n_s_getActions); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "btrader/core/Logger.py":54
- *     ch.setLevel(level)
- *     ch.setFormatter(LogFormatter())
- *     self.addHandler(ch)             # <<<<<<<<<<<<<<
- *     if filename:
- *       if ".log" not in filename:
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_addHandler); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_1, __pyx_v_ch) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_ch);
-  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "btrader/core/Logger.py":55
- *     ch.setFormatter(LogFormatter())
- *     self.addHandler(ch)
- *     if filename:             # <<<<<<<<<<<<<<
- *       if ".log" not in filename:
- *         filename += '.log'
- */
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_filename); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
-  if (__pyx_t_6) {
-
-    /* "btrader/core/Logger.py":56
- *     self.addHandler(ch)
- *     if filename:
- *       if ".log" not in filename:             # <<<<<<<<<<<<<<
- *         filename += '.log'
- *       fl = logging.FileHandler(filename)
- */
-    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_kp_u_log, __pyx_v_filename, Py_NE)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
-    __pyx_t_7 = (__pyx_t_6 != 0);
-    if (__pyx_t_7) {
-
-      /* "btrader/core/Logger.py":57
- *     if filename:
- *       if ".log" not in filename:
- *         filename += '.log'             # <<<<<<<<<<<<<<
- *       fl = logging.FileHandler(filename)
- *       fl.setLevel(level)
- */
-      __pyx_t_3 = PyNumber_InPlaceAdd(__pyx_v_filename, __pyx_kp_u_log); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF_SET(__pyx_v_filename, __pyx_t_3);
-      __pyx_t_3 = 0;
-
-      /* "btrader/core/Logger.py":56
- *     self.addHandler(ch)
- *     if filename:
- *       if ".log" not in filename:             # <<<<<<<<<<<<<<
- *         filename += '.log'
- *       fl = logging.FileHandler(filename)
- */
-    }
-
-    /* "btrader/core/Logger.py":58
- *       if ".log" not in filename:
- *         filename += '.log'
- *       fl = logging.FileHandler(filename)             # <<<<<<<<<<<<<<
- *       fl.setLevel(level)
- *       fl.setFormatter(LogFormatter())
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_FileHandler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_filename) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_filename);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_v_fl = __pyx_t_3;
-    __pyx_t_3 = 0;
-
-    /* "btrader/core/Logger.py":59
- *         filename += '.log'
- *       fl = logging.FileHandler(filename)
- *       fl.setLevel(level)             # <<<<<<<<<<<<<<
- *       fl.setFormatter(LogFormatter())
- *       self.addHandler(fl)
- */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_fl, __pyx_n_s_setLevel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_level) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_level);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "btrader/core/Logger.py":60
- *       fl = logging.FileHandler(filename)
- *       fl.setLevel(level)
- *       fl.setFormatter(LogFormatter())             # <<<<<<<<<<<<<<
- *       self.addHandler(fl)
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
- */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_fl, __pyx_n_s_setFormatter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_LogFormatter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_5)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_5);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
+  } else {
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 47, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_3))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
       }
+    } else {
+      __pyx_t_1 = __pyx_t_5(__pyx_t_3);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 47, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __Pyx_XDECREF_SET(__pyx_v_action, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "btrader/core/TradeWorker.py":48
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():
+ *       self.logger.info ("{} {} from pair {}".format(             # <<<<<<<<<<<<<<
+ *         action.getAction(),
+ *         action.getQuantity(),
+ */
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_info); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_from_pair, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
 
-    /* "btrader/core/Logger.py":61
- *       fl.setLevel(level)
- *       fl.setFormatter(LogFormatter())
- *       self.addHandler(fl)             # <<<<<<<<<<<<<<
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
- * 
+    /* "btrader/core/TradeWorker.py":49
+ *     for action in deal.getActions():
+ *       self.logger.info ("{} {} from pair {}".format(
+ *         action.getAction(),             # <<<<<<<<<<<<<<
+ *         action.getQuantity(),
+ *         action.getPair(),
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_addHandler); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_2)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_2);
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_action, __pyx_n_s_getAction); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
+      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
+      if (likely(__pyx_t_10)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
+        __Pyx_INCREF(__pyx_t_10);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
+        __Pyx_DECREF_SET(__pyx_t_9, function);
       }
     }
-    __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_fl) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_fl);
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_8 = (__pyx_t_10) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_10) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
+    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+    /* "btrader/core/TradeWorker.py":50
+ *       self.logger.info ("{} {} from pair {}".format(
+ *         action.getAction(),
+ *         action.getQuantity(),             # <<<<<<<<<<<<<<
+ *         action.getPair(),
+ *       ))
+ */
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_action, __pyx_n_s_getQuantity); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_11 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_10))) {
+      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_10);
+      if (likely(__pyx_t_11)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+        __Pyx_INCREF(__pyx_t_11);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_10, function);
+      }
+    }
+    __pyx_t_9 = (__pyx_t_11) ? __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_11) : __Pyx_PyObject_CallNoArg(__pyx_t_10);
+    __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+    if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+
+    /* "btrader/core/TradeWorker.py":51
+ *         action.getAction(),
+ *         action.getQuantity(),
+ *         action.getPair(),             # <<<<<<<<<<<<<<
+ *       ))
+ * 
+ */
+    __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_action, __pyx_n_s_getPair); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __pyx_t_12 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_11))) {
+      __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_11);
+      if (likely(__pyx_t_12)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
+        __Pyx_INCREF(__pyx_t_12);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_11, function);
+      }
+    }
+    __pyx_t_10 = (__pyx_t_12) ? __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_12) : __Pyx_PyObject_CallNoArg(__pyx_t_11);
+    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __pyx_t_11 = NULL;
+    __pyx_t_13 = 0;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
+      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_7);
+      if (likely(__pyx_t_11)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_11);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __pyx_t_13 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_7)) {
+      PyObject *__pyx_temp[4] = {__pyx_t_11, __pyx_t_8, __pyx_t_9, __pyx_t_10};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
+      PyObject *__pyx_temp[4] = {__pyx_t_11, __pyx_t_8, __pyx_t_9, __pyx_t_10};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_12 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      if (__pyx_t_11) {
+        __Pyx_GIVEREF(__pyx_t_11); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_11); __pyx_t_11 = NULL;
+      }
+      __Pyx_GIVEREF(__pyx_t_8);
+      PyTuple_SET_ITEM(__pyx_t_12, 0+__pyx_t_13, __pyx_t_8);
+      __Pyx_GIVEREF(__pyx_t_9);
+      PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_13, __pyx_t_9);
+      __Pyx_GIVEREF(__pyx_t_10);
+      PyTuple_SET_ITEM(__pyx_t_12, 2+__pyx_t_13, __pyx_t_10);
+      __pyx_t_8 = 0;
+      __pyx_t_9 = 0;
+      __pyx_t_10 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_12, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_2);
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "btrader/core/Logger.py":55
- *     ch.setFormatter(LogFormatter())
- *     self.addHandler(ch)
- *     if filename:             # <<<<<<<<<<<<<<
- *       if ".log" not in filename:
- *         filename += '.log'
+    /* "btrader/core/TradeWorker.py":47
+ *   def printDeal (self, deal):
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():             # <<<<<<<<<<<<<<
+ *       self.logger.info ("{} {} from pair {}".format(
+ *         action.getAction(),
  */
   }
-
-  /* "btrader/core/Logger.py":62
- *       fl.setFormatter(LogFormatter())
- *       self.addHandler(fl)
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)             # <<<<<<<<<<<<<<
- * 
- *   def debug (self, msg, *args, **kwargs):
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_concurrent); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_futures); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ThreadPoolExecutor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_max_workers, __pyx_int_1) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor, __pyx_t_2) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/Logger.py":48
- * class Logger (logging.Logger):
+  /* "btrader/core/TradeWorker.py":45
+ *         # self.kill()
  * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):             # <<<<<<<<<<<<<<
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)
+ *   def printDeal (self, deal):             # <<<<<<<<<<<<<<
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():
  */
 
   /* function exit code */
@@ -2206,891 +2427,60 @@ static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger___init__(CYTHON_UNUSED 
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.printDeal", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_ch);
-  __Pyx_XDECREF(__pyx_v_fl);
-  __Pyx_XDECREF(__pyx_v_filename);
+  __Pyx_XDECREF(__pyx_v_action);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "btrader/core/Logger.py":64
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+/* "btrader/core/TradeWorker.py":54
+ *       ))
  * 
- *   def debug (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
+ *   def kill (self):             # <<<<<<<<<<<<<<
+ *     return self.trader.finalize()
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_3debug(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_3debug = {"debug", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_3debug, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_3debug(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_msg = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_15kill(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_15kill = {"kill", (PyCFunction)__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_15kill, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradeWorker_11TradeWorker_15kill(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("debug (wrapper)", 0);
-  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
-  __Pyx_GOTREF(__pyx_v_kwargs);
-  if (PyTuple_GET_SIZE(__pyx_args) > 2) {
-    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 2, PyTuple_GET_SIZE(__pyx_args));
-    if (unlikely(!__pyx_v_args)) {
-      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-      __Pyx_RefNannyFinishContext();
-      return NULL;
-    }
-    __Pyx_GOTREF(__pyx_v_args);
-  } else {
-    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
-  }
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_msg,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        default:
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_msg)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("debug", 0, 2, 2, 1); __PYX_ERR(0, 64, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        const Py_ssize_t used_pos_args = (pos_args < 2) ? pos_args : 2;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "debug") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) < 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_msg = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("debug", 0, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 64, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
-  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.debug", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_2debug(__pyx_self, __pyx_v_self, __pyx_v_msg, __pyx_v_args, __pyx_v_kwargs);
+  __Pyx_RefNannySetupContext("kill (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_14kill(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_2debug(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+static PyObject *__pyx_pf_7btrader_4core_11TradeWorker_11TradeWorker_14kill(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("debug", 0);
+  __Pyx_RefNannySetupContext("kill", 0);
 
-  /* "btrader/core/Logger.py":65
+  /* "btrader/core/TradeWorker.py":55
  * 
- *   def debug (self, msg, *args, **kwargs):
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *   def info (self, msg, *args, **kwargs):
+ *   def kill (self):
+ *     return self.trader.finalize()             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_submit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_trader); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 65, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_self);
-  __Pyx_GIVEREF(__pyx_v_self);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_self);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_debug); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_msg);
-  __Pyx_GIVEREF(__pyx_v_msg);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_msg);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":64
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
- * 
- *   def debug (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.debug", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":67
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
- *   def info (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_5info(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_5info = {"info", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_5info, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_5info(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_msg = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("info (wrapper)", 0);
-  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
-  __Pyx_GOTREF(__pyx_v_kwargs);
-  if (PyTuple_GET_SIZE(__pyx_args) > 2) {
-    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 2, PyTuple_GET_SIZE(__pyx_args));
-    if (unlikely(!__pyx_v_args)) {
-      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-      __Pyx_RefNannyFinishContext();
-      return NULL;
-    }
-    __Pyx_GOTREF(__pyx_v_args);
-  } else {
-    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
-  }
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_msg,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        default:
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_msg)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("info", 0, 2, 2, 1); __PYX_ERR(0, 67, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        const Py_ssize_t used_pos_args = (pos_args < 2) ? pos_args : 2;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "info") < 0)) __PYX_ERR(0, 67, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) < 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_msg = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("info", 0, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 67, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
-  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.info", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_4info(__pyx_self, __pyx_v_self, __pyx_v_msg, __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_4info(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("info", 0);
-
-  /* "btrader/core/Logger.py":68
- * 
- *   def info (self, msg, *args, **kwargs):
- *     self.__executor.submit(super().info, msg, *args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *   def warning (self, msg, *args, **kwargs):
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_submit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 68, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_self);
-  __Pyx_GIVEREF(__pyx_v_self);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_self);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_info); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_msg);
-  __Pyx_GIVEREF(__pyx_v_msg);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_msg);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":67
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
- *   def info (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.info", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":70
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- *   def warning (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_7warning(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_7warning = {"warning", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_7warning, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_7warning(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_msg = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("warning (wrapper)", 0);
-  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
-  __Pyx_GOTREF(__pyx_v_kwargs);
-  if (PyTuple_GET_SIZE(__pyx_args) > 2) {
-    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 2, PyTuple_GET_SIZE(__pyx_args));
-    if (unlikely(!__pyx_v_args)) {
-      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-      __Pyx_RefNannyFinishContext();
-      return NULL;
-    }
-    __Pyx_GOTREF(__pyx_v_args);
-  } else {
-    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
-  }
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_msg,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        default:
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_msg)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("warning", 0, 2, 2, 1); __PYX_ERR(0, 70, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        const Py_ssize_t used_pos_args = (pos_args < 2) ? pos_args : 2;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "warning") < 0)) __PYX_ERR(0, 70, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) < 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_msg = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("warning", 0, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 70, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
-  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.warning", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_6warning(__pyx_self, __pyx_v_self, __pyx_v_msg, __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_6warning(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("warning", 0);
-
-  /* "btrader/core/Logger.py":71
- * 
- *   def warning (self, msg, *args, **kwargs):
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *   def error (self, msg, *args, **kwargs):
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_submit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 71, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_self);
-  __Pyx_GIVEREF(__pyx_v_self);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_self);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_warning); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_msg);
-  __Pyx_GIVEREF(__pyx_v_msg);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_msg);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":70
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- *   def warning (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.warning", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":73
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- *   def error (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_9error(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_9error = {"error", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_9error, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_9error(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_msg = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("error (wrapper)", 0);
-  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
-  __Pyx_GOTREF(__pyx_v_kwargs);
-  if (PyTuple_GET_SIZE(__pyx_args) > 2) {
-    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 2, PyTuple_GET_SIZE(__pyx_args));
-    if (unlikely(!__pyx_v_args)) {
-      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-      __Pyx_RefNannyFinishContext();
-      return NULL;
-    }
-    __Pyx_GOTREF(__pyx_v_args);
-  } else {
-    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
-  }
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_msg,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        default:
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_msg)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("error", 0, 2, 2, 1); __PYX_ERR(0, 73, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        const Py_ssize_t used_pos_args = (pos_args < 2) ? pos_args : 2;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "error") < 0)) __PYX_ERR(0, 73, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) < 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_msg = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("error", 0, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 73, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
-  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.error", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_8error(__pyx_self, __pyx_v_self, __pyx_v_msg, __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_8error(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("error", 0);
-
-  /* "btrader/core/Logger.py":74
- * 
- *   def error (self, msg, *args, **kwargs):
- *     self.__executor.submit(super().error, msg, *args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *   def critical (self, msg, *args, **kwargs):
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_submit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 74, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_self);
-  __Pyx_GIVEREF(__pyx_v_self);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_self);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_error); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_msg);
-  __Pyx_GIVEREF(__pyx_v_msg);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_msg);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":73
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- *   def error (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.error", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":76
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- *   def critical (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_11critical(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_11critical = {"critical", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_6Logger_6Logger_11critical, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_11critical(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_self = 0;
-  PyObject *__pyx_v_msg = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("critical (wrapper)", 0);
-  __pyx_v_kwargs = PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return NULL;
-  __Pyx_GOTREF(__pyx_v_kwargs);
-  if (PyTuple_GET_SIZE(__pyx_args) > 2) {
-    __pyx_v_args = PyTuple_GetSlice(__pyx_args, 2, PyTuple_GET_SIZE(__pyx_args));
-    if (unlikely(!__pyx_v_args)) {
-      __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-      __Pyx_RefNannyFinishContext();
-      return NULL;
-    }
-    __Pyx_GOTREF(__pyx_v_args);
-  } else {
-    __pyx_v_args = __pyx_empty_tuple; __Pyx_INCREF(__pyx_empty_tuple);
-  }
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_self,&__pyx_n_s_msg,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        default:
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_self)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_msg)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("critical", 0, 2, 2, 1); __PYX_ERR(0, 76, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        const Py_ssize_t used_pos_args = (pos_args < 2) ? pos_args : 2;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, used_pos_args, "critical") < 0)) __PYX_ERR(0, 76, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) < 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_self = values[0];
-    __pyx_v_msg = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("critical", 0, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 76, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_DECREF(__pyx_v_args); __pyx_v_args = 0;
-  __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.critical", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_10critical(__pyx_self, __pyx_v_self, __pyx_v_msg, __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_10critical(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_msg, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("critical", 0);
-
-  /* "btrader/core/Logger.py":77
- * 
- *   def critical (self, msg, *args, **kwargs):
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *   def shutdown (self):
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_submit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CyFunction_GetClassObj(__pyx_self);
-  if (!__pyx_t_1) { PyErr_SetString(PyExc_SystemError, "super(): empty __class__ cell"); __PYX_ERR(0, 77, __pyx_L1_error) }
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_self);
-  __Pyx_GIVEREF(__pyx_v_self);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_self);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_super, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_critical); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
-  __Pyx_INCREF(__pyx_v_msg);
-  __Pyx_GIVEREF(__pyx_v_msg);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_msg);
-  __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_args); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":76
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- *   def critical (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.critical", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "btrader/core/Logger.py":79
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
- *   def shutdown (self):             # <<<<<<<<<<<<<<
- *     self.__executor.shutdown()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_13shutdown(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_6Logger_6Logger_13shutdown = {"shutdown", (PyCFunction)__pyx_pw_7btrader_4core_6Logger_6Logger_13shutdown, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_6Logger_6Logger_13shutdown(PyObject *__pyx_self, PyObject *__pyx_v_self) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("shutdown (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_6Logger_6Logger_12shutdown(__pyx_self, ((PyObject *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_12shutdown(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("shutdown", 0);
-
-  /* "btrader/core/Logger.py":80
- * 
- *   def shutdown (self):
- *     self.__executor.shutdown()             # <<<<<<<<<<<<<<
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_Logger__executor); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_shutdown); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_finalize); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -3105,26 +2495,26 @@ static PyObject *__pyx_pf_7btrader_4core_6Logger_6Logger_12shutdown(CYTHON_UNUSE
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
 
-  /* "btrader/core/Logger.py":79
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":54
+ *       ))
  * 
- *   def shutdown (self):             # <<<<<<<<<<<<<<
- *     self.__executor.shutdown()
+ *   def kill (self):             # <<<<<<<<<<<<<<
+ *     return self.trader.finalize()
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("btrader.core.Logger.Logger.shutdown", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("btrader.core.TradeWorker.TradeWorker.kill", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3139,17 +2529,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_Logger(PyObject* module); /*proto*/
+static int __pyx_pymod_exec_TradeWorker(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_Logger},
+  {Py_mod_exec, (void*)__pyx_pymod_exec_TradeWorker},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "Logger",
+    "TradeWorker",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -3178,113 +2568,77 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_u_0_30m, __pyx_k_0_30m, sizeof(__pyx_k_0_30m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_31m, __pyx_k_0_31m, sizeof(__pyx_k_0_31m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_32m, __pyx_k_0_32m, sizeof(__pyx_k_0_32m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_33m, __pyx_k_0_33m, sizeof(__pyx_k_0_33m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_34m, __pyx_k_0_34m, sizeof(__pyx_k_0_34m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_35m, __pyx_k_0_35m, sizeof(__pyx_k_0_35m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_36m, __pyx_k_0_36m, sizeof(__pyx_k_0_36m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0_37m, __pyx_k_0_37m, sizeof(__pyx_k_0_37m), 0, 1, 0, 0},
-  {&__pyx_kp_u_0m, __pyx_k_0m, sizeof(__pyx_k_0m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_30m, __pyx_k_1_30m, sizeof(__pyx_k_1_30m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_31m, __pyx_k_1_31m, sizeof(__pyx_k_1_31m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_32m, __pyx_k_1_32m, sizeof(__pyx_k_1_32m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_33m, __pyx_k_1_33m, sizeof(__pyx_k_1_33m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_34m, __pyx_k_1_34m, sizeof(__pyx_k_1_34m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_35m, __pyx_k_1_35m, sizeof(__pyx_k_1_35m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_36m, __pyx_k_1_36m, sizeof(__pyx_k_1_36m), 0, 1, 0, 0},
-  {&__pyx_kp_u_1_37m, __pyx_k_1_37m, sizeof(__pyx_k_1_37m), 0, 1, 0, 0},
-  {&__pyx_n_s_CRITICAL, __pyx_k_CRITICAL, sizeof(__pyx_k_CRITICAL), 0, 0, 1, 1},
+  {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
   {&__pyx_n_s_DEBUG, __pyx_k_DEBUG, sizeof(__pyx_k_DEBUG), 0, 0, 1, 1},
-  {&__pyx_n_s_ERROR, __pyx_k_ERROR, sizeof(__pyx_k_ERROR), 0, 0, 1, 1},
-  {&__pyx_n_s_FORMATS, __pyx_k_FORMATS, sizeof(__pyx_k_FORMATS), 0, 0, 1, 1},
-  {&__pyx_n_s_FileHandler, __pyx_k_FileHandler, sizeof(__pyx_k_FileHandler), 0, 0, 1, 1},
-  {&__pyx_n_s_Formatter, __pyx_k_Formatter, sizeof(__pyx_k_Formatter), 0, 0, 1, 1},
-  {&__pyx_n_s_INFO, __pyx_k_INFO, sizeof(__pyx_k_INFO), 0, 0, 1, 1},
-  {&__pyx_n_s_LogFormatter, __pyx_k_LogFormatter, sizeof(__pyx_k_LogFormatter), 0, 0, 1, 1},
-  {&__pyx_n_s_LogFormatter_format, __pyx_k_LogFormatter_format, sizeof(__pyx_k_LogFormatter_format), 0, 0, 1, 1},
   {&__pyx_n_s_Logger, __pyx_k_Logger, sizeof(__pyx_k_Logger), 0, 0, 1, 1},
-  {&__pyx_n_u_Logger, __pyx_k_Logger, sizeof(__pyx_k_Logger), 0, 1, 0, 1},
-  {&__pyx_n_s_Logger___init, __pyx_k_Logger___init, sizeof(__pyx_k_Logger___init), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger__executor, __pyx_k_Logger__executor, sizeof(__pyx_k_Logger__executor), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_critical, __pyx_k_Logger_critical, sizeof(__pyx_k_Logger_critical), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_debug, __pyx_k_Logger_debug, sizeof(__pyx_k_Logger_debug), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_error, __pyx_k_Logger_error, sizeof(__pyx_k_Logger_error), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_info, __pyx_k_Logger_info, sizeof(__pyx_k_Logger_info), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_shutdown, __pyx_k_Logger_shutdown, sizeof(__pyx_k_Logger_shutdown), 0, 0, 1, 1},
-  {&__pyx_n_s_Logger_warning, __pyx_k_Logger_warning, sizeof(__pyx_k_Logger_warning), 0, 0, 1, 1},
-  {&__pyx_n_s_StreamHandler, __pyx_k_StreamHandler, sizeof(__pyx_k_StreamHandler), 0, 0, 1, 1},
-  {&__pyx_n_s_ThreadPoolExecutor, __pyx_k_ThreadPoolExecutor, sizeof(__pyx_k_ThreadPoolExecutor), 0, 0, 1, 1},
-  {&__pyx_n_s_WARNING, __pyx_k_WARNING, sizeof(__pyx_k_WARNING), 0, 0, 1, 1},
-  {&__pyx_n_s_addHandler, __pyx_k_addHandler, sizeof(__pyx_k_addHandler), 0, 0, 1, 1},
+  {&__pyx_n_s_StoppableThread, __pyx_k_StoppableThread, sizeof(__pyx_k_StoppableThread), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker, __pyx_k_TradeWorker, sizeof(__pyx_k_TradeWorker), 0, 0, 1, 1},
+  {&__pyx_n_u_TradeWorker, __pyx_k_TradeWorker, sizeof(__pyx_k_TradeWorker), 0, 1, 0, 1},
+  {&__pyx_n_s_TradeWorker___init, __pyx_k_TradeWorker___init, sizeof(__pyx_k_TradeWorker___init), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker__btrader, __pyx_k_TradeWorker__btrader, sizeof(__pyx_k_TradeWorker__btrader), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker__client, __pyx_k_TradeWorker__client, sizeof(__pyx_k_TradeWorker__client), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker__logger, __pyx_k_TradeWorker__logger, sizeof(__pyx_k_TradeWorker__logger), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker__tradingLock, __pyx_k_TradeWorker__tradingLock, sizeof(__pyx_k_TradeWorker__tradingLock), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker__tradingQueue, __pyx_k_TradeWorker__tradingQueue, sizeof(__pyx_k_TradeWorker__tradingQueue), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_client, __pyx_k_TradeWorker_client, sizeof(__pyx_k_TradeWorker_client), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_execute, __pyx_k_TradeWorker_execute, sizeof(__pyx_k_TradeWorker_execute), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_kill, __pyx_k_TradeWorker_kill, sizeof(__pyx_k_TradeWorker_kill), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_logger, __pyx_k_TradeWorker_logger, sizeof(__pyx_k_TradeWorker_logger), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_printDeal, __pyx_k_TradeWorker_printDeal, sizeof(__pyx_k_TradeWorker_printDeal), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_run, __pyx_k_TradeWorker_run, sizeof(__pyx_k_TradeWorker_run), 0, 0, 1, 1},
+  {&__pyx_n_s_TradeWorker_trader, __pyx_k_TradeWorker_trader, sizeof(__pyx_k_TradeWorker_trader), 0, 0, 1, 1},
+  {&__pyx_n_s_action, __pyx_k_action, sizeof(__pyx_k_action), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
-  {&__pyx_kp_u_asctime_s_name_9_9s_levelname_8, __pyx_k_asctime_s_name_9_9s_levelname_8, sizeof(__pyx_k_asctime_s_name_9_9s_levelname_8), 0, 1, 0, 0},
-  {&__pyx_n_s_black, __pyx_k_black, sizeof(__pyx_k_black), 0, 0, 1, 1},
-  {&__pyx_n_s_blue, __pyx_k_blue, sizeof(__pyx_k_blue), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_black, __pyx_k_bold_black, sizeof(__pyx_k_bold_black), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_blue, __pyx_k_bold_blue, sizeof(__pyx_k_bold_blue), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_cyan, __pyx_k_bold_cyan, sizeof(__pyx_k_bold_cyan), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_green, __pyx_k_bold_green, sizeof(__pyx_k_bold_green), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_magenta, __pyx_k_bold_magenta, sizeof(__pyx_k_bold_magenta), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_red, __pyx_k_bold_red, sizeof(__pyx_k_bold_red), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_white, __pyx_k_bold_white, sizeof(__pyx_k_bold_white), 0, 0, 1, 1},
-  {&__pyx_n_s_bold_yellow, __pyx_k_bold_yellow, sizeof(__pyx_k_bold_yellow), 0, 0, 1, 1},
+  {&__pyx_n_s_btrader, __pyx_k_btrader, sizeof(__pyx_k_btrader), 0, 0, 1, 1},
   {&__pyx_n_s_btrader_core_Logger, __pyx_k_btrader_core_Logger, sizeof(__pyx_k_btrader_core_Logger), 0, 0, 1, 1},
-  {&__pyx_kp_s_btrader_core_Logger_py, __pyx_k_btrader_core_Logger_py, sizeof(__pyx_k_btrader_core_Logger_py), 0, 0, 1, 0},
-  {&__pyx_n_s_ch, __pyx_k_ch, sizeof(__pyx_k_ch), 0, 0, 1, 1},
+  {&__pyx_n_s_btrader_core_StoppableThread, __pyx_k_btrader_core_StoppableThread, sizeof(__pyx_k_btrader_core_StoppableThread), 0, 0, 1, 1},
+  {&__pyx_n_s_btrader_core_TradeWorker, __pyx_k_btrader_core_TradeWorker, sizeof(__pyx_k_btrader_core_TradeWorker), 0, 0, 1, 1},
+  {&__pyx_kp_s_btrader_core_TradeWorker_py, __pyx_k_btrader_core_TradeWorker_py, sizeof(__pyx_k_btrader_core_TradeWorker_py), 0, 0, 1, 0},
+  {&__pyx_n_s_client, __pyx_k_client, sizeof(__pyx_k_client), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-  {&__pyx_n_s_concurrent, __pyx_k_concurrent, sizeof(__pyx_k_concurrent), 0, 0, 1, 1},
-  {&__pyx_n_s_concurrent_futures, __pyx_k_concurrent_futures, sizeof(__pyx_k_concurrent_futures), 0, 0, 1, 1},
-  {&__pyx_n_s_critical, __pyx_k_critical, sizeof(__pyx_k_critical), 0, 0, 1, 1},
-  {&__pyx_n_s_cyan, __pyx_k_cyan, sizeof(__pyx_k_cyan), 0, 0, 1, 1},
-  {&__pyx_n_s_debug, __pyx_k_debug, sizeof(__pyx_k_debug), 0, 0, 1, 1},
+  {&__pyx_n_s_deal, __pyx_k_deal, sizeof(__pyx_k_deal), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
-  {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
+  {&__pyx_n_s_execute, __pyx_k_execute, sizeof(__pyx_k_execute), 0, 0, 1, 1},
   {&__pyx_n_s_filename, __pyx_k_filename, sizeof(__pyx_k_filename), 0, 0, 1, 1},
-  {&__pyx_n_s_fl, __pyx_k_fl, sizeof(__pyx_k_fl), 0, 0, 1, 1},
+  {&__pyx_n_s_finalize, __pyx_k_finalize, sizeof(__pyx_k_finalize), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
-  {&__pyx_n_s_formatter, __pyx_k_formatter, sizeof(__pyx_k_formatter), 0, 0, 1, 1},
-  {&__pyx_n_s_futures, __pyx_k_futures, sizeof(__pyx_k_futures), 0, 0, 1, 1},
-  {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
-  {&__pyx_n_s_green, __pyx_k_green, sizeof(__pyx_k_green), 0, 0, 1, 1},
+  {&__pyx_kp_u_from_pair, __pyx_k_from_pair, sizeof(__pyx_k_from_pair), 0, 1, 0, 0},
+  {&__pyx_n_s_getAction, __pyx_k_getAction, sizeof(__pyx_k_getAction), 0, 0, 1, 1},
+  {&__pyx_n_s_getActions, __pyx_k_getActions, sizeof(__pyx_k_getActions), 0, 0, 1, 1},
+  {&__pyx_n_s_getPair, __pyx_k_getPair, sizeof(__pyx_k_getPair), 0, 0, 1, 1},
+  {&__pyx_n_s_getQuantity, __pyx_k_getQuantity, sizeof(__pyx_k_getQuantity), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_info, __pyx_k_info, sizeof(__pyx_k_info), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
+  {&__pyx_n_s_kill, __pyx_k_kill, sizeof(__pyx_k_kill), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
   {&__pyx_n_s_level, __pyx_k_level, sizeof(__pyx_k_level), 0, 0, 1, 1},
-  {&__pyx_n_s_levelno, __pyx_k_levelno, sizeof(__pyx_k_levelno), 0, 0, 1, 1},
-  {&__pyx_kp_u_log, __pyx_k_log, sizeof(__pyx_k_log), 0, 1, 0, 0},
-  {&__pyx_n_s_log_fmt, __pyx_k_log_fmt, sizeof(__pyx_k_log_fmt), 0, 0, 1, 1},
+  {&__pyx_n_s_log_file, __pyx_k_log_file, sizeof(__pyx_k_log_file), 0, 0, 1, 1},
+  {&__pyx_n_s_logger, __pyx_k_logger, sizeof(__pyx_k_logger), 0, 0, 1, 1},
   {&__pyx_n_s_logging, __pyx_k_logging, sizeof(__pyx_k_logging), 0, 0, 1, 1},
-  {&__pyx_n_s_magenta, __pyx_k_magenta, sizeof(__pyx_k_magenta), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_max_workers, __pyx_k_max_workers, sizeof(__pyx_k_max_workers), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
-  {&__pyx_n_s_msg, __pyx_k_msg, sizeof(__pyx_k_msg), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
+  {&__pyx_n_s_printDeal, __pyx_k_printDeal, sizeof(__pyx_k_printDeal), 0, 0, 1, 1},
+  {&__pyx_n_s_property, __pyx_k_property, sizeof(__pyx_k_property), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
-  {&__pyx_n_s_record, __pyx_k_record, sizeof(__pyx_k_record), 0, 0, 1, 1},
-  {&__pyx_n_s_red, __pyx_k_red, sizeof(__pyx_k_red), 0, 0, 1, 1},
-  {&__pyx_n_s_reset_seq, __pyx_k_reset_seq, sizeof(__pyx_k_reset_seq), 0, 0, 1, 1},
+  {&__pyx_n_s_run, __pyx_k_run, sizeof(__pyx_k_run), 0, 0, 1, 1},
+  {&__pyx_n_s_running, __pyx_k_running, sizeof(__pyx_k_running), 0, 0, 1, 1},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
-  {&__pyx_n_s_setFormatter, __pyx_k_setFormatter, sizeof(__pyx_k_setFormatter), 0, 0, 1, 1},
-  {&__pyx_n_s_setLevel, __pyx_k_setLevel, sizeof(__pyx_k_setLevel), 0, 0, 1, 1},
-  {&__pyx_n_s_shutdown, __pyx_k_shutdown, sizeof(__pyx_k_shutdown), 0, 0, 1, 1},
-  {&__pyx_n_s_submit, __pyx_k_submit, sizeof(__pyx_k_submit), 0, 0, 1, 1},
   {&__pyx_n_s_super, __pyx_k_super, sizeof(__pyx_k_super), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_warning, __pyx_k_warning, sizeof(__pyx_k_warning), 0, 0, 1, 1},
-  {&__pyx_n_s_white, __pyx_k_white, sizeof(__pyx_k_white), 0, 0, 1, 1},
-  {&__pyx_n_s_yellow, __pyx_k_yellow, sizeof(__pyx_k_yellow), 0, 0, 1, 1},
+  {&__pyx_n_s_trader, __pyx_k_trader, sizeof(__pyx_k_trader), 0, 0, 1, 1},
+  {&__pyx_n_s_trading_lock, __pyx_k_trading_lock, sizeof(__pyx_k_trading_lock), 0, 0, 1, 1},
+  {&__pyx_n_s_trading_queue, __pyx_k_trading_queue, sizeof(__pyx_k_trading_queue), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_builtin_super = __Pyx_GetBuiltinName(__pyx_n_s_super); if (!__pyx_builtin_super) __PYX_ERR(0, 12, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3294,100 +2648,100 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "btrader/core/Logger.py":41
- *   }
+  /* "btrader/core/TradeWorker.py":11
+ * class TradeWorker (StoppableThread):
  * 
- *   def format(self, record):             # <<<<<<<<<<<<<<
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
  */
-  __pyx_tuple_ = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_record, __pyx_n_s_log_fmt, __pyx_n_s_formatter); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple_);
-  __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_format, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(9, __pyx_n_s_self, __pyx_n_s_client, __pyx_n_s_btrader, __pyx_n_s_trading_lock, __pyx_n_s_trading_queue, __pyx_n_s_level, __pyx_n_s_log_file, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__2);
+  __Pyx_GIVEREF(__pyx_tuple__2);
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(7, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_init, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 11, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":48
- * class Logger (logging.Logger):
+  /* "btrader/core/TradeWorker.py":20
  * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):             # <<<<<<<<<<<<<<
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)
+ *   @property
+ *   def client (self):             # <<<<<<<<<<<<<<
+ *     return self.__client
+ * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_name, __pyx_n_s_level, __pyx_n_s_filename, __pyx_n_s_ch, __pyx_n_s_fl); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_init, 48, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_client, 20, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 20, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":64
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+  /* "btrader/core/TradeWorker.py":24
  * 
- *   def debug (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
+ *   @property
+ *   def trader (self):             # <<<<<<<<<<<<<<
+ *     return self.__btrader
  * 
  */
-  __pyx_tuple__5 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_msg, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 64, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_debug, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_trader, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 24, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":67
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":28
  * 
- *   def info (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
+ *   @property
+ *   def logger (self):             # <<<<<<<<<<<<<<
+ *     return self.__logger
  * 
  */
-  __pyx_tuple__7 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_msg, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_info, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_logger, 28, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 28, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":70
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":31
+ *     return self.__logger
  * 
- *   def warning (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
+ *   def execute (self, deal):             # <<<<<<<<<<<<<<
+ *     # TODO: Implement here
+ *     self.printDeal(deal)
  */
-  __pyx_tuple__9 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_msg, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 70, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_warning, 70, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_deal); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_execute, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 31, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":73
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":36
+ *     pass
  * 
- *   def error (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
+ *   def run (self):             # <<<<<<<<<<<<<<
+ *     while self.running:
+ *       pass
  */
-  __pyx_tuple__11 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_msg, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_error, 73, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_run, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":76
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":45
+ *         # self.kill()
  * 
- *   def critical (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
+ *   def printDeal (self, deal):             # <<<<<<<<<<<<<<
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():
  */
-  __pyx_tuple__13 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_msg, __pyx_n_s_args, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 76, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_critical, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_deal, __pyx_n_s_action); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_printDeal, 45, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 45, __pyx_L1_error)
 
-  /* "btrader/core/Logger.py":79
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
+  /* "btrader/core/TradeWorker.py":54
+ *       ))
  * 
- *   def shutdown (self):             # <<<<<<<<<<<<<<
- *     self.__executor.shutdown()
+ *   def kill (self):             # <<<<<<<<<<<<<<
+ *     return self.trader.finalize()
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 79, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_Logger_py, __pyx_n_s_shutdown, 79, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradeWorker_py, __pyx_n_s_kill, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3397,7 +2751,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -3484,11 +2837,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC initLogger(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC initLogger(void)
+__Pyx_PyMODINIT_FUNC initTradeWorker(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC initTradeWorker(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit_Logger(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit_Logger(void)
+__Pyx_PyMODINIT_FUNC PyInit_TradeWorker(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit_TradeWorker(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -3555,7 +2908,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec_Logger(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec_TradeWorker(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -3565,13 +2918,11 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_Logger(PyObject *__pyx_pyinit_modu
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannyDeclarations
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module 'Logger' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module 'TradeWorker' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -3586,7 +2937,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_Logger(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_TradeWorker(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -3625,7 +2976,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("Logger", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("TradeWorker", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -3643,14 +2994,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_btrader__core__Logger) {
+  if (__pyx_module_is_main_btrader__core__TradeWorker) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "btrader.core.Logger")) {
-      if (unlikely(PyDict_SetItemString(modules, "btrader.core.Logger", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "btrader.core.TradeWorker")) {
+      if (unlikely(PyDict_SetItemString(modules, "btrader.core.TradeWorker", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -3671,644 +3022,254 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "btrader/core/Logger.py":1
+  /* "btrader/core/TradeWorker.py":1
  * __all__ = [             # <<<<<<<<<<<<<<
- *   'Logger'
+ *   'TradeWorker'
  * ]
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_u_Logger);
-  __Pyx_GIVEREF(__pyx_n_u_Logger);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_Logger);
+  __Pyx_INCREF(__pyx_n_u_TradeWorker);
+  __Pyx_GIVEREF(__pyx_n_u_TradeWorker);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_TradeWorker);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "btrader/core/Logger.py":5
+  /* "btrader/core/TradeWorker.py":5
  * ]
  * 
  * import logging             # <<<<<<<<<<<<<<
- * import concurrent.futures
- * 
+ * from btrader.core.Logger import Logger
+ * from btrader.core.StoppableThread import StoppableThread
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_logging, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_logging, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "btrader/core/Logger.py":6
+  /* "btrader/core/TradeWorker.py":6
  * 
  * import logging
- * import concurrent.futures             # <<<<<<<<<<<<<<
+ * from btrader.core.Logger import Logger             # <<<<<<<<<<<<<<
+ * from btrader.core.StoppableThread import StoppableThread
  * 
- * class LogFormatter (logging.Formatter):
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_concurrent_futures, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_concurrent, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "btrader/core/Logger.py":8
- * import concurrent.futures
- * 
- * class LogFormatter (logging.Formatter):             # <<<<<<<<<<<<<<
- * 
- *   # Regular colors
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_logging); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Formatter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_n_s_Logger);
+  __Pyx_GIVEREF(__pyx_n_s_Logger);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Logger);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_btrader_core_Logger, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Logger, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "btrader/core/TradeWorker.py":7
+ * import logging
+ * from btrader.core.Logger import Logger
+ * from btrader.core.StoppableThread import StoppableThread             # <<<<<<<<<<<<<<
+ * 
+ * class TradeWorker (StoppableThread):
+ */
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_LogFormatter, __pyx_n_s_LogFormatter, (PyObject *) NULL, __pyx_n_s_btrader_core_Logger, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-
-  /* "btrader/core/Logger.py":11
- * 
- *   # Regular colors
- *   black         = '\033[0;30m'             # <<<<<<<<<<<<<<
- *   red           = '\033[0;31m'
- *   green         = '\033[0;32m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_black, __pyx_kp_u_0_30m) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":12
- *   # Regular colors
- *   black         = '\033[0;30m'
- *   red           = '\033[0;31m'             # <<<<<<<<<<<<<<
- *   green         = '\033[0;32m'
- *   yellow        = '\033[0;33m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_red, __pyx_kp_u_0_31m) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":13
- *   black         = '\033[0;30m'
- *   red           = '\033[0;31m'
- *   green         = '\033[0;32m'             # <<<<<<<<<<<<<<
- *   yellow        = '\033[0;33m'
- *   blue          = '\033[0;34m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_green, __pyx_kp_u_0_32m) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":14
- *   red           = '\033[0;31m'
- *   green         = '\033[0;32m'
- *   yellow        = '\033[0;33m'             # <<<<<<<<<<<<<<
- *   blue          = '\033[0;34m'
- *   magenta       = '\033[0;35m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_yellow, __pyx_kp_u_0_33m) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":15
- *   green         = '\033[0;32m'
- *   yellow        = '\033[0;33m'
- *   blue          = '\033[0;34m'             # <<<<<<<<<<<<<<
- *   magenta       = '\033[0;35m'
- *   cyan          = '\033[0;36m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_blue, __pyx_kp_u_0_34m) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":16
- *   yellow        = '\033[0;33m'
- *   blue          = '\033[0;34m'
- *   magenta       = '\033[0;35m'             # <<<<<<<<<<<<<<
- *   cyan          = '\033[0;36m'
- *   white         = '\033[0;37m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_magenta, __pyx_kp_u_0_35m) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":17
- *   blue          = '\033[0;34m'
- *   magenta       = '\033[0;35m'
- *   cyan          = '\033[0;36m'             # <<<<<<<<<<<<<<
- *   white         = '\033[0;37m'
- *   # Bold colors
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_cyan, __pyx_kp_u_0_36m) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":18
- *   magenta       = '\033[0;35m'
- *   cyan          = '\033[0;36m'
- *   white         = '\033[0;37m'             # <<<<<<<<<<<<<<
- *   # Bold colors
- *   bold_black    = '\033[1;30m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_white, __pyx_kp_u_0_37m) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":20
- *   white         = '\033[0;37m'
- *   # Bold colors
- *   bold_black    = '\033[1;30m'             # <<<<<<<<<<<<<<
- *   bold_red      = '\033[1;31m'
- *   bold_green    = '\033[1;32m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_black, __pyx_kp_u_1_30m) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":21
- *   # Bold colors
- *   bold_black    = '\033[1;30m'
- *   bold_red      = '\033[1;31m'             # <<<<<<<<<<<<<<
- *   bold_green    = '\033[1;32m'
- *   bold_yellow   = '\033[1;33m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_red, __pyx_kp_u_1_31m) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":22
- *   bold_black    = '\033[1;30m'
- *   bold_red      = '\033[1;31m'
- *   bold_green    = '\033[1;32m'             # <<<<<<<<<<<<<<
- *   bold_yellow   = '\033[1;33m'
- *   bold_blue     = '\033[1;34m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_green, __pyx_kp_u_1_32m) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":23
- *   bold_red      = '\033[1;31m'
- *   bold_green    = '\033[1;32m'
- *   bold_yellow   = '\033[1;33m'             # <<<<<<<<<<<<<<
- *   bold_blue     = '\033[1;34m'
- *   bold_magenta  = '\033[1;35m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_yellow, __pyx_kp_u_1_33m) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":24
- *   bold_green    = '\033[1;32m'
- *   bold_yellow   = '\033[1;33m'
- *   bold_blue     = '\033[1;34m'             # <<<<<<<<<<<<<<
- *   bold_magenta  = '\033[1;35m'
- *   bold_cyan     = '\033[1;36m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_blue, __pyx_kp_u_1_34m) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":25
- *   bold_yellow   = '\033[1;33m'
- *   bold_blue     = '\033[1;34m'
- *   bold_magenta  = '\033[1;35m'             # <<<<<<<<<<<<<<
- *   bold_cyan     = '\033[1;36m'
- *   bold_white    = '\033[1;37m'
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_magenta, __pyx_kp_u_1_35m) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":26
- *   bold_blue     = '\033[1;34m'
- *   bold_magenta  = '\033[1;35m'
- *   bold_cyan     = '\033[1;36m'             # <<<<<<<<<<<<<<
- *   bold_white    = '\033[1;37m'
- *   # Reset
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_cyan, __pyx_kp_u_1_36m) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":27
- *   bold_magenta  = '\033[1;35m'
- *   bold_cyan     = '\033[1;36m'
- *   bold_white    = '\033[1;37m'             # <<<<<<<<<<<<<<
- *   # Reset
- *   reset_seq     = "\033[0m"
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_bold_white, __pyx_kp_u_1_37m) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":29
- *   bold_white    = '\033[1;37m'
- *   # Reset
- *   reset_seq     = "\033[0m"             # <<<<<<<<<<<<<<
- * 
- *   format = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s"
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_reset_seq, __pyx_kp_u_0m) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":31
- *   reset_seq     = "\033[0m"
- * 
- *   format = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s"             # <<<<<<<<<<<<<<
- * 
- *   FORMATS = {
- */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_format, __pyx_kp_u_asctime_s_name_9_9s_levelname_8) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
-
-  /* "btrader/core/Logger.py":34
- * 
- *   FORMATS = {
- *     logging.DEBUG: bold_white + format + reset_seq,             # <<<<<<<<<<<<<<
- *     logging.INFO: green + format + reset_seq,
- *     logging.WARNING: bold_yellow + format + reset_seq,
- */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_DEBUG); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_bold_white);
-  if (unlikely(!__pyx_t_5)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_bold_white);
-  }
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_format);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_format);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_reset_seq);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_reset_seq);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_t_6, __pyx_t_5) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":35
- *   FORMATS = {
- *     logging.DEBUG: bold_white + format + reset_seq,
- *     logging.INFO: green + format + reset_seq,             # <<<<<<<<<<<<<<
- *     logging.WARNING: bold_yellow + format + reset_seq,
- *     logging.ERROR: red + format + reset_seq,
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_INFO); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_green);
-  if (unlikely(!__pyx_t_5)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_green);
-  }
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_format);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_format);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_reset_seq);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_reset_seq);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_t_6, __pyx_t_5) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":36
- *     logging.DEBUG: bold_white + format + reset_seq,
- *     logging.INFO: green + format + reset_seq,
- *     logging.WARNING: bold_yellow + format + reset_seq,             # <<<<<<<<<<<<<<
- *     logging.ERROR: red + format + reset_seq,
- *     logging.CRITICAL: bold_red + format + reset_seq
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_WARNING); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_bold_yellow);
-  if (unlikely(!__pyx_t_5)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_bold_yellow);
-  }
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_format);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_format);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_reset_seq);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_reset_seq);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_t_6, __pyx_t_5) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":37
- *     logging.INFO: green + format + reset_seq,
- *     logging.WARNING: bold_yellow + format + reset_seq,
- *     logging.ERROR: red + format + reset_seq,             # <<<<<<<<<<<<<<
- *     logging.CRITICAL: bold_red + format + reset_seq
- *   }
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ERROR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_red);
-  if (unlikely(!__pyx_t_5)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_red);
-  }
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_format);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_format);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_reset_seq);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_reset_seq);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_t_6, __pyx_t_5) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":38
- *     logging.WARNING: bold_yellow + format + reset_seq,
- *     logging.ERROR: red + format + reset_seq,
- *     logging.CRITICAL: bold_red + format + reset_seq             # <<<<<<<<<<<<<<
- *   }
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_CRITICAL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_bold_red);
-  if (unlikely(!__pyx_t_5)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_bold_red);
-  }
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_format);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_format);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyNumber_Add(__pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_GetItem(__pyx_t_3, __pyx_n_s_reset_seq);
-  if (unlikely(!__pyx_t_7)) {
-    PyErr_Clear();
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_reset_seq);
-  }
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_5 = PyNumber_Add(__pyx_t_8, __pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (PyDict_SetItem(__pyx_t_4, __pyx_t_6, __pyx_t_5) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_FORMATS, __pyx_t_4) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "btrader/core/Logger.py":41
- *   }
- * 
- *   def format(self, record):             # <<<<<<<<<<<<<<
- *     log_fmt = self.FORMATS.get(record.levelno)
- *     formatter = logging.Formatter(log_fmt)
- */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_12LogFormatter_1format, 0, __pyx_n_s_LogFormatter_format, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_format, __pyx_t_4) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "btrader/core/Logger.py":8
- * import concurrent.futures
- * 
- * class LogFormatter (logging.Formatter):             # <<<<<<<<<<<<<<
- * 
- *   # Regular colors
- */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_LogFormatter, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LogFormatter, __pyx_t_4) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_INCREF(__pyx_n_s_StoppableThread);
+  __Pyx_GIVEREF(__pyx_n_s_StoppableThread);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_StoppableThread);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_btrader_core_StoppableThread, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_StoppableThread); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_StoppableThread, __pyx_t_2) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "btrader/core/Logger.py":46
- *     return formatter.format(record)
+  /* "btrader/core/TradeWorker.py":9
+ * from btrader.core.StoppableThread import StoppableThread
  * 
- * class Logger (logging.Logger):             # <<<<<<<<<<<<<<
+ * class TradeWorker (StoppableThread):             # <<<<<<<<<<<<<<
  * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_logging); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_StoppableThread); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_Logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_Logger, __pyx_n_s_Logger, (PyObject *) NULL, __pyx_n_s_btrader_core_Logger, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TradeWorker, __pyx_n_s_TradeWorker, (PyObject *) NULL, __pyx_n_s_btrader_core_TradeWorker, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+
+  /* "btrader/core/TradeWorker.py":11
+ * class TradeWorker (StoppableThread):
+ * 
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *     super(TradeWorker, self).__init__(*args, **kwargs)
+ *     self.__logger         = Logger(name="TradeWorker", level=level, filename=log_file)
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_1__init__, 0, __pyx_n_s_TradeWorker___init, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_4, sizeof(__pyx_defaults), 1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_logging); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_DEBUG); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_t_4)->__pyx_arg_level = __pyx_t_6;
+  __Pyx_GIVEREF(__pyx_t_6);
+  __pyx_t_6 = 0;
+  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_4, __pyx_pf_7btrader_4core_11TradeWorker___defaults__);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "btrader/core/TradeWorker.py":20
+ * 
+ *   @property
+ *   def client (self):             # <<<<<<<<<<<<<<
+ *     return self.__client
+ * 
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_3client, 0, __pyx_n_s_TradeWorker_client, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "btrader/core/Logger.py":48
- * class Logger (logging.Logger):
+  /* "btrader/core/TradeWorker.py":19
+ *     self.__tradingQueue   = trading_queue
  * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):             # <<<<<<<<<<<<<<
- *     super().__init__(name=name, level=level)
- *     self.setLevel(level)
+ *   @property             # <<<<<<<<<<<<<<
+ *   def client (self):
+ *     return self.__client
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_1__init__, 0, __pyx_n_s_Logger___init, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_5, sizeof(__pyx_defaults), 1)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_logging); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_DEBUG); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_t_5)->__pyx_arg_level = __pyx_t_7;
-  __Pyx_GIVEREF(__pyx_t_7);
-  __pyx_t_7 = 0;
-  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_5, __pyx_pf_7btrader_4core_6Logger___defaults__);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":64
- *     self.__executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
- * 
- *   def debug (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_3debug, 0, __pyx_n_s_Logger_debug, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_debug, __pyx_t_5) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":67
- *     self.__executor.submit(super().debug, msg, *args, **kwargs)
- * 
- *   def info (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_5info, 0, __pyx_n_s_Logger_info, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_info, __pyx_t_5) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":70
- *     self.__executor.submit(super().info, msg, *args, **kwargs)
- * 
- *   def warning (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_7warning, 0, __pyx_n_s_Logger_warning, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_warning, __pyx_t_5) < 0) __PYX_ERR(0, 70, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":73
- *     self.__executor.submit(super().warning, msg, *args, **kwargs)
- * 
- *   def error (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_9error, 0, __pyx_n_s_Logger_error, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_error, __pyx_t_5) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":76
- *     self.__executor.submit(super().error, msg, *args, **kwargs)
- * 
- *   def critical (self, msg, *args, **kwargs):             # <<<<<<<<<<<<<<
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_11critical, 0, __pyx_n_s_Logger_critical, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 76, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_INCREF(__pyx_t_5);
-  PyList_Append(__pyx_t_4, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_critical, __pyx_t_5) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":79
- *     self.__executor.submit(super().critical, msg, *args, **kwargs)
- * 
- *   def shutdown (self):             # <<<<<<<<<<<<<<
- *     self.__executor.shutdown()
- */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_6Logger_6Logger_13shutdown, 0, __pyx_n_s_Logger_shutdown, NULL, __pyx_n_s_btrader_core_Logger, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 79, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_shutdown, __pyx_t_5) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "btrader/core/Logger.py":46
- *     return formatter.format(record)
- * 
- * class Logger (logging.Logger):             # <<<<<<<<<<<<<<
- * 
- *   def __init__ (self, name="Logger", level=logging.DEBUG, filename=None):
- */
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_Logger, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_CyFunction_InitClassCell(__pyx_t_4, __pyx_t_5) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Logger, __pyx_t_5) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_client, __pyx_t_6) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "btrader/core/Logger.py":1
+  /* "btrader/core/TradeWorker.py":24
+ * 
+ *   @property
+ *   def trader (self):             # <<<<<<<<<<<<<<
+ *     return self.__btrader
+ * 
+ */
+  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_5trader, 0, __pyx_n_s_TradeWorker_trader, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+
+  /* "btrader/core/TradeWorker.py":23
+ *     return self.__client
+ * 
+ *   @property             # <<<<<<<<<<<<<<
+ *   def trader (self):
+ *     return self.__btrader
+ */
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_trader, __pyx_t_4) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "btrader/core/TradeWorker.py":28
+ * 
+ *   @property
+ *   def logger (self):             # <<<<<<<<<<<<<<
+ *     return self.__logger
+ * 
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_7logger, 0, __pyx_n_s_TradeWorker_logger, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__9)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+
+  /* "btrader/core/TradeWorker.py":27
+ *     return self.__btrader
+ * 
+ *   @property             # <<<<<<<<<<<<<<
+ *   def logger (self):
+ *     return self.__logger
+ */
+  __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_logger, __pyx_t_6) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "btrader/core/TradeWorker.py":31
+ *     return self.__logger
+ * 
+ *   def execute (self, deal):             # <<<<<<<<<<<<<<
+ *     # TODO: Implement here
+ *     self.printDeal(deal)
+ */
+  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_9execute, 0, __pyx_n_s_TradeWorker_execute, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_execute, __pyx_t_6) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "btrader/core/TradeWorker.py":36
+ *     pass
+ * 
+ *   def run (self):             # <<<<<<<<<<<<<<
+ *     while self.running:
+ *       pass
+ */
+  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_11run, 0, __pyx_n_s_TradeWorker_run, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_run, __pyx_t_6) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "btrader/core/TradeWorker.py":45
+ *         # self.kill()
+ * 
+ *   def printDeal (self, deal):             # <<<<<<<<<<<<<<
+ *     self.logger.info("--------------------")
+ *     for action in deal.getActions():
+ */
+  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_13printDeal, 0, __pyx_n_s_TradeWorker_printDeal, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_printDeal, __pyx_t_6) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "btrader/core/TradeWorker.py":54
+ *       ))
+ * 
+ *   def kill (self):             # <<<<<<<<<<<<<<
+ *     return self.trader.finalize()
+ */
+  __pyx_t_6 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradeWorker_11TradeWorker_15kill, 0, __pyx_n_s_TradeWorker_kill, NULL, __pyx_n_s_btrader_core_TradeWorker, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_kill, __pyx_t_6) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "btrader/core/TradeWorker.py":9
+ * from btrader.core.StoppableThread import StoppableThread
+ * 
+ * class TradeWorker (StoppableThread):             # <<<<<<<<<<<<<<
+ * 
+ *   def __init__ (self, client, btrader, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):
+ */
+  __pyx_t_6 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TradeWorker, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TradeWorker, __pyx_t_6) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "btrader/core/TradeWorker.py":1
  * __all__ = [             # <<<<<<<<<<<<<<
- *   'Logger'
+ *   'TradeWorker'
  * ]
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /*--- Wrapped vars code ---*/
 
@@ -4320,15 +3281,13 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init btrader.core.Logger", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init btrader.core.TradeWorker", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init btrader.core.Logger");
+    PyErr_SetString(PyExc_ImportError, "init btrader.core.TradeWorker");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -4529,6 +3488,101 @@ bad:
     return -1;
 }
 
+/* PyDictVersioning */
+#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
+}
+static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
+    PyObject **dictptr = NULL;
+    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
+    if (offset) {
+#if CYTHON_COMPILING_IN_CPYTHON
+        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
+#else
+        dictptr = _PyObject_GetDictPtr(obj);
+#endif
+    }
+    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
+}
+static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
+    PyObject *dict = Py_TYPE(obj)->tp_dict;
+    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
+        return 0;
+    return obj_dict_version == __Pyx_get_object_dict_version(obj);
+}
+#endif
+
+/* GetModuleGlobalName */
+#if CYTHON_USE_DICT_VERSIONS
+static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
+#else
+static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
+#endif
+{
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
+    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    } else if (unlikely(PyErr_Occurred())) {
+        return NULL;
+    }
+#else
+    result = PyDict_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+#endif
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
+    if (likely(result)) {
+        return __Pyx_NewRef(result);
+    }
+    PyErr_Clear();
+#endif
+    return __Pyx_GetBuiltinName(name);
+}
+
+/* PyObjectCall */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+/* PyObjectSetAttrStr */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_setattro))
+        return tp->tp_setattro(obj, attr_name, value);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_setattr))
+        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
+#endif
+    return PyObject_SetAttr(obj, attr_name, value);
+}
+#endif
+
 /* PyCFunctionFastCall */
 #if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
@@ -4671,26 +3725,6 @@ done:
 #endif
 #endif
 
-/* PyObjectCall */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    PyObject *result;
-    ternaryfunc call = func->ob_type->tp_call;
-    if (unlikely(!call))
-        return PyObject_Call(func, arg, kw);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = (*call)(func, arg, kw);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
 /* PyObjectCall2Args */
 static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
     PyObject *args, *result = NULL;
@@ -4780,67 +3814,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 }
 #endif
 
-/* PyDictVersioning */
-#if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_tp_dict_version(PyObject *obj) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    return likely(dict) ? __PYX_GET_DICT_VERSION(dict) : 0;
-}
-static CYTHON_INLINE PY_UINT64_T __Pyx_get_object_dict_version(PyObject *obj) {
-    PyObject **dictptr = NULL;
-    Py_ssize_t offset = Py_TYPE(obj)->tp_dictoffset;
-    if (offset) {
-#if CYTHON_COMPILING_IN_CPYTHON
-        dictptr = (likely(offset > 0)) ? (PyObject **) ((char *)obj + offset) : _PyObject_GetDictPtr(obj);
-#else
-        dictptr = _PyObject_GetDictPtr(obj);
-#endif
-    }
-    return (dictptr && *dictptr) ? __PYX_GET_DICT_VERSION(*dictptr) : 0;
-}
-static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UINT64_T tp_dict_version, PY_UINT64_T obj_dict_version) {
-    PyObject *dict = Py_TYPE(obj)->tp_dict;
-    if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
-        return 0;
-    return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
-#endif
-
-/* GetModuleGlobalName */
-#if CYTHON_USE_DICT_VERSIONS
-static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_version, PyObject **dict_cached_value)
-#else
-static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
-#endif
-{
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030500A1
-    result = _PyDict_GetItem_KnownHash(__pyx_d, name, ((PyASCIIObject *) name)->hash);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    } else if (unlikely(PyErr_Occurred())) {
-        return NULL;
-    }
-#else
-    result = PyDict_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-#endif
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    __PYX_UPDATE_DICT_CACHE(__pyx_d, result, *dict_cached_value, *dict_version)
-    if (likely(result)) {
-        return __Pyx_NewRef(result);
-    }
-    PyErr_Clear();
-#endif
-    return __Pyx_GetBuiltinName(name);
-}
-
 /* PyObjectCallNoArg */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
@@ -4860,20 +3833,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
         }
     }
     return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
-}
-#endif
-
-/* PyObjectSetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_setattro))
-        return tp->tp_setattro(obj, attr_name, value);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_setattr))
-        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
-#endif
-    return PyObject_SetAttr(obj, attr_name, value);
 }
 #endif
 
@@ -4940,6 +3899,20 @@ bad:
     Py_XDECREF(empty_list);
     Py_XDECREF(empty_dict);
     return module;
+}
+
+/* ImportFrom */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
 }
 
 /* CalculateMetaclass */
@@ -5700,27 +4673,6 @@ static PyObject *__Pyx_Py3ClassCreate(PyObject *metaclass, PyObject *name, PyObj
     }
     Py_XDECREF(owned_metaclass);
     return result;
-}
-
-/* CyFunctionClassCell */
-static int __Pyx_CyFunction_InitClassCell(PyObject *cyfunctions, PyObject *classobj) {
-    Py_ssize_t i, count = PyList_GET_SIZE(cyfunctions);
-    for (i = 0; i < count; i++) {
-        __pyx_CyFunctionObject *m = (__pyx_CyFunctionObject *)
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            PyList_GET_ITEM(cyfunctions, i);
-#else
-            PySequence_ITEM(cyfunctions, i);
-        if (unlikely(!m))
-            return -1;
-#endif
-        Py_INCREF(classobj);
-        m->func_classobj = classobj;
-#if !(CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS)
-        Py_DECREF((PyObject*)m);
-#endif
-    }
-    return 0;
 }
 
 /* PyErrFetchRestore */

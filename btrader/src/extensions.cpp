@@ -9,11 +9,6 @@ using namespace boost::python;
 // #include <iostream>
 
 /*
- *  TODO:
- *  - Implement asset precisions flooring
- */
-
-/*
  *  Converting Python iterables to C++ vectors
  */
 // PyList<T> --> 1D vector <T>
@@ -78,6 +73,77 @@ double correctQuantity(double quantity, double step)
 {
   return (floor(quantity / step) * step);
 }
+
+/*
+ *  Trading actions and quantities
+ */
+struct Action
+{
+public:
+  Action(std::string pair, std::string action, double quantity)
+  {
+    this->pair = pair;
+    this->action = action;
+    this->quantity = quantity;
+  }
+
+  std::string getPair()
+  {
+    return this->pair;
+  }
+
+  std::string getAction()
+  {
+    return this->action;
+  }
+
+  double getQuantity()
+  {
+    return this->quantity;
+  }
+
+private:
+  double quantity;
+  std::string pair;
+  std::string action;
+};
+
+/*
+ *  Full set of trading actions
+ */
+struct Deal
+{
+public:
+  void addAction(std::string pair, std::string action, double quantity)
+  {
+    this->actions.push_back(Action(pair, action, quantity));
+  }
+  boost::python::list getActions()
+  {
+    return to_py_list<Action>(actions);
+  }
+  void setProfit(double profit)
+  {
+    this->profit = profit;
+  }
+  double getProfit()
+  {
+    return this->profit;
+  }
+  void setTimestamp(double timestamp)
+  {
+    this->timestamp = timestamp;
+  }
+  double getTimestamp()
+  {
+    return this->timestamp;
+  }
+
+private:
+  double profit = -1;
+  double timestamp = 0;
+  std::vector<Action> actions;
+};
 
 /*
  *  Trading pair wrapper
@@ -206,20 +272,21 @@ public:
     this->pairs[symbol]->update(timestamp, vecAsks, vecBids);
   }
 
-  boost::python::list computeRelationship(std::string relationshipName)
+  Deal computeRelationship(std::string relationshipName)
   {
 
-    double bestQty = -1;
     double bestProfit = -1;
     Relationship *rel = this->relationships[relationshipName];
     std::vector<std::string> pairNames = rel->getPairs();
     std::vector<std::string> pairActions = rel->getActions();
     double lowestTimestamp = std::numeric_limits<double>::max();
     double timestamp = 0;
-    double profit = 0;           // This will be used to hold iteration profit
-    double currentQuantity = 0;  // This will be used to compute quantities across currencies
-    double helperQuantity = 0;   // This will be used to check for quantities across prices
-    std::vector<double> results; // This will hold values before they are converted to PyList
+    double profit = 0;          // This will be used to hold iteration profit
+    double currentQuantity = 0; // This will be used to compute quantities across currencies
+    double helperQuantity = 0;  // This will be used to check for quantities across prices
+    double tmpQuantity = 0;
+    Deal results = Deal(); // This will hold values before they are converted to PyList
+    Deal tmpDeal;
 
     if (!rel->isInitialized())
     {
@@ -231,10 +298,7 @@ public:
         rel->setInitialized();
       else
       {
-        results.push_back(-1);
-        results.push_back(-1);
-        results.push_back(-1);
-        return to_py_list<double>(results);
+        return results;
       }
     }
 
@@ -244,6 +308,7 @@ public:
       currentQuantity = this->qtyRange[i];
       // std::cout << "------------------------------" << std::endl;
       // std::cout << "Initial: " << currentQuantity << "BTC" << std::endl;
+      tmpDeal = Deal();
       for (unsigned short j = 0; j < pairNames.size(); j++)
       {
         timestamp = this->pairs[pairNames[j]]->getTimestamp();
@@ -263,13 +328,17 @@ public:
             // Index 1 refers to the quantity on that price
             if (prices[k][1] >= helperQuantity)
             {
-              currentQuantity += correctQuantity(helperQuantity / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              tmpQuantity = correctQuantity(helperQuantity / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              currentQuantity += tmpQuantity;
               // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << helperQuantity << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+              tmpDeal.addAction(pairNames[j], pairActions[j], tmpQuantity);
             }
             else
             {
-              currentQuantity += correctQuantity(prices[k][1] / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              tmpQuantity = correctQuantity(prices[k][1] / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              currentQuantity += tmpQuantity;
               // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << prices[k][1] << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+              tmpDeal.addAction(pairNames[j], pairActions[j], tmpQuantity);
             }
             helperQuantity -= prices[k][1];
             if (helperQuantity <= 0)
@@ -289,11 +358,13 @@ public:
             {
               currentQuantity += correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) * prices[k][0];
               // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+              tmpDeal.addAction(pairNames[j], pairActions[j], helperQuantity);
             }
             else
             {
               currentQuantity += correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) * prices[k][0];
               // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+              tmpDeal.addAction(pairNames[j], pairActions[j], prices[k][1]);
             }
             helperQuantity -= prices[k][1];
             if (helperQuantity <= 0)
@@ -306,18 +377,16 @@ public:
       profit = ((currentQuantity * feeMultiplier) - this->qtyRange[i]) / this->qtyRange[i];
       if (profit >= bestProfit)
       {
-        bestQty = this->qtyRange[i];
+        results = tmpDeal;
         bestProfit = profit;
       }
       // std::cout << "Profit: " << profit << std::endl;
     }
 
-    results.push_back(bestQty);
-    results.push_back(bestProfit);
-    results.push_back(lowestTimestamp);
+    results.setProfit(bestProfit);
+    results.setTimestamp(lowestTimestamp);
 
-    // Converting to PyList and returning
-    return to_py_list<double>(results);
+    return results;
   }
 
 private:
@@ -330,9 +399,17 @@ private:
 
 BOOST_PYTHON_MODULE(extensions)
 {
+  class_<Deal>("Deal", init<>())
+      .def("getProfit", &Deal::getProfit)
+      .def("getActions", &Deal::getActions)
+      .def("getTimestamp", &Deal::getTimestamp);
   class_<TraderMatrix>("TraderMatrix", init<double, boost::python::object>())
       .def("createPair", &TraderMatrix::createPair)
       .def("createRelationship", &TraderMatrix::createRelationship)
       .def("updatePair", &TraderMatrix::updatePair)
       .def("computeRelationship", &TraderMatrix::computeRelationship);
+  class_<Action>("Action", init<std::string, std::string, double>())
+      .def("getPair", &Action::getPair)
+      .def("getAction", &Action::getAction)
+      .def("getQuantity", &Action::getQuantity);
 }

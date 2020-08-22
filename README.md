@@ -31,7 +31,20 @@ python3
 - [x] Computing profits over all possible triangles
 - [x] Filtering and showing viable operations
 - [x] Implement asset step size
-- [ ] Best deals printing
-- [ ] Structure for holding trading actions and quantities
+- [x] Structure for holding trading actions and quantities
 - [ ] Perform trading actions
+- [ ] Best deals printing
+- [ ] Telegram bot
 - [ ] Generate binary distributions
+
+## Config file compatibility
+
+- [x] KEYS
+- [x] INVESTMENT
+- [x] TRADING [TAKER_FEE, PROFIT_THRESHOLD, AGE_THRESHOLD]
+- [ ] TRADING [ENABLED, EXECUTION_STRATEGY, EXECUTION_TEMPLATE, EXECUTION_CAP]
+- [ ] HUD
+- [ ] LOG
+- [x] DEPTH [SIZE]
+- [ ] DEPTH [PRUNE, INITIALIZATION_INTERVAL]
+- [ ] TIMING

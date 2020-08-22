@@ -2,6 +2,7 @@ __all__ = [
   'bTrader'
 ]
 
+import sys
 import json
 import timeit
 import logging
@@ -14,7 +15,8 @@ from time import time, sleep
 from functools import partial
 from binance.client import Client
 from btrader.core.Logger import Logger
-from btrader.extensions import TraderMatrix
+from btrader.core.TradeWorker import TradeWorker
+from btrader.extensions import TraderMatrix, Deal
 from btrader.core.DepthWorker import DepthWorker
 from btrader.core.TradingPair import TradingPair
 from binance.websockets import BinanceSocketManager
@@ -25,6 +27,7 @@ from btrader.core.TriangularRelationship import TriangularRelationship
 SOCKET_WORKERS  = 8
 DEPTH_WORKERS   = 8
 COMPUTE_WORKERS = 8
+TRADE_WORKERS   = 2
 
 class bTrader (StoppableThread):
 
@@ -53,6 +56,9 @@ class bTrader (StoppableThread):
     self.__computeWorkers     = []    # List of ComputeWorker
     self.__traderMatrix       = None  # Main trading matrix
     self.__traderLock         = None  # Lock for TradingMatrix
+    self.__tradeWorkers       = []    # List of TradeWorkers
+    self.__tradingQueue       = None  # Queue for TradeWorkers to trade
+    self.__tradingLock        = None  # Lock for TradeWorkers to trade
 
     # Init super
     super(bTrader, self).__init__(*args, **kwargs)
@@ -186,6 +192,9 @@ class bTrader (StoppableThread):
 
   def execute(self):
 
+    self.__tradingQueue = Queue()
+    self.__tradingLock = Lock()
+
     self.logger.debug("Constructing socket managers...")
     self.__socketWorkers = concurrent.futures.ThreadPoolExecutor(max_workers=SOCKET_WORKERS)
     self.__socketManagers = [BinanceSocketManager(self.__client) for sock in self.__sockets]
@@ -233,38 +242,70 @@ class bTrader (StoppableThread):
         queue=self.__relationshipQueue,
         queue_lock=self.__relationshipLock,
         config=self.__config,
+        trading_lock = self.__tradingLock,
+        trading_queue = self.__tradingQueue,
       )
       worker.setDaemon(True)
       worker.start()
       self.__computeWorkers.append(worker)
 
+    #
+    # NOTE: TODO: Investigate why this stops everything from working
+    #
+    # self.logger.info("Starting {} trade worker(s)...".format(TRADE_WORKERS))
+    # for i in range(TRADE_WORKERS):
+    #   worker = TradeWorker(
+    #     level=self.__level,
+    #     log_file=self.__logFile,
+    #     client=self.__client,
+    #     btrader=self,
+    #     trading_lock = self.__tradingLock,
+    #     trading_queue = self.__tradingQueue,
+    #   )
+    #   worker.setDaemon(True)
+    #   worker.start()
+    #   self.__tradeWorkers.append(worker)
+
     self.logger.info("Execute done")
-    pass
 
   def finalize(self):
-    self.logger.warning("Shutting down shouldn't take more than 10s but, if it does, please pless Ctrl+C again...")
-    # Stop SocketManagers
-    self.logger.info("Stopping socket managers...")
-    for sm in self.__socketManagers:
-      sm.close()
-    # Stop SocketWorkers
-    self.__socketWorkers.shutdown()
-    # Stopping Depth workers
-    self.logger.info("Stopping depth workers...")
-    for worker in self.__depthWorkers:
-      worker.stop()
-    # Stopping Compute workers
-    self.logger.info("Stopping compute workers...")
-    for worker in self.__computeWorkers:
-      worker.stop()
-    # Stop Logger
-    self.logger.shutdown()
-    # Stop main thread
-    self.stop()
-
-
+    try:
+      self.logger.warning("Shutting down shouldn't take more than 10s but, if it does, please pless Ctrl+C again...")
+      # Stop SocketManagers
+      self.logger.info("Stopping socket managers...")
+      for sm in self.__socketManagers:
+        sm.close()
+      # Stop SocketWorkers
+      self.__socketWorkers.shutdown()
+      # Stopping Depth workers
+      self.logger.info("Stopping depth workers...")
+      for worker in self.__depthWorkers:
+        worker.stop()
+      # Stopping Compute workers
+      self.logger.info("Stopping compute workers...")
+      for worker in self.__computeWorkers:
+        worker.stop()
+      # Stopping Trade workers
+      self.logger.info("Stopping trade workers...")
+      for worker in self.__tradeWorkers:
+        worker.stop()
+      # Stop Logger
+      self.logger.shutdown()
+      # Stop main thread
+      self.logger.info("Exiting...")
+      self.stop()
+    except Exception as e:
+      self.logger.error("Error shutting everything down. Doing it anyway =)")
+    finally:
+      sys.exit(0)
 
   def run (self, *args, **kwargs):
     register(self.finalize)
-    self.initialize()
-    self.execute()
+    try:
+      self.initialize()
+      self.execute()
+    except KeyboardInterrupt:
+      return
+    except Exception as e:
+      self.logger.critical("Unknown error, please report.")
+      raise e
