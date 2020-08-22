@@ -21,7 +21,7 @@ END: Cython Metadata */
 #else
 #define CYTHON_ABI "0_29_17"
 #define CYTHON_HEX_VERSION 0x001D11F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -926,6 +926,22 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
 #define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
 #endif
 
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* BytesEquals.proto */
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
+
+/* UnicodeEquals.proto */
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
+
+/* PyCFunctionFastCall.proto */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
+#else
+#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
+#endif
+
 /* PyFunctionFastCall.proto */
 #if CYTHON_FAST_PYCALL
 #define __Pyx_PyFunction_FastCall(func, args, nargs)\
@@ -949,13 +965,6 @@ static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, 
     (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
 #endif
 
-/* PyCFunctionFastCall.proto */
-#if CYTHON_FAST_PYCCALL
-static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
-#else
-#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
-#endif
-
 /* PyObjectCall.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
@@ -963,10 +972,55 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
+/* PyObjectCall2Args.proto */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+
 /* PyObjectCallMethO.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
 #endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
+#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
+#endif
+
+/* PyErrFetchRestore.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#if CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
+#else
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#endif
+#else
+#define __Pyx_PyErr_Clear() PyErr_Clear()
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* RaiseException.proto */
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
 /* PyObjectCallNoArg.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -974,9 +1028,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #else
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
-
-/* PyObjectCallOneArg.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
 /* FetchCommonType.proto */
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
@@ -1087,42 +1138,6 @@ static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UIN
 #define __PYX_PY_DICT_LOOKUP_IF_MODIFIED(VAR, DICT, LOOKUP)  (VAR) = (LOOKUP);
 #endif
 
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
-#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
-#else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
-#endif
-
-/* PyErrFetchRestore.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
-#else
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#endif
-#else
-#define __Pyx_PyErr_Clear() PyErr_Clear()
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
-#endif
-
 /* CLineInTraceback.proto */
 #ifdef CYTHON_CLINE_IN_TRACEBACK
 #define __Pyx_CLineForTraceback(tstate, c_line)  (((CYTHON_CLINE_IN_TRACEBACK)) ? c_line : 0)
@@ -1185,7 +1200,9 @@ int __pyx_module_is_main_btrader__core__TradingPair = 0;
 
 /* Implementation of 'btrader.core.TradingPair' */
 static PyObject *__pyx_builtin_property;
+static PyObject *__pyx_builtin_ValueError;
 static const char __pyx_k_[] = "{}/{}";
+static const char __pyx_k_f[] = "f";
 static const char __pyx_k_eq[] = "__eq__";
 static const char __pyx_k_tp[] = "tp";
 static const char __pyx_k_all[] = "__all__";
@@ -1197,6 +1214,7 @@ static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_repr[] = "__repr__";
 static const char __pyx_k_self[] = "self";
+static const char __pyx_k_step[] = "step";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_text[] = "text";
 static const char __pyx_k_asset[] = "asset";
@@ -1204,19 +1222,26 @@ static const char __pyx_k_quote[] = "quote";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_module[] = "__module__";
 static const char __pyx_k_symbol[] = "symbol";
+static const char __pyx_k_filters[] = "filters";
 static const char __pyx_k_prepare[] = "__prepare__";
+static const char __pyx_k_LOT_SIZE[] = "LOT_SIZE";
 static const char __pyx_k_hasAsset[] = "hasAsset";
 static const char __pyx_k_property[] = "property";
 static const char __pyx_k_qualname[] = "__qualname__";
+static const char __pyx_k_stepSize[] = "stepSize";
 static const char __pyx_k_baseAsset[] = "baseAsset";
 static const char __pyx_k_metaclass[] = "__metaclass__";
+static const char __pyx_k_ValueError[] = "ValueError";
+static const char __pyx_k_filterType[] = "filterType";
 static const char __pyx_k_quoteAsset[] = "quoteAsset";
 static const char __pyx_k_TradingPair[] = "<TradingPair {}/{}>";
 static const char __pyx_k_getTheOther[] = "getTheOther";
 static const char __pyx_k_TradingPair_2[] = "TradingPair";
 static const char __pyx_k_TradingPair___eq[] = "TradingPair.__eq__";
+static const char __pyx_k_TradingPair_step[] = "TradingPair.step";
 static const char __pyx_k_TradingPair_text[] = "TradingPair.text";
 static const char __pyx_k_TradingPair___str[] = "TradingPair.__str__";
+static const char __pyx_k_TradingPair__step[] = "_TradingPair__step";
 static const char __pyx_k_TradingPair___init[] = "TradingPair.__init__";
 static const char __pyx_k_TradingPair___repr[] = "TradingPair.__repr__";
 static const char __pyx_k_TradingPair_symbol[] = "TradingPair.symbol";
@@ -1236,9 +1261,13 @@ static const char __pyx_k_TradingPair_baseAssetPrecision[] = "TradingPair.baseAs
 static const char __pyx_k_TradingPair__baseAssetPrecision[] = "_TradingPair__baseAssetPrecision";
 static const char __pyx_k_TradingPair__quoteAssetPrecisio[] = "_TradingPair__quoteAssetPrecision";
 static const char __pyx_k_TradingPair_quoteAssetPrecision[] = "TradingPair.quoteAssetPrecision";
-static PyObject *__pyx_kp_s_;
-static PyObject *__pyx_kp_s_TradingPair;
+static const char __pyx_k_Couldn_t_get_step_size_for_symbo[] = "Couldn't get step size for symbol {}";
+static PyObject *__pyx_kp_u_;
+static PyObject *__pyx_kp_u_Couldn_t_get_step_size_for_symbo;
+static PyObject *__pyx_n_u_LOT_SIZE;
+static PyObject *__pyx_kp_u_TradingPair;
 static PyObject *__pyx_n_s_TradingPair_2;
+static PyObject *__pyx_n_u_TradingPair_2;
 static PyObject *__pyx_n_s_TradingPair___eq;
 static PyObject *__pyx_n_s_TradingPair___init;
 static PyObject *__pyx_n_s_TradingPair___repr;
@@ -1247,6 +1276,7 @@ static PyObject *__pyx_n_s_TradingPair__baseAsset;
 static PyObject *__pyx_n_s_TradingPair__baseAssetPrecision;
 static PyObject *__pyx_n_s_TradingPair__quoteAsset;
 static PyObject *__pyx_n_s_TradingPair__quoteAssetPrecisio;
+static PyObject *__pyx_n_s_TradingPair__step;
 static PyObject *__pyx_n_s_TradingPair__symbol;
 static PyObject *__pyx_n_s_TradingPair_baseAsset;
 static PyObject *__pyx_n_s_TradingPair_baseAssetPrecision;
@@ -1254,18 +1284,25 @@ static PyObject *__pyx_n_s_TradingPair_getTheOther;
 static PyObject *__pyx_n_s_TradingPair_hasAsset;
 static PyObject *__pyx_n_s_TradingPair_quoteAsset;
 static PyObject *__pyx_n_s_TradingPair_quoteAssetPrecision;
+static PyObject *__pyx_n_s_TradingPair_step;
 static PyObject *__pyx_n_s_TradingPair_symbol;
 static PyObject *__pyx_n_s_TradingPair_text;
+static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_asset;
 static PyObject *__pyx_n_s_base;
 static PyObject *__pyx_n_s_baseAsset;
+static PyObject *__pyx_n_u_baseAsset;
 static PyObject *__pyx_n_s_baseAssetPrecision;
+static PyObject *__pyx_n_u_baseAssetPrecision;
 static PyObject *__pyx_n_s_btrader_core_TradingPair;
 static PyObject *__pyx_kp_s_btrader_core_TradingPair_py;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_eq;
+static PyObject *__pyx_n_s_f;
+static PyObject *__pyx_n_u_filterType;
+static PyObject *__pyx_n_u_filters;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_getTheOther;
 static PyObject *__pyx_n_s_hasAsset;
@@ -1279,26 +1316,32 @@ static PyObject *__pyx_n_s_property;
 static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_s_quote;
 static PyObject *__pyx_n_s_quoteAsset;
+static PyObject *__pyx_n_u_quoteAsset;
 static PyObject *__pyx_n_s_quoteAssetPrecision;
+static PyObject *__pyx_n_u_quoteAssetPrecision;
 static PyObject *__pyx_n_s_repr;
 static PyObject *__pyx_n_s_self;
+static PyObject *__pyx_n_s_step;
+static PyObject *__pyx_n_u_stepSize;
 static PyObject *__pyx_n_s_str;
 static PyObject *__pyx_n_s_symbol;
+static PyObject *__pyx_n_u_symbol;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_text;
 static PyObject *__pyx_n_s_tp;
 static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_symbol, PyObject *__pyx_v_base, PyObject *__pyx_v_quote); /* proto */
 static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_2symbol(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOther(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_tp); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8baseAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12quoteAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14hasAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16getTheOther(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_24__eq__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_tp); /* proto */
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
@@ -1312,6 +1355,7 @@ static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__21;
 static PyObject *__pyx_tuple__23;
 static PyObject *__pyx_tuple__25;
+static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_codeobj__3;
 static PyObject *__pyx_codeobj__6;
 static PyObject *__pyx_codeobj__8;
@@ -1324,6 +1368,7 @@ static PyObject *__pyx_codeobj__20;
 static PyObject *__pyx_codeobj__22;
 static PyObject *__pyx_codeobj__24;
 static PyObject *__pyx_codeobj__26;
+static PyObject *__pyx_codeobj__28;
 /* Late includes */
 
 /* "btrader/core/TradingPair.py":7
@@ -1425,11 +1470,17 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_1__init__(P
 }
 
 static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_symbol, PyObject *__pyx_v_base, PyObject *__pyx_v_quote) {
+  PyObject *__pyx_v_f = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  PyObject *(*__pyx_t_6)(PyObject *);
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "btrader/core/TradingPair.py":8
@@ -1491,7 +1542,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
  *       self.__baseAssetPrecision = symbol['baseAssetPrecision']
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_s_symbol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_symbol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__symbol, __pyx_t_3) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1503,7 +1554,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
  *       self.__baseAssetPrecision = symbol['baseAssetPrecision']
  *       self.__quoteAsset = symbol['quoteAsset']
  */
-    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAsset, __pyx_t_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1515,7 +1566,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
  *       self.__quoteAsset = symbol['quoteAsset']
  *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
  */
-    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_s_baseAssetPrecision); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_baseAssetPrecision); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAssetPrecision, __pyx_t_3) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1525,9 +1576,9 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
  *       self.__baseAssetPrecision = symbol['baseAssetPrecision']
  *       self.__quoteAsset = symbol['quoteAsset']             # <<<<<<<<<<<<<<
  *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
- * 
+ *       self.__step = None
  */
-    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAsset, __pyx_t_3) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1536,13 +1587,179 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
  *       self.__baseAssetPrecision = symbol['baseAssetPrecision']
  *       self.__quoteAsset = symbol['quoteAsset']
  *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']             # <<<<<<<<<<<<<<
- * 
- *   @property
+ *       self.__step = None
+ *       for f in symbol['filters']:
  */
-    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_s_quoteAssetPrecision); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_quoteAssetPrecision); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAssetPrecisio, __pyx_t_3) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+    /* "btrader/core/TradingPair.py":18
+ *       self.__quoteAsset = symbol['quoteAsset']
+ *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
+ *       self.__step = None             # <<<<<<<<<<<<<<
+ *       for f in symbol['filters']:
+ *         if f['filterType'] == 'LOT_SIZE':
+ */
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__step, Py_None) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
+
+    /* "btrader/core/TradingPair.py":19
+ *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
+ *       self.__step = None
+ *       for f in symbol['filters']:             # <<<<<<<<<<<<<<
+ *         if f['filterType'] == 'LOT_SIZE':
+ *           self.__step = float(f['stepSize'])
+ */
+    __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_symbol, __pyx_n_u_filters); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
+      __pyx_t_4 = __pyx_t_3; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
+      __pyx_t_6 = NULL;
+    } else {
+      __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 19, __pyx_L1_error)
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_6)) {
+        if (likely(PyList_CheckExact(__pyx_t_4))) {
+          if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        } else {
+          if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_3); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        }
+      } else {
+        __pyx_t_3 = __pyx_t_6(__pyx_t_4);
+        if (unlikely(!__pyx_t_3)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 19, __pyx_L1_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_3);
+      }
+      __Pyx_XDECREF_SET(__pyx_v_f, __pyx_t_3);
+      __pyx_t_3 = 0;
+
+      /* "btrader/core/TradingPair.py":20
+ *       self.__step = None
+ *       for f in symbol['filters']:
+ *         if f['filterType'] == 'LOT_SIZE':             # <<<<<<<<<<<<<<
+ *           self.__step = float(f['stepSize'])
+ *       if self.__step == None:
+ */
+      __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_f, __pyx_n_u_filterType); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_n_u_LOT_SIZE, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 20, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (__pyx_t_2) {
+
+        /* "btrader/core/TradingPair.py":21
+ *       for f in symbol['filters']:
+ *         if f['filterType'] == 'LOT_SIZE':
+ *           self.__step = float(f['stepSize'])             # <<<<<<<<<<<<<<
+ *       if self.__step == None:
+ *         raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))
+ */
+        __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_f, __pyx_n_u_stepSize); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_7 = __Pyx_PyNumber_Float(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 21, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__step, __pyx_t_7) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+        /* "btrader/core/TradingPair.py":20
+ *       self.__step = None
+ *       for f in symbol['filters']:
+ *         if f['filterType'] == 'LOT_SIZE':             # <<<<<<<<<<<<<<
+ *           self.__step = float(f['stepSize'])
+ *       if self.__step == None:
+ */
+      }
+
+      /* "btrader/core/TradingPair.py":19
+ *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
+ *       self.__step = None
+ *       for f in symbol['filters']:             # <<<<<<<<<<<<<<
+ *         if f['filterType'] == 'LOT_SIZE':
+ *           self.__step = float(f['stepSize'])
+ */
+    }
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+    /* "btrader/core/TradingPair.py":22
+ *         if f['filterType'] == 'LOT_SIZE':
+ *           self.__step = float(f['stepSize'])
+ *       if self.__step == None:             # <<<<<<<<<<<<<<
+ *         raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))
+ * 
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_7 = PyObject_RichCompare(__pyx_t_4, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 22, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (unlikely(__pyx_t_2)) {
+
+      /* "btrader/core/TradingPair.py":23
+ *           self.__step = float(f['stepSize'])
+ *       if self.__step == None:
+ *         raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))             # <<<<<<<<<<<<<<
+ * 
+ *   @property
+ */
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Couldn_t_get_step_size_for_symbo, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__symbol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_8 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_8)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_8);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
+        }
+      }
+      __pyx_t_7 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_8, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 23, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 23, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __PYX_ERR(0, 23, __pyx_L1_error)
+
+      /* "btrader/core/TradingPair.py":22
+ *         if f['filterType'] == 'LOT_SIZE':
+ *           self.__step = float(f['stepSize'])
+ *       if self.__step == None:             # <<<<<<<<<<<<<<
+ *         raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))
+ * 
+ */
+    }
   }
   __pyx_L3:;
 
@@ -1559,15 +1776,19 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair___init__(CY
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("btrader.core.TradingPair.TradingPair.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_f);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":20
+/* "btrader/core/TradingPair.py":26
  * 
  *   @property
  *   def symbol (self):             # <<<<<<<<<<<<<<
@@ -1595,7 +1816,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_2symbol(CYT
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("symbol", 0);
 
-  /* "btrader/core/TradingPair.py":21
+  /* "btrader/core/TradingPair.py":27
  *   @property
  *   def symbol (self):
  *     return self.__symbol             # <<<<<<<<<<<<<<
@@ -1603,13 +1824,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_2symbol(CYT
  *   @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__symbol); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__symbol); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":20
+  /* "btrader/core/TradingPair.py":26
  * 
  *   @property
  *   def symbol (self):             # <<<<<<<<<<<<<<
@@ -1628,7 +1849,68 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_2symbol(CYT
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":24
+/* "btrader/core/TradingPair.py":30
+ * 
+ *   @property
+ *   def step (self):             # <<<<<<<<<<<<<<
+ *     return self.__step
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5step(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_5step = {"step", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5step, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5step(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("step (wrapper)", 0);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4step(__pyx_self, ((PyObject *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("step", 0);
+
+  /* "btrader/core/TradingPair.py":31
+ *   @property
+ *   def step (self):
+ *     return self.__step             # <<<<<<<<<<<<<<
+ * 
+ *   @property
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__step); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "btrader/core/TradingPair.py":30
+ * 
+ *   @property
+ *   def step (self):             # <<<<<<<<<<<<<<
+ *     return self.__step
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("btrader.core.TradingPair.TradingPair.step", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "btrader/core/TradingPair.py":34
  * 
  *   @property
  *   def baseAsset (self):             # <<<<<<<<<<<<<<
@@ -1637,26 +1919,26 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_2symbol(CYT
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5baseAsset(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_5baseAsset = {"baseAsset", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5baseAsset, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_5baseAsset(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAsset(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_7baseAsset = {"baseAsset", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAsset, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAsset(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("baseAsset (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAsset(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("baseAsset", 0);
 
-  /* "btrader/core/TradingPair.py":25
+  /* "btrader/core/TradingPair.py":35
  *   @property
  *   def baseAsset (self):
  *     return self.__baseAsset             # <<<<<<<<<<<<<<
@@ -1664,13 +1946,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(
  *   @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":24
+  /* "btrader/core/TradingPair.py":34
  * 
  *   @property
  *   def baseAsset (self):             # <<<<<<<<<<<<<<
@@ -1689,7 +1971,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":28
+/* "btrader/core/TradingPair.py":38
  * 
  *   @property
  *   def baseAssetPrecision (self):             # <<<<<<<<<<<<<<
@@ -1698,26 +1980,26 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_4baseAsset(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_7baseAssetPrecision = {"baseAssetPrecision", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAssetPrecision, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_7baseAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9baseAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_9baseAssetPrecision = {"baseAssetPrecision", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9baseAssetPrecision, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9baseAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("baseAssetPrecision (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetPrecision(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8baseAssetPrecision(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8baseAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("baseAssetPrecision", 0);
 
-  /* "btrader/core/TradingPair.py":29
+  /* "btrader/core/TradingPair.py":39
  *   @property
  *   def baseAssetPrecision (self):
  *     return self.__baseAssetPrecision             # <<<<<<<<<<<<<<
@@ -1725,13 +2007,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetP
  *   @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAssetPrecision); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__baseAssetPrecision); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":28
+  /* "btrader/core/TradingPair.py":38
  * 
  *   @property
  *   def baseAssetPrecision (self):             # <<<<<<<<<<<<<<
@@ -1750,7 +2032,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetP
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":32
+/* "btrader/core/TradingPair.py":42
  * 
  *   @property
  *   def quoteAsset (self):             # <<<<<<<<<<<<<<
@@ -1759,26 +2041,26 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_6baseAssetP
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9quoteAsset(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_9quoteAsset = {"quoteAsset", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9quoteAsset, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_9quoteAsset(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAsset(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_11quoteAsset = {"quoteAsset", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAsset, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAsset(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("quoteAsset (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsset(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("quoteAsset", 0);
 
-  /* "btrader/core/TradingPair.py":33
+  /* "btrader/core/TradingPair.py":43
  *   @property
  *   def quoteAsset (self):
  *     return self.__quoteAsset             # <<<<<<<<<<<<<<
@@ -1786,13 +2068,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset
  *   @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":32
+  /* "btrader/core/TradingPair.py":42
  * 
  *   @property
  *   def quoteAsset (self):             # <<<<<<<<<<<<<<
@@ -1811,7 +2093,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":36
+/* "btrader/core/TradingPair.py":46
  * 
  *   @property
  *   def quoteAssetPrecision (self):             # <<<<<<<<<<<<<<
@@ -1820,26 +2102,26 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_8quoteAsset
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_11quoteAssetPrecision = {"quoteAssetPrecision", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAssetPrecision, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_11quoteAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13quoteAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_13quoteAssetPrecision = {"quoteAssetPrecision", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13quoteAssetPrecision, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13quoteAssetPrecision(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("quoteAssetPrecision (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAssetPrecision(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12quoteAssetPrecision(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12quoteAssetPrecision(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("quoteAssetPrecision", 0);
 
-  /* "btrader/core/TradingPair.py":37
+  /* "btrader/core/TradingPair.py":47
  *   @property
  *   def quoteAssetPrecision (self):
  *     return self.__quoteAssetPrecision             # <<<<<<<<<<<<<<
@@ -1847,13 +2129,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsse
  *   def hasAsset (self, asset):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAssetPrecisio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_TradingPair__quoteAssetPrecisio); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":36
+  /* "btrader/core/TradingPair.py":46
  * 
  *   @property
  *   def quoteAssetPrecision (self):             # <<<<<<<<<<<<<<
@@ -1872,7 +2154,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsse
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":39
+/* "btrader/core/TradingPair.py":49
  *     return self.__quoteAssetPrecision
  * 
  *   def hasAsset (self, asset):             # <<<<<<<<<<<<<<
@@ -1881,9 +2163,9 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_10quoteAsse
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13hasAsset(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_13hasAsset = {"hasAsset", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13hasAsset, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13hasAsset(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15hasAsset(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_15hasAsset = {"hasAsset", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15hasAsset, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15hasAsset(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_asset = 0;
   PyObject *__pyx_r = 0;
@@ -1912,11 +2194,11 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13hasAsset(
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_asset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("hasAsset", 1, 2, 2, 1); __PYX_ERR(0, 39, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("hasAsset", 1, 2, 2, 1); __PYX_ERR(0, 49, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "hasAsset") < 0)) __PYX_ERR(0, 39, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "hasAsset") < 0)) __PYX_ERR(0, 49, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1929,20 +2211,20 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_13hasAsset(
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("hasAsset", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 39, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("hasAsset", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 49, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("btrader.core.TradingPair.TradingPair.hasAsset", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(__pyx_self, __pyx_v_self, __pyx_v_asset);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14hasAsset(__pyx_self, __pyx_v_self, __pyx_v_asset);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14hasAsset(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -1951,35 +2233,35 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("hasAsset", 0);
 
-  /* "btrader/core/TradingPair.py":40
+  /* "btrader/core/TradingPair.py":50
  * 
  *   def hasAsset (self, asset):
  *     if self.quoteAsset == asset or self.baseAsset == asset:             # <<<<<<<<<<<<<<
  *       return True
  *     return False
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_4) {
   } else {
     __pyx_t_1 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = __pyx_t_4;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "btrader/core/TradingPair.py":41
+    /* "btrader/core/TradingPair.py":51
  *   def hasAsset (self, asset):
  *     if self.quoteAsset == asset or self.baseAsset == asset:
  *       return True             # <<<<<<<<<<<<<<
@@ -1991,7 +2273,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "btrader/core/TradingPair.py":40
+    /* "btrader/core/TradingPair.py":50
  * 
  *   def hasAsset (self, asset):
  *     if self.quoteAsset == asset or self.baseAsset == asset:             # <<<<<<<<<<<<<<
@@ -2000,7 +2282,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
  */
   }
 
-  /* "btrader/core/TradingPair.py":42
+  /* "btrader/core/TradingPair.py":52
  *     if self.quoteAsset == asset or self.baseAsset == asset:
  *       return True
  *     return False             # <<<<<<<<<<<<<<
@@ -2012,7 +2294,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
   __pyx_r = Py_False;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":39
+  /* "btrader/core/TradingPair.py":49
  *     return self.__quoteAssetPrecision
  * 
  *   def hasAsset (self, asset):             # <<<<<<<<<<<<<<
@@ -2032,7 +2314,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":44
+/* "btrader/core/TradingPair.py":54
  *     return False
  * 
  *   def getTheOther (self, asset):             # <<<<<<<<<<<<<<
@@ -2041,9 +2323,9 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_12hasAsset(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15getTheOther(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_15getTheOther = {"getTheOther", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15getTheOther, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15getTheOther(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17getTheOther(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_17getTheOther = {"getTheOther", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17getTheOther, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17getTheOther(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_asset = 0;
   PyObject *__pyx_r = 0;
@@ -2072,11 +2354,11 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15getTheOth
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_asset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("getTheOther", 1, 2, 2, 1); __PYX_ERR(0, 44, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("getTheOther", 1, 2, 2, 1); __PYX_ERR(0, 54, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getTheOther") < 0)) __PYX_ERR(0, 44, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "getTheOther") < 0)) __PYX_ERR(0, 54, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2089,20 +2371,20 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_15getTheOth
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("getTheOther", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 44, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("getTheOther", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 54, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("btrader.core.TradingPair.TradingPair.getTheOther", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOther(__pyx_self, __pyx_v_self, __pyx_v_asset);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16getTheOther(__pyx_self, __pyx_v_self, __pyx_v_asset);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOther(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16getTheOther(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_asset) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2110,22 +2392,22 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("getTheOther", 0);
 
-  /* "btrader/core/TradingPair.py":45
+  /* "btrader/core/TradingPair.py":55
  * 
  *   def getTheOther (self, asset):
  *     if self.quoteAsset == asset:             # <<<<<<<<<<<<<<
  *       return self.baseAsset
  *     elif self.baseAsset == asset:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "btrader/core/TradingPair.py":46
+    /* "btrader/core/TradingPair.py":56
  *   def getTheOther (self, asset):
  *     if self.quoteAsset == asset:
  *       return self.baseAsset             # <<<<<<<<<<<<<<
@@ -2133,13 +2415,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
  *       return self.quoteAsset
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "btrader/core/TradingPair.py":45
+    /* "btrader/core/TradingPair.py":55
  * 
  *   def getTheOther (self, asset):
  *     if self.quoteAsset == asset:             # <<<<<<<<<<<<<<
@@ -2148,22 +2430,22 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
  */
   }
 
-  /* "btrader/core/TradingPair.py":47
+  /* "btrader/core/TradingPair.py":57
  *     if self.quoteAsset == asset:
  *       return self.baseAsset
  *     elif self.baseAsset == asset:             # <<<<<<<<<<<<<<
  *       return self.quoteAsset
  *     else:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_v_asset, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "btrader/core/TradingPair.py":48
+    /* "btrader/core/TradingPair.py":58
  *       return self.baseAsset
  *     elif self.baseAsset == asset:
  *       return self.quoteAsset             # <<<<<<<<<<<<<<
@@ -2171,13 +2453,13 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
  *       return None
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "btrader/core/TradingPair.py":47
+    /* "btrader/core/TradingPair.py":57
  *     if self.quoteAsset == asset:
  *       return self.baseAsset
  *     elif self.baseAsset == asset:             # <<<<<<<<<<<<<<
@@ -2186,7 +2468,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
  */
   }
 
-  /* "btrader/core/TradingPair.py":50
+  /* "btrader/core/TradingPair.py":60
  *       return self.quoteAsset
  *     else:
  *       return None             # <<<<<<<<<<<<<<
@@ -2199,7 +2481,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
     goto __pyx_L0;
   }
 
-  /* "btrader/core/TradingPair.py":44
+  /* "btrader/core/TradingPair.py":54
  *     return False
  * 
  *   def getTheOther (self, asset):             # <<<<<<<<<<<<<<
@@ -2219,7 +2501,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":52
+/* "btrader/core/TradingPair.py":62
  *       return None
  * 
  *   def __repr__ (self):             # <<<<<<<<<<<<<<
@@ -2228,20 +2510,20 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_14getTheOth
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_17__repr__ = {"__repr__", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17__repr__, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_17__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_19__repr__ = {"__repr__", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__repr__, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__repr__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__repr__(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2253,7 +2535,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "btrader/core/TradingPair.py":53
+  /* "btrader/core/TradingPair.py":63
  * 
  *   def __repr__ (self):
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))             # <<<<<<<<<<<<<<
@@ -2261,11 +2543,11 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
  *   def __str__ (self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TradingPair, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_TradingPair, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -2282,7 +2564,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2292,7 +2574,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2300,7 +2582,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -2311,7 +2593,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -2320,7 +2602,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":52
+  /* "btrader/core/TradingPair.py":62
  *       return None
  * 
  *   def __repr__ (self):             # <<<<<<<<<<<<<<
@@ -2344,7 +2626,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":55
+/* "btrader/core/TradingPair.py":65
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  *   def __str__ (self):             # <<<<<<<<<<<<<<
@@ -2353,20 +2635,20 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_16__repr__(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__str__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_19__str__ = {"__str__", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__str__, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_19__str__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21__str__(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_21__str__ = {"__str__", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21__str__, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21__str__(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__str__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20__str__(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20__str__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2374,7 +2656,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(C
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "btrader/core/TradingPair.py":56
+  /* "btrader/core/TradingPair.py":66
  * 
  *   def __str__ (self):
  *     return self.__repr__()             # <<<<<<<<<<<<<<
@@ -2382,7 +2664,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(C
  *   @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_repr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_repr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2396,14 +2678,14 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(C
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":55
+  /* "btrader/core/TradingPair.py":65
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  *   def __str__ (self):             # <<<<<<<<<<<<<<
@@ -2424,7 +2706,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(C
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":59
+/* "btrader/core/TradingPair.py":69
  * 
  *   @property
  *   def text (self):             # <<<<<<<<<<<<<<
@@ -2433,20 +2715,20 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_18__str__(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21text(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_21text = {"text", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21text, METH_O, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_21text(PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23text(PyObject *__pyx_self, PyObject *__pyx_v_self); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_23text = {"text", (PyCFunction)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23text, METH_O, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23text(PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("text (wrapper)", 0);
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(__pyx_self, ((PyObject *)__pyx_v_self));
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22text(__pyx_self, ((PyObject *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22text(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2458,7 +2740,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("text", 0);
 
-  /* "btrader/core/TradingPair.py":60
+  /* "btrader/core/TradingPair.py":70
  *   @property
  *   def text (self):
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)             # <<<<<<<<<<<<<<
@@ -2466,11 +2748,11 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
  *   def __eq__ (self, tp):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -2487,7 +2769,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2497,7 +2779,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2505,7 +2787,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -2516,7 +2798,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
     __pyx_t_3 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -2525,7 +2807,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":59
+  /* "btrader/core/TradingPair.py":69
  * 
  *   @property
  *   def text (self):             # <<<<<<<<<<<<<<
@@ -2549,7 +2831,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
   return __pyx_r;
 }
 
-/* "btrader/core/TradingPair.py":62
+/* "btrader/core/TradingPair.py":72
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  *   def __eq__ (self, tp):             # <<<<<<<<<<<<<<
@@ -2558,9 +2840,9 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_20text(CYTH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23__eq__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_23__eq__ = {"__eq__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23__eq__, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23__eq__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_25__eq__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_25__eq__ = {"__eq__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_25__eq__, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_25__eq__(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_self = 0;
   PyObject *__pyx_v_tp = 0;
   PyObject *__pyx_r = 0;
@@ -2589,11 +2871,11 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23__eq__(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_tp)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__eq__", 1, 2, 2, 1); __PYX_ERR(0, 62, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__eq__", 1, 2, 2, 1); __PYX_ERR(0, 72, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__eq__") < 0)) __PYX_ERR(0, 62, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__eq__") < 0)) __PYX_ERR(0, 72, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2606,20 +2888,20 @@ static PyObject *__pyx_pw_7btrader_4core_11TradingPair_11TradingPair_23__eq__(Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__eq__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 62, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__eq__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 72, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("btrader.core.TradingPair.TradingPair.__eq__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(__pyx_self, __pyx_v_self, __pyx_v_tp);
+  __pyx_r = __pyx_pf_7btrader_4core_11TradingPair_11TradingPair_24__eq__(__pyx_self, __pyx_v_self, __pyx_v_tp);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_tp) {
+static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_24__eq__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_tp) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2629,34 +2911,34 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CY
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("__eq__", 0);
 
-  /* "btrader/core/TradingPair.py":63
+  /* "btrader/core/TradingPair.py":73
  * 
  *   def __eq__ (self, tp):
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):             # <<<<<<<<<<<<<<
  *       return True
  *     return False
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (!__pyx_t_5) {
     goto __pyx_L5_next_or;
   } else {
   }
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -2664,34 +2946,34 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CY
     goto __pyx_L4_bool_binop_done;
   }
   __pyx_L5_next_or:;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
   } else {
     __pyx_t_1 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tp, __pyx_n_s_baseAsset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_quoteAsset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "btrader/core/TradingPair.py":64
+    /* "btrader/core/TradingPair.py":74
  *   def __eq__ (self, tp):
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):
  *       return True             # <<<<<<<<<<<<<<
@@ -2702,7 +2984,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CY
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "btrader/core/TradingPair.py":63
+    /* "btrader/core/TradingPair.py":73
  * 
  *   def __eq__ (self, tp):
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):             # <<<<<<<<<<<<<<
@@ -2711,7 +2993,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CY
  */
   }
 
-  /* "btrader/core/TradingPair.py":65
+  /* "btrader/core/TradingPair.py":75
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):
  *       return True
  *     return False             # <<<<<<<<<<<<<<
@@ -2721,7 +3003,7 @@ static PyObject *__pyx_pf_7btrader_4core_11TradingPair_11TradingPair_22__eq__(CY
   __pyx_r = Py_False;
   goto __pyx_L0;
 
-  /* "btrader/core/TradingPair.py":62
+  /* "btrader/core/TradingPair.py":72
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  *   def __eq__ (self, tp):             # <<<<<<<<<<<<<<
@@ -2788,9 +3070,12 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_s_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 1, 0},
-  {&__pyx_kp_s_TradingPair, __pyx_k_TradingPair, sizeof(__pyx_k_TradingPair), 0, 0, 1, 0},
+  {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
+  {&__pyx_kp_u_Couldn_t_get_step_size_for_symbo, __pyx_k_Couldn_t_get_step_size_for_symbo, sizeof(__pyx_k_Couldn_t_get_step_size_for_symbo), 0, 1, 0, 0},
+  {&__pyx_n_u_LOT_SIZE, __pyx_k_LOT_SIZE, sizeof(__pyx_k_LOT_SIZE), 0, 1, 0, 1},
+  {&__pyx_kp_u_TradingPair, __pyx_k_TradingPair, sizeof(__pyx_k_TradingPair), 0, 1, 0, 0},
   {&__pyx_n_s_TradingPair_2, __pyx_k_TradingPair_2, sizeof(__pyx_k_TradingPair_2), 0, 0, 1, 1},
+  {&__pyx_n_u_TradingPair_2, __pyx_k_TradingPair_2, sizeof(__pyx_k_TradingPair_2), 0, 1, 0, 1},
   {&__pyx_n_s_TradingPair___eq, __pyx_k_TradingPair___eq, sizeof(__pyx_k_TradingPair___eq), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair___init, __pyx_k_TradingPair___init, sizeof(__pyx_k_TradingPair___init), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair___repr, __pyx_k_TradingPair___repr, sizeof(__pyx_k_TradingPair___repr), 0, 0, 1, 1},
@@ -2799,6 +3084,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TradingPair__baseAssetPrecision, __pyx_k_TradingPair__baseAssetPrecision, sizeof(__pyx_k_TradingPair__baseAssetPrecision), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair__quoteAsset, __pyx_k_TradingPair__quoteAsset, sizeof(__pyx_k_TradingPair__quoteAsset), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair__quoteAssetPrecisio, __pyx_k_TradingPair__quoteAssetPrecisio, sizeof(__pyx_k_TradingPair__quoteAssetPrecisio), 0, 0, 1, 1},
+  {&__pyx_n_s_TradingPair__step, __pyx_k_TradingPair__step, sizeof(__pyx_k_TradingPair__step), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair__symbol, __pyx_k_TradingPair__symbol, sizeof(__pyx_k_TradingPair__symbol), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_baseAsset, __pyx_k_TradingPair_baseAsset, sizeof(__pyx_k_TradingPair_baseAsset), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_baseAssetPrecision, __pyx_k_TradingPair_baseAssetPrecision, sizeof(__pyx_k_TradingPair_baseAssetPrecision), 0, 0, 1, 1},
@@ -2806,18 +3092,25 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TradingPair_hasAsset, __pyx_k_TradingPair_hasAsset, sizeof(__pyx_k_TradingPair_hasAsset), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_quoteAsset, __pyx_k_TradingPair_quoteAsset, sizeof(__pyx_k_TradingPair_quoteAsset), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_quoteAssetPrecision, __pyx_k_TradingPair_quoteAssetPrecision, sizeof(__pyx_k_TradingPair_quoteAssetPrecision), 0, 0, 1, 1},
+  {&__pyx_n_s_TradingPair_step, __pyx_k_TradingPair_step, sizeof(__pyx_k_TradingPair_step), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_symbol, __pyx_k_TradingPair_symbol, sizeof(__pyx_k_TradingPair_symbol), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair_text, __pyx_k_TradingPair_text, sizeof(__pyx_k_TradingPair_text), 0, 0, 1, 1},
+  {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_asset, __pyx_k_asset, sizeof(__pyx_k_asset), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
   {&__pyx_n_s_baseAsset, __pyx_k_baseAsset, sizeof(__pyx_k_baseAsset), 0, 0, 1, 1},
+  {&__pyx_n_u_baseAsset, __pyx_k_baseAsset, sizeof(__pyx_k_baseAsset), 0, 1, 0, 1},
   {&__pyx_n_s_baseAssetPrecision, __pyx_k_baseAssetPrecision, sizeof(__pyx_k_baseAssetPrecision), 0, 0, 1, 1},
+  {&__pyx_n_u_baseAssetPrecision, __pyx_k_baseAssetPrecision, sizeof(__pyx_k_baseAssetPrecision), 0, 1, 0, 1},
   {&__pyx_n_s_btrader_core_TradingPair, __pyx_k_btrader_core_TradingPair, sizeof(__pyx_k_btrader_core_TradingPair), 0, 0, 1, 1},
   {&__pyx_kp_s_btrader_core_TradingPair_py, __pyx_k_btrader_core_TradingPair_py, sizeof(__pyx_k_btrader_core_TradingPair_py), 0, 0, 1, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_eq, __pyx_k_eq, sizeof(__pyx_k_eq), 0, 0, 1, 1},
+  {&__pyx_n_s_f, __pyx_k_f, sizeof(__pyx_k_f), 0, 0, 1, 1},
+  {&__pyx_n_u_filterType, __pyx_k_filterType, sizeof(__pyx_k_filterType), 0, 1, 0, 1},
+  {&__pyx_n_u_filters, __pyx_k_filters, sizeof(__pyx_k_filters), 0, 1, 0, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_getTheOther, __pyx_k_getTheOther, sizeof(__pyx_k_getTheOther), 0, 0, 1, 1},
   {&__pyx_n_s_hasAsset, __pyx_k_hasAsset, sizeof(__pyx_k_hasAsset), 0, 0, 1, 1},
@@ -2831,18 +3124,24 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
   {&__pyx_n_s_quote, __pyx_k_quote, sizeof(__pyx_k_quote), 0, 0, 1, 1},
   {&__pyx_n_s_quoteAsset, __pyx_k_quoteAsset, sizeof(__pyx_k_quoteAsset), 0, 0, 1, 1},
+  {&__pyx_n_u_quoteAsset, __pyx_k_quoteAsset, sizeof(__pyx_k_quoteAsset), 0, 1, 0, 1},
   {&__pyx_n_s_quoteAssetPrecision, __pyx_k_quoteAssetPrecision, sizeof(__pyx_k_quoteAssetPrecision), 0, 0, 1, 1},
+  {&__pyx_n_u_quoteAssetPrecision, __pyx_k_quoteAssetPrecision, sizeof(__pyx_k_quoteAssetPrecision), 0, 1, 0, 1},
   {&__pyx_n_s_repr, __pyx_k_repr, sizeof(__pyx_k_repr), 0, 0, 1, 1},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
+  {&__pyx_n_s_step, __pyx_k_step, sizeof(__pyx_k_step), 0, 0, 1, 1},
+  {&__pyx_n_u_stepSize, __pyx_k_stepSize, sizeof(__pyx_k_stepSize), 0, 1, 0, 1},
   {&__pyx_n_s_str, __pyx_k_str, sizeof(__pyx_k_str), 0, 0, 1, 1},
   {&__pyx_n_s_symbol, __pyx_k_symbol, sizeof(__pyx_k_symbol), 0, 0, 1, 1},
+  {&__pyx_n_u_symbol, __pyx_k_symbol, sizeof(__pyx_k_symbol), 0, 1, 0, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_text, __pyx_k_text, sizeof(__pyx_k_text), 0, 0, 1, 1},
   {&__pyx_n_s_tp, __pyx_k_tp, sizeof(__pyx_k_tp), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 23, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2859,145 +3158,157 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     if not symbol:
  *       self.__symbol = base+quote
  */
-  __pyx_tuple__2 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_symbol, __pyx_n_s_base, __pyx_n_s_quote); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_symbol, __pyx_n_s_base, __pyx_n_s_quote, __pyx_n_s_f); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_init, 7, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_init, 7, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 7, __pyx_L1_error)
   __pyx_tuple__4 = PyTuple_Pack(2, ((PyObject *)Py_None), ((PyObject *)Py_None)); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "btrader/core/TradingPair.py":20
+  /* "btrader/core/TradingPair.py":26
  * 
  *   @property
  *   def symbol (self):             # <<<<<<<<<<<<<<
  *     return self.__symbol
  * 
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_symbol, 20, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_symbol, 26, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 26, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":24
+  /* "btrader/core/TradingPair.py":30
+ * 
+ *   @property
+ *   def step (self):             # <<<<<<<<<<<<<<
+ *     return self.__step
+ * 
+ */
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_step, 30, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 30, __pyx_L1_error)
+
+  /* "btrader/core/TradingPair.py":34
  * 
  *   @property
  *   def baseAsset (self):             # <<<<<<<<<<<<<<
  *     return self.__baseAsset
  * 
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_baseAsset, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_baseAsset, 34, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 34, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":28
+  /* "btrader/core/TradingPair.py":38
  * 
  *   @property
  *   def baseAssetPrecision (self):             # <<<<<<<<<<<<<<
  *     return self.__baseAssetPrecision
  * 
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_baseAssetPrecision, 28, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_baseAssetPrecision, 38, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 38, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":32
+  /* "btrader/core/TradingPair.py":42
  * 
  *   @property
  *   def quoteAsset (self):             # <<<<<<<<<<<<<<
  *     return self.__quoteAsset
  * 
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_quoteAsset, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_quoteAsset, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 42, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":36
+  /* "btrader/core/TradingPair.py":46
  * 
  *   @property
  *   def quoteAssetPrecision (self):             # <<<<<<<<<<<<<<
  *     return self.__quoteAssetPrecision
  * 
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_quoteAssetPrecision, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_quoteAssetPrecision, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 46, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":39
+  /* "btrader/core/TradingPair.py":49
  *     return self.__quoteAssetPrecision
  * 
  *   def hasAsset (self, asset):             # <<<<<<<<<<<<<<
  *     if self.quoteAsset == asset or self.baseAsset == asset:
  *       return True
  */
-  __pyx_tuple__15 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_asset); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 39, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_hasAsset, 39, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_asset); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_hasAsset, 49, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 49, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":44
+  /* "btrader/core/TradingPair.py":54
  *     return False
  * 
  *   def getTheOther (self, asset):             # <<<<<<<<<<<<<<
  *     if self.quoteAsset == asset:
  *       return self.baseAsset
  */
-  __pyx_tuple__17 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_asset); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_getTheOther, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_tuple__19 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_asset); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_getTheOther, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 54, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":52
+  /* "btrader/core/TradingPair.py":62
  *       return None
  * 
  *   def __repr__ (self):             # <<<<<<<<<<<<<<
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  */
-  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__19);
-  __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_repr, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_repr, 62, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 62, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":55
+  /* "btrader/core/TradingPair.py":65
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  *   def __str__ (self):             # <<<<<<<<<<<<<<
  *     return self.__repr__()
  * 
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_str, 55, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_str, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 65, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":59
+  /* "btrader/core/TradingPair.py":69
  * 
  *   @property
  *   def text (self):             # <<<<<<<<<<<<<<
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_text, 59, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_text, 69, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 69, __pyx_L1_error)
 
-  /* "btrader/core/TradingPair.py":62
+  /* "btrader/core/TradingPair.py":72
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  *   def __eq__ (self, tp):             # <<<<<<<<<<<<<<
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):
  *       return True
  */
-  __pyx_tuple__25 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tp); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_eq, 62, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tp); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_btrader_core_TradingPair_py, __pyx_n_s_eq, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3282,9 +3593,9 @@ if (!__Pyx_RefNanny) {
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_TradingPair_2);
-  __Pyx_GIVEREF(__pyx_n_s_TradingPair_2);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_TradingPair_2);
+  __Pyx_INCREF(__pyx_n_u_TradingPair_2);
+  __Pyx_GIVEREF(__pyx_n_u_TradingPair_2);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_TradingPair_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -3311,203 +3622,226 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_2) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":20
+  /* "btrader/core/TradingPair.py":26
  * 
  *   @property
  *   def symbol (self):             # <<<<<<<<<<<<<<
  *     return self.__symbol
  * 
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_3symbol, 0, __pyx_n_s_TradingPair_symbol, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_3symbol, 0, __pyx_n_s_TradingPair_symbol, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "btrader/core/TradingPair.py":19
- *       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
+  /* "btrader/core/TradingPair.py":25
+ *         raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def symbol (self):
  *     return self.__symbol
  */
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_symbol, __pyx_t_3) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_symbol, __pyx_t_3) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "btrader/core/TradingPair.py":24
+  /* "btrader/core/TradingPair.py":30
+ * 
+ *   @property
+ *   def step (self):             # <<<<<<<<<<<<<<
+ *     return self.__step
+ * 
+ */
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_5step, 0, __pyx_n_s_TradingPair_step, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+
+  /* "btrader/core/TradingPair.py":29
+ *     return self.__symbol
+ * 
+ *   @property             # <<<<<<<<<<<<<<
+ *   def step (self):
+ *     return self.__step
+ */
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_step, __pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "btrader/core/TradingPair.py":34
  * 
  *   @property
  *   def baseAsset (self):             # <<<<<<<<<<<<<<
  *     return self.__baseAsset
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_5baseAsset, 0, __pyx_n_s_TradingPair_baseAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_7baseAsset, 0, __pyx_n_s_TradingPair_baseAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "btrader/core/TradingPair.py":23
- *     return self.__symbol
+  /* "btrader/core/TradingPair.py":33
+ *     return self.__step
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def baseAsset (self):
  *     return self.__baseAsset
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_baseAsset, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_baseAsset, __pyx_t_3) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "btrader/core/TradingPair.py":28
+  /* "btrader/core/TradingPair.py":38
  * 
  *   @property
  *   def baseAssetPrecision (self):             # <<<<<<<<<<<<<<
  *     return self.__baseAssetPrecision
  * 
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_7baseAssetPrecision, 0, __pyx_n_s_TradingPair_baseAssetPrecision, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_9baseAssetPrecision, 0, __pyx_n_s_TradingPair_baseAssetPrecision, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
 
-  /* "btrader/core/TradingPair.py":27
+  /* "btrader/core/TradingPair.py":37
  *     return self.__baseAsset
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def baseAssetPrecision (self):
  *     return self.__baseAssetPrecision
  */
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_baseAssetPrecision, __pyx_t_3) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_baseAssetPrecision, __pyx_t_2) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":32
+  /* "btrader/core/TradingPair.py":42
  * 
  *   @property
  *   def quoteAsset (self):             # <<<<<<<<<<<<<<
  *     return self.__quoteAsset
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_9quoteAsset, 0, __pyx_n_s_TradingPair_quoteAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_11quoteAsset, 0, __pyx_n_s_TradingPair_quoteAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "btrader/core/TradingPair.py":31
+  /* "btrader/core/TradingPair.py":41
  *     return self.__baseAssetPrecision
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def quoteAsset (self):
  *     return self.__quoteAsset
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_quoteAsset, __pyx_t_2) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_quoteAsset, __pyx_t_3) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "btrader/core/TradingPair.py":36
+  /* "btrader/core/TradingPair.py":46
  * 
  *   @property
  *   def quoteAssetPrecision (self):             # <<<<<<<<<<<<<<
  *     return self.__quoteAssetPrecision
  * 
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_11quoteAssetPrecision, 0, __pyx_n_s_TradingPair_quoteAssetPrecision, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_13quoteAssetPrecision, 0, __pyx_n_s_TradingPair_quoteAssetPrecision, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
 
-  /* "btrader/core/TradingPair.py":35
+  /* "btrader/core/TradingPair.py":45
  *     return self.__quoteAsset
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def quoteAssetPrecision (self):
  *     return self.__quoteAssetPrecision
  */
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_quoteAssetPrecision, __pyx_t_3) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_quoteAssetPrecision, __pyx_t_2) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":39
+  /* "btrader/core/TradingPair.py":49
  *     return self.__quoteAssetPrecision
  * 
  *   def hasAsset (self, asset):             # <<<<<<<<<<<<<<
  *     if self.quoteAsset == asset or self.baseAsset == asset:
  *       return True
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_13hasAsset, 0, __pyx_n_s_TradingPair_hasAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_hasAsset, __pyx_t_3) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_15hasAsset, 0, __pyx_n_s_TradingPair_hasAsset, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_hasAsset, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":44
+  /* "btrader/core/TradingPair.py":54
  *     return False
  * 
  *   def getTheOther (self, asset):             # <<<<<<<<<<<<<<
  *     if self.quoteAsset == asset:
  *       return self.baseAsset
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_15getTheOther, 0, __pyx_n_s_TradingPair_getTheOther, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_getTheOther, __pyx_t_3) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_17getTheOther, 0, __pyx_n_s_TradingPair_getTheOther, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_getTheOther, __pyx_t_2) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":52
+  /* "btrader/core/TradingPair.py":62
  *       return None
  * 
  *   def __repr__ (self):             # <<<<<<<<<<<<<<
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_17__repr__, 0, __pyx_n_s_TradingPair___repr, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_repr, __pyx_t_3) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_19__repr__, 0, __pyx_n_s_TradingPair___repr, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_repr, __pyx_t_2) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":55
+  /* "btrader/core/TradingPair.py":65
  *     return ("<TradingPair {}/{}>".format(self.baseAsset, self.quoteAsset))
  * 
  *   def __str__ (self):             # <<<<<<<<<<<<<<
  *     return self.__repr__()
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_19__str__, 0, __pyx_n_s_TradingPair___str, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_str, __pyx_t_3) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_21__str__, 0, __pyx_n_s_TradingPair___str, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_str, __pyx_t_2) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "btrader/core/TradingPair.py":59
+  /* "btrader/core/TradingPair.py":69
  * 
  *   @property
  *   def text (self):             # <<<<<<<<<<<<<<
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_21text, 0, __pyx_n_s_TradingPair_text, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_23text, 0, __pyx_n_s_TradingPair_text, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "btrader/core/TradingPair.py":58
+  /* "btrader/core/TradingPair.py":68
  *     return self.__repr__()
  * 
  *   @property             # <<<<<<<<<<<<<<
  *   def text (self):
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_text, __pyx_t_2) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_property, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_text, __pyx_t_3) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "btrader/core/TradingPair.py":62
+  /* "btrader/core/TradingPair.py":72
  *     return "{}/{}".format(self.baseAsset, self.quoteAsset)
  * 
  *   def __eq__ (self, tp):             # <<<<<<<<<<<<<<
  *     if ((tp.quoteAsset == self.quoteAsset) and (tp.baseAsset == self.baseAsset)) or ((tp.quoteAsset == self.baseAsset) and (tp.baseAsset == self.quoteAsset)):
  *       return True
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_23__eq__, 0, __pyx_n_s_TradingPair___eq, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_eq, __pyx_t_2) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_7btrader_4core_11TradingPair_11TradingPair_25__eq__, 0, __pyx_n_s_TradingPair___eq, NULL, __pyx_n_s_btrader_core_TradingPair, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_eq, __pyx_t_3) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "btrader/core/TradingPair.py":5
  * ]
@@ -3516,10 +3850,10 @@ if (!__Pyx_RefNanny) {
  * 
  *   def __init__ (self, symbol, base=None, quote=None):
  */
-  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_TradingPair_2, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TradingPair_2, __pyx_t_2) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_TradingPair_2, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TradingPair_2, __pyx_t_3) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "btrader/core/TradingPair.py":1
@@ -3784,6 +4118,178 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
 }
 #endif
 
+/* BytesEquals */
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+    if (s1 == s2) {
+        return (equals == Py_EQ);
+    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
+        const char *ps1, *ps2;
+        Py_ssize_t length = PyBytes_GET_SIZE(s1);
+        if (length != PyBytes_GET_SIZE(s2))
+            return (equals == Py_NE);
+        ps1 = PyBytes_AS_STRING(s1);
+        ps2 = PyBytes_AS_STRING(s2);
+        if (ps1[0] != ps2[0]) {
+            return (equals == Py_NE);
+        } else if (length == 1) {
+            return (equals == Py_EQ);
+        } else {
+            int result;
+#if CYTHON_USE_UNICODE_INTERNALS
+            Py_hash_t hash1, hash2;
+            hash1 = ((PyBytesObject*)s1)->ob_shash;
+            hash2 = ((PyBytesObject*)s2)->ob_shash;
+            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
+                return (equals == Py_NE);
+            }
+#endif
+            result = memcmp(ps1, ps2, (size_t)length);
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
+        return (equals == Py_NE);
+    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
+        return (equals == Py_NE);
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+#endif
+}
+
+/* UnicodeEquals */
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+#if PY_MAJOR_VERSION < 3
+    PyObject* owned_ref = NULL;
+#endif
+    int s1_is_unicode, s2_is_unicode;
+    if (s1 == s2) {
+        goto return_eq;
+    }
+    s1_is_unicode = PyUnicode_CheckExact(s1);
+    s2_is_unicode = PyUnicode_CheckExact(s2);
+#if PY_MAJOR_VERSION < 3
+    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
+        owned_ref = PyUnicode_FromObject(s2);
+        if (unlikely(!owned_ref))
+            return -1;
+        s2 = owned_ref;
+        s2_is_unicode = 1;
+    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
+        owned_ref = PyUnicode_FromObject(s1);
+        if (unlikely(!owned_ref))
+            return -1;
+        s1 = owned_ref;
+        s1_is_unicode = 1;
+    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
+        return __Pyx_PyBytes_Equals(s1, s2, equals);
+    }
+#endif
+    if (s1_is_unicode & s2_is_unicode) {
+        Py_ssize_t length;
+        int kind;
+        void *data1, *data2;
+        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
+            return -1;
+        length = __Pyx_PyUnicode_GET_LENGTH(s1);
+        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
+            goto return_ne;
+        }
+#if CYTHON_USE_UNICODE_INTERNALS
+        {
+            Py_hash_t hash1, hash2;
+        #if CYTHON_PEP393_ENABLED
+            hash1 = ((PyASCIIObject*)s1)->hash;
+            hash2 = ((PyASCIIObject*)s2)->hash;
+        #else
+            hash1 = ((PyUnicodeObject*)s1)->hash;
+            hash2 = ((PyUnicodeObject*)s2)->hash;
+        #endif
+            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
+                goto return_ne;
+            }
+        }
+#endif
+        kind = __Pyx_PyUnicode_KIND(s1);
+        if (kind != __Pyx_PyUnicode_KIND(s2)) {
+            goto return_ne;
+        }
+        data1 = __Pyx_PyUnicode_DATA(s1);
+        data2 = __Pyx_PyUnicode_DATA(s2);
+        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
+            goto return_ne;
+        } else if (length == 1) {
+            goto return_eq;
+        } else {
+            int result = memcmp(data1, data2, (size_t)(length * kind));
+            #if PY_MAJOR_VERSION < 3
+            Py_XDECREF(owned_ref);
+            #endif
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & s2_is_unicode) {
+        goto return_ne;
+    } else if ((s2 == Py_None) & s1_is_unicode) {
+        goto return_ne;
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        #if PY_MAJOR_VERSION < 3
+        Py_XDECREF(owned_ref);
+        #endif
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+return_eq:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_EQ);
+return_ne:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_NE);
+#endif
+}
+
+/* PyCFunctionFastCall */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
+    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
+    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
+    PyObject *self = PyCFunction_GET_SELF(func);
+    int flags = PyCFunction_GET_FLAGS(func);
+    assert(PyCFunction_Check(func));
+    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
+    assert(nargs >= 0);
+    assert(nargs == 0 || args != NULL);
+    /* _PyCFunction_FastCallDict() must not be called with an exception set,
+       because it may clear it (directly or indirectly) and so the
+       caller loses its exception */
+    assert(!PyErr_Occurred());
+    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
+        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
+    } else {
+        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
+    }
+}
+#endif
+
 /* PyFunctionFastCall */
 #if CYTHON_FAST_PYCALL
 static PyObject* __Pyx_PyFunction_FastCallNoKw(PyCodeObject *co, PyObject **args, Py_ssize_t na,
@@ -3903,29 +4409,6 @@ done:
 #endif
 #endif
 
-/* PyCFunctionFastCall */
-#if CYTHON_FAST_PYCCALL
-static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
-    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
-    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
-    PyObject *self = PyCFunction_GET_SELF(func);
-    int flags = PyCFunction_GET_FLAGS(func);
-    assert(PyCFunction_Check(func));
-    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
-    assert(nargs >= 0);
-    assert(nargs == 0 || args != NULL);
-    /* _PyCFunction_FastCallDict() must not be called with an exception set,
-       because it may clear it (directly or indirectly) and so the
-       caller loses its exception */
-    assert(!PyErr_Occurred());
-    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
-        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
-    } else {
-        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
-    }
-}
-#endif
-
 /* PyObjectCall */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
@@ -3946,6 +4429,35 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 }
 #endif
 
+/* PyObjectCall2Args */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args, *result = NULL;
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyFunction_FastCall(function, args, 2);
+    }
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyCFunction_FastCall(function, args, 2);
+    }
+    #endif
+    args = PyTuple_New(2);
+    if (unlikely(!args)) goto done;
+    Py_INCREF(arg1);
+    PyTuple_SET_ITEM(args, 0, arg1);
+    Py_INCREF(arg2);
+    PyTuple_SET_ITEM(args, 1, arg2);
+    Py_INCREF(function);
+    result = __Pyx_PyObject_Call(function, args, NULL);
+    Py_DECREF(args);
+    Py_DECREF(function);
+done:
+    return result;
+}
+
 /* PyObjectCallMethO */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
@@ -3963,28 +4475,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
             "NULL result without error in PyObject_Call");
     }
     return result;
-}
-#endif
-
-/* PyObjectCallNoArg */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
-#if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(func)) {
-        return __Pyx_PyFunction_FastCall(func, NULL, 0);
-    }
-#endif
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
-#else
-    if (likely(PyCFunction_Check(func)))
-#endif
-    {
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
-            return __Pyx_PyObject_CallMethO(func, NULL);
-        }
-    }
-    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
 }
 #endif
 
@@ -4025,6 +4515,211 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     result = __Pyx_PyObject_Call(func, args, NULL);
     Py_DECREF(args);
     return result;
+}
+#endif
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* RaiseException */
+#if PY_MAJOR_VERSION < 3
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb,
+                        CYTHON_UNUSED PyObject *cause) {
+    __Pyx_PyThreadState_declare
+    Py_XINCREF(type);
+    if (!value || value == Py_None)
+        value = NULL;
+    else
+        Py_INCREF(value);
+    if (!tb || tb == Py_None)
+        tb = NULL;
+    else {
+        Py_INCREF(tb);
+        if (!PyTraceBack_Check(tb)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: arg 3 must be a traceback or None");
+            goto raise_error;
+        }
+    }
+    if (PyType_Check(type)) {
+#if CYTHON_COMPILING_IN_PYPY
+        if (!value) {
+            Py_INCREF(Py_None);
+            value = Py_None;
+        }
+#endif
+        PyErr_NormalizeException(&type, &value, &tb);
+    } else {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto raise_error;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(type);
+        Py_INCREF(type);
+        if (!PyType_IsSubtype((PyTypeObject *)type, (PyTypeObject *)PyExc_BaseException)) {
+            PyErr_SetString(PyExc_TypeError,
+                "raise: exception class must be a subclass of BaseException");
+            goto raise_error;
+        }
+    }
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrRestore(type, value, tb);
+    return;
+raise_error:
+    Py_XDECREF(value);
+    Py_XDECREF(type);
+    Py_XDECREF(tb);
+    return;
+}
+#else
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause) {
+    PyObject* owned_instance = NULL;
+    if (tb == Py_None) {
+        tb = 0;
+    } else if (tb && !PyTraceBack_Check(tb)) {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: arg 3 must be a traceback or None");
+        goto bad;
+    }
+    if (value == Py_None)
+        value = 0;
+    if (PyExceptionInstance_Check(type)) {
+        if (value) {
+            PyErr_SetString(PyExc_TypeError,
+                "instance exception may not have a separate value");
+            goto bad;
+        }
+        value = type;
+        type = (PyObject*) Py_TYPE(value);
+    } else if (PyExceptionClass_Check(type)) {
+        PyObject *instance_class = NULL;
+        if (value && PyExceptionInstance_Check(value)) {
+            instance_class = (PyObject*) Py_TYPE(value);
+            if (instance_class != type) {
+                int is_subclass = PyObject_IsSubclass(instance_class, type);
+                if (!is_subclass) {
+                    instance_class = NULL;
+                } else if (unlikely(is_subclass == -1)) {
+                    goto bad;
+                } else {
+                    type = instance_class;
+                }
+            }
+        }
+        if (!instance_class) {
+            PyObject *args;
+            if (!value)
+                args = PyTuple_New(0);
+            else if (PyTuple_Check(value)) {
+                Py_INCREF(value);
+                args = value;
+            } else
+                args = PyTuple_Pack(1, value);
+            if (!args)
+                goto bad;
+            owned_instance = PyObject_Call(type, args, NULL);
+            Py_DECREF(args);
+            if (!owned_instance)
+                goto bad;
+            value = owned_instance;
+            if (!PyExceptionInstance_Check(value)) {
+                PyErr_Format(PyExc_TypeError,
+                             "calling %R should have returned an instance of "
+                             "BaseException, not %R",
+                             type, Py_TYPE(value));
+                goto bad;
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+            "raise: exception class must be a subclass of BaseException");
+        goto bad;
+    }
+    if (cause) {
+        PyObject *fixed_cause;
+        if (cause == Py_None) {
+            fixed_cause = NULL;
+        } else if (PyExceptionClass_Check(cause)) {
+            fixed_cause = PyObject_CallObject(cause, NULL);
+            if (fixed_cause == NULL)
+                goto bad;
+        } else if (PyExceptionInstance_Check(cause)) {
+            fixed_cause = cause;
+            Py_INCREF(fixed_cause);
+        } else {
+            PyErr_SetString(PyExc_TypeError,
+                            "exception causes must derive from "
+                            "BaseException");
+            goto bad;
+        }
+        PyException_SetCause(value, fixed_cause);
+    }
+    PyErr_SetObject(type, value);
+    if (tb) {
+#if CYTHON_COMPILING_IN_PYPY
+        PyObject *tmp_type, *tmp_value, *tmp_tb;
+        PyErr_Fetch(&tmp_type, &tmp_value, &tmp_tb);
+        Py_INCREF(tb);
+        PyErr_Restore(tmp_type, tmp_value, tb);
+        Py_XDECREF(tmp_tb);
+#else
+        PyThreadState *tstate = __Pyx_PyThreadState_Current;
+        PyObject* tmp_tb = tstate->curexc_traceback;
+        if (tb != tmp_tb) {
+            Py_INCREF(tb);
+            tstate->curexc_traceback = tb;
+            Py_XDECREF(tmp_tb);
+        }
+#endif
+    }
+bad:
+    Py_XDECREF(owned_instance);
+    return;
+}
+#endif
+
+/* PyObjectCallNoArg */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
+#if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(func)) {
+        return __Pyx_PyFunction_FastCall(func, NULL, 0);
+    }
+#endif
+#ifdef __Pyx_CyFunction_USED
+    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
+#else
+    if (likely(PyCFunction_Check(func)))
+#endif
+    {
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
+            return __Pyx_PyObject_CallMethO(func, NULL);
+        }
+    }
+    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
 }
 #endif
 
@@ -4811,30 +5506,6 @@ static CYTHON_INLINE int __Pyx_object_dict_version_matches(PyObject* obj, PY_UIN
     if (unlikely(!dict) || unlikely(tp_dict_version != __PYX_GET_DICT_VERSION(dict)))
         return 0;
     return obj_dict_version == __Pyx_get_object_dict_version(obj);
-}
-#endif
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
 }
 #endif
 

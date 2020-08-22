@@ -130,16 +130,25 @@ class bTrader (StoppableThread):
               if not start_pair in self.__sockets:
                 self.__sockets.append(start_pair)
                 self.__traderLock.acquire()
-                self.__traderMatrix.createPair(start_pair.symbol)
+                self.__traderMatrix.createPair(
+                  start_pair.symbol,
+                  start_pair.step,
+                )
                 self.__traderLock.release()
               if not end_pair in self.__sockets:
                 self.__sockets.append(end_pair)
                 self.__traderLock.acquire()
-                self.__traderMatrix.createPair(end_pair.symbol)
+                self.__traderMatrix.createPair(
+                  end_pair.symbol,
+                  end_pair.step,
+                )
                 self.__traderLock.release()
               self.__sockets.append(middle_pair)
               self.__traderLock.acquire()
-              self.__traderMatrix.createPair(middle_pair.symbol)
+              self.__traderMatrix.createPair(
+                middle_pair.symbol,
+                middle_pair.step,
+              )
               self.__traderLock.release()
               self.__relationships.append(TriangularRelationship(self.__base, start_pair, middle_pair, end_pair))
               self.__relationships.append(TriangularRelationship(self.__base, end_pair, middle_pair, start_pair))

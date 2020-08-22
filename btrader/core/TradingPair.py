@@ -15,10 +15,20 @@ class TradingPair ():
       self.__baseAssetPrecision = symbol['baseAssetPrecision']
       self.__quoteAsset = symbol['quoteAsset']
       self.__quoteAssetPrecision = symbol['quoteAssetPrecision']
+      self.__step = None
+      for f in symbol['filters']:
+        if f['filterType'] == 'LOT_SIZE':
+          self.__step = float(f['stepSize'])
+      if self.__step == None:
+        raise ValueError ("Couldn't get step size for symbol {}".format(self.__symbol))
 
   @property
   def symbol (self):
     return self.__symbol
+
+  @property
+  def step (self):
+    return self.__step
 
   @property
   def baseAsset (self):

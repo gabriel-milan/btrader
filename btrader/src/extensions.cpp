@@ -6,6 +6,8 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
+// #include <iostream>
+
 /*
  *  TODO:
  *  - Implement asset precisions flooring
@@ -70,14 +72,23 @@ std::vector<std::vector<double>> strToDouble2DVector(std::vector<std::vector<std
 }
 
 /*
+ *  General purpose helper functions
+ */
+double correctQuantity(double quantity, double step)
+{
+  return (floor(quantity / step) * step);
+}
+
+/*
  *  Trading pair wrapper
  */
 struct Pair
 {
 public:
-  Pair(std::string name)
+  Pair(std::string name, double step)
   {
     this->symbol = name;
+    this->step = step;
     this->timestamp = 0;
   };
 
@@ -89,6 +100,11 @@ public:
     this->timestamp = timestamp;
     this->asks = asksDouble;
     this->bids = bidsDouble;
+  }
+
+  double getStep()
+  {
+    return this->step;
   }
 
   double getTimestamp()
@@ -114,6 +130,7 @@ public:
 private:
   bool initialized = false;
   std::string symbol;
+  double step;
   double timestamp;
   std::vector<std::vector<double>> asks;
   std::vector<std::vector<double>> bids;
@@ -170,9 +187,9 @@ public:
     this->qtyRange = to_1d_vector<double>(quantityRange);
   }
 
-  void createPair(std::string symbol)
+  void createPair(std::string symbol, double step)
   {
-    this->pairs.insert(std::make_pair(symbol, new Pair(symbol)));
+    this->pairs.insert(std::make_pair(symbol, new Pair(symbol, step)));
   }
 
   void createRelationship(std::string relationshipName, boost::python::list pairs, boost::python::list actions)
@@ -225,6 +242,8 @@ public:
     {
       // Getting initial quantity
       currentQuantity = this->qtyRange[i];
+      // std::cout << "------------------------------" << std::endl;
+      // std::cout << "Initial: " << currentQuantity << "BTC" << std::endl;
       for (unsigned short j = 0; j < pairNames.size(); j++)
       {
         timestamp = this->pairs[pairNames[j]]->getTimestamp();
@@ -235,13 +254,23 @@ public:
         if (pairActions[j].compare("BUY") == 0)
         {
           // Buying means diving by the price
+          // When you're buying, your balance depends on the step size
           std::vector<std::vector<double>> prices = this->pairs[pairNames[j]]->getAsks();
           for (unsigned short k = 0; k < prices.size(); k++)
           {
             // Each item on prices is a vector of two elements
             // Index 0 refers to the price
             // Index 1 refers to the quantity on that price
-            prices[k][1] >= helperQuantity ? currentQuantity += helperQuantity / prices[k][0] : currentQuantity += prices[k][1] / prices[k][0];
+            if (prices[k][1] >= helperQuantity)
+            {
+              currentQuantity += correctQuantity(helperQuantity / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << helperQuantity << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+            }
+            else
+            {
+              currentQuantity += correctQuantity(prices[k][1] / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << prices[k][1] << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+            }
             helperQuantity -= prices[k][1];
             if (helperQuantity <= 0)
               break;
@@ -256,7 +285,16 @@ public:
             // Each item on prices is a vector of two elements
             // Index 0 refers to the price
             // Index 1 refers to the quantity on that price
-            prices[k][1] >= helperQuantity ? currentQuantity += helperQuantity * prices[k][0] : currentQuantity += prices[k][1] * prices[k][0];
+            if (prices[k][1] >= helperQuantity)
+            {
+              currentQuantity += correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) * prices[k][0];
+              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+            }
+            else
+            {
+              currentQuantity += correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) * prices[k][0];
+              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
+            }
             helperQuantity -= prices[k][1];
             if (helperQuantity <= 0)
               break;
@@ -271,6 +309,7 @@ public:
         bestQty = this->qtyRange[i];
         bestProfit = profit;
       }
+      // std::cout << "Profit: " << profit << std::endl;
     }
 
     results.push_back(bestQty);

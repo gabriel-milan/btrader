@@ -30,5 +30,8 @@ python3
 - [x] Monitoring websockets
 - [x] Computing profits over all possible triangles
 - [x] Filtering and showing viable operations
-- [ ] Implement asset precision
-- [ ] Implement trading actions
+- [x] Implement asset step size
+- [ ] Best deals printing
+- [ ] Structure for holding trading actions and quantities
+- [ ] Perform trading actions
+- [ ] Generate binary distributions
