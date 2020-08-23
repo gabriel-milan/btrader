@@ -10,7 +10,7 @@ from btrader.core.TradeWorker import TradeWorker
 
 class ComputeWorker (StoppableThread):
 
-  def __init__ (self, trader_matrix, trader_lock, queue, queue_lock, config, trading_lock, trading_queue, level=logging.DEBUG, log_file=None, *args, **kwargs):
+  def __init__ (self, trader_matrix, trader_lock, queue, queue_lock, config, trading_lock, trading_queue, client, counter, stepDict, level=logging.DEBUG, log_file=None, *args, **kwargs):
     super (ComputeWorker, self).__init__(*args, **kwargs)
     self.__logger           = Logger(name="ComputeWorker", level=level, filename=log_file)
     self.__traderMatrix     = trader_matrix
@@ -23,14 +23,26 @@ class ComputeWorker (StoppableThread):
     self.__tradingEnabled   = self.__config["TRADING"]["ENABLED"]
     self.__tradingQueue     = trading_queue
     self.__tradingLock      = trading_lock
+    self.__client           = client
+    self.counter            = counter
+    self.maxCount           = self.__config["TRADING"]["EXECUTION_CAP"] if self.__config["TRADING"]["EXECUTION_CAP"] > 0 else float('inf')
+    self.__stepDict         = stepDict
 
   @property
   def tradingEnabled (self):
-    return self.__tradingEnabled
+    return (self.__tradingEnabled and (self.counter.value < self.maxCount))
 
   @property
   def logger (self):
     return self.__logger
+
+  @property
+  def client (self):
+    return self.__client
+
+  def correctQuantity (self, quantity, symbol):
+    step = self.__stepDict[symbol]
+    return round (quantity, -int(f'{step:e}'.split('e')[-1]))
 
   def run (self, *args, **kwargs):
     while self.running:
@@ -52,9 +64,13 @@ class ComputeWorker (StoppableThread):
           # and then forget about it for a while?
           if self.tradingEnabled:
             self.__tradingLock.acquire()
+            print (self.counter.value)
+            with self.counter.get_lock():
+              self.counter.value += 1
             self.executeDeal(deal)
             self.__tradingLock.release()
           else:
+            self.logger.debug("Trading disabled (either by configuration or max count reached)")
             self.printDeal(deal)
         self.__queue.put(rel)
       else:
@@ -63,15 +79,41 @@ class ComputeWorker (StoppableThread):
     return True
 
   def printDeal (self, deal):
-    self.logger.info("--------------------")
+    self.logger.info("--> Printing trading steps")
     for action in deal.getActions():
-      self.logger.info ("{} from pair {}".format(
+      self.logger.info ("{} {} from pair {}".format(
         action.getAction(),
+        self.correctQuantity(action.getQuantity(), action.getPair()),
         action.getPair(),
       ))
+    self.logger.info("--------------------------")
 
   def executeDeal (self, deal):
-    # TODO: Implement here
-    self.logger.debug("Executing deal")
-    self.printDeal(deal)
-    pass
+    self.logger.debug("--> Executing deal")
+    for i, action in enumerate(deal.getActions()):
+      buy_sell = action.getAction()
+      pair = action.getPair()
+      qty = self.correctQuantity(action.getQuantity(), pair)
+      if buy_sell == "BUY":
+        try:
+          self.logger.info ("#{}: Buying {} from symbol {}".format(i+1, qty, pair))
+          order = self.client.order_market_buy(symbol=pair, quantity=qty)
+          status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+          while (status['status'] != 'FILLED'):
+            status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+        except Exception as e:
+          self.logger.error("Failed to execute action #{} (symbol={}, qty={})".format(i+1, pair, qty))
+          raise e
+      elif buy_sell == "SELL":
+        try:
+          self.logger.info ("#{}: Selling {} from symbol {}".format(i+1, qty, pair))
+          order = self.client.order_market_sell(symbol=pair, quantity=qty)
+          status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+          while (status['status'] != 'FILLED'):
+            status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+        except Exception as e:
+          self.logger.error("Failed to execute action #{} (symbol={}, qty={})".format(i+1, pair, qty))
+          raise e
+      else:
+        self.logger.error("Unknown operation {}".format(buy_sell))
+    self.logger.info("--------------------------")

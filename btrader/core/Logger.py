@@ -28,7 +28,7 @@ class LogFormatter (logging.Formatter):
   # Reset
   reset_seq     = "\033[0m"
 
-  format = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s"
+  format = "%(asctime)s | %(name)-13.13s %(levelname)8.8s | %(message)s"
 
   FORMATS = {
     logging.DEBUG: bold_white + format + reset_seq,

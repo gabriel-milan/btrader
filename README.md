@@ -33,6 +33,7 @@ python3
 - [x] Implement asset step size
 - [x] Structure for holding trading actions and quantities
 - [ ] Perform trading actions
+- [ ] Checking configuration file
 - [ ] Best deals printing
 - [ ] Telegram bot
 - [ ] Generate binary distributions
@@ -41,8 +42,8 @@ python3
 
 - [x] KEYS
 - [x] INVESTMENT
-- [x] TRADING [ENABLED, TAKER_FEE, PROFIT_THRESHOLD, AGE_THRESHOLD]
-- [ ] TRADING [EXECUTION_STRATEGY, EXECUTION_TEMPLATE, EXECUTION_CAP]
+- [x] TRADING [ENABLED, EXECUTION_CAP, TAKER_FEE, PROFIT_THRESHOLD, AGE_THRESHOLD]
+- [ ] TRADING [EXECUTION_STRATEGY, EXECUTION_TEMPLATE]
 - [ ] HUD
 - [ ] LOG
 - [x] DEPTH [SIZE]

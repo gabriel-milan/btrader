@@ -14,8 +14,8 @@ from atexit import register
 from time import time, sleep
 from functools import partial
 from binance.client import Client
+from multiprocessing import Value
 from btrader.core.Logger import Logger
-from btrader.core.TradeWorker import TradeWorker
 from btrader.extensions import TraderMatrix, Deal
 from btrader.core.DepthWorker import DepthWorker
 from btrader.core.TradingPair import TradingPair
@@ -43,6 +43,7 @@ class bTrader (StoppableThread):
     self.__client             = None  # Client
     self.__info               = {}    # Got from Binance API
     self.__symbols            = []    # List of TradingPair (all of them)
+    self.__stepDict           = {}    # Dict of steps of all symbols (all of them)
     self.__base               = ""    # Base coin (from self.__config)
     self.__relationships      = []    # List of TriangularRelationship
     self.__relationshipLock   = None  # Lock for the relationship queue
@@ -56,9 +57,9 @@ class bTrader (StoppableThread):
     self.__computeWorkers     = []    # List of ComputeWorker
     self.__traderMatrix       = None  # Main trading matrix
     self.__traderLock         = None  # Lock for TradingMatrix
-    self.__tradeWorkers       = []    # List of TradeWorkers
     self.__tradingQueue       = None  # Queue for TradeWorkers to trade
     self.__tradingLock        = None  # Lock for TradeWorkers to trade
+    self.__tradingCount       = None  # mp.Value used to hold number of deals executed
 
     # Init super
     super(bTrader, self).__init__(*args, **kwargs)
@@ -115,6 +116,8 @@ class bTrader (StoppableThread):
     try:
       self.__info = self.__client.get_exchange_info()
       self.__symbols = [TradingPair(s) for s in self.__info['symbols'] if s['status'] == 'TRADING']
+      for pair in self.__symbols:
+        self.__stepDict[pair.symbol] = pair.step
       self.logger.info("Found {} market pairs".format(len(self.__symbols)))
     except Exception as e:
       self.logger.critical("Failed to get market pairs")
@@ -164,7 +167,7 @@ class bTrader (StoppableThread):
       self.logger.critical("Failed to get triangular relationships")
       raise e
 
-    self.logger.info("Initialization complete")
+    self.logger.info("Setup complete")
 
   def __socketCallback (self, symbol, data):
     if data is not None:
@@ -233,6 +236,7 @@ class bTrader (StoppableThread):
       self.__relationshipQueue.put(relationship)
 
     self.logger.info("Starting {} compute worker(s)...".format(COMPUTE_WORKERS))
+    self.__tradingCount = Value('i')
     for i in range(COMPUTE_WORKERS):
       worker = ComputeWorker(
         level=self.__level,
@@ -244,29 +248,15 @@ class bTrader (StoppableThread):
         config=self.__config,
         trading_lock = self.__tradingLock,
         trading_queue = self.__tradingQueue,
+        client = self.__client,
+        counter = self.__tradingCount,
+        stepDict = self.__stepDict,
       )
       worker.setDaemon(True)
       worker.start()
       self.__computeWorkers.append(worker)
 
-    #
-    # NOTE: TODO: Investigate why this stops everything from working
-    #
-    # self.logger.info("Starting {} trade worker(s)...".format(TRADE_WORKERS))
-    # for i in range(TRADE_WORKERS):
-    #   worker = TradeWorker(
-    #     level=self.__level,
-    #     log_file=self.__logFile,
-    #     client=self.__client,
-    #     btrader=self,
-    #     trading_lock = self.__tradingLock,
-    #     trading_queue = self.__tradingQueue,
-    #   )
-    #   worker.setDaemon(True)
-    #   worker.start()
-    #   self.__tradeWorkers.append(worker)
-
-    self.logger.info("Execute done")
+    self.logger.info("Initialization done, will work now")
 
   def finalize(self):
     try:
@@ -284,10 +274,6 @@ class bTrader (StoppableThread):
       # Stopping Compute workers
       self.logger.info("Stopping compute workers...")
       for worker in self.__computeWorkers:
-        worker.stop()
-      # Stopping Trade workers
-      self.logger.info("Stopping trade workers...")
-      for worker in self.__tradeWorkers:
         worker.stop()
       # Stop Logger
       self.logger.shutdown()

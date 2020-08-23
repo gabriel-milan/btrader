@@ -1316,7 +1316,7 @@ static const char __pyx_k_concurrent_futures[] = "concurrent.futures";
 static const char __pyx_k_LogFormatter_format[] = "LogFormatter.format";
 static const char __pyx_k_btrader_core_Logger[] = "btrader.core.Logger";
 static const char __pyx_k_btrader_core_Logger_py[] = "btrader/core/Logger.py";
-static const char __pyx_k_asctime_s_name_9_9s_levelname_8[] = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s";
+static const char __pyx_k_asctime_s_name_13_13s_levelname[] = "%(asctime)s | %(name)-13.13s %(levelname)8.8s | %(message)s";
 static PyObject *__pyx_kp_u_0_30m;
 static PyObject *__pyx_kp_u_0_31m;
 static PyObject *__pyx_kp_u_0_32m;
@@ -1359,7 +1359,7 @@ static PyObject *__pyx_n_s_WARNING;
 static PyObject *__pyx_n_s_addHandler;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_args;
-static PyObject *__pyx_kp_u_asctime_s_name_9_9s_levelname_8;
+static PyObject *__pyx_kp_u_asctime_s_name_13_13s_levelname;
 static PyObject *__pyx_n_s_black;
 static PyObject *__pyx_n_s_blue;
 static PyObject *__pyx_n_s_bold_black;
@@ -3220,7 +3220,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_addHandler, __pyx_k_addHandler, sizeof(__pyx_k_addHandler), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
-  {&__pyx_kp_u_asctime_s_name_9_9s_levelname_8, __pyx_k_asctime_s_name_9_9s_levelname_8, sizeof(__pyx_k_asctime_s_name_9_9s_levelname_8), 0, 1, 0, 0},
+  {&__pyx_kp_u_asctime_s_name_13_13s_levelname, __pyx_k_asctime_s_name_13_13s_levelname, sizeof(__pyx_k_asctime_s_name_13_13s_levelname), 0, 1, 0, 0},
   {&__pyx_n_s_black, __pyx_k_black, sizeof(__pyx_k_black), 0, 0, 1, 1},
   {&__pyx_n_s_blue, __pyx_k_blue, sizeof(__pyx_k_blue), 0, 0, 1, 1},
   {&__pyx_n_s_bold_black, __pyx_k_bold_black, sizeof(__pyx_k_bold_black), 0, 0, 1, 1},
@@ -3879,18 +3879,18 @@ if (!__Pyx_RefNanny) {
  *   # Reset
  *   reset_seq     = "\033[0m"             # <<<<<<<<<<<<<<
  * 
- *   format = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s"
+ *   format = "%(asctime)s | %(name)-13.13s %(levelname)8.8s | %(message)s"
  */
   if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_reset_seq, __pyx_kp_u_0m) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
 
   /* "btrader/core/Logger.py":31
  *   reset_seq     = "\033[0m"
  * 
- *   format = "%(asctime)s | %(name)-9.9s %(levelname)8.8s -> %(message)s"             # <<<<<<<<<<<<<<
+ *   format = "%(asctime)s | %(name)-13.13s %(levelname)8.8s | %(message)s"             # <<<<<<<<<<<<<<
  * 
  *   FORMATS = {
  */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_format, __pyx_kp_u_asctime_s_name_9_9s_levelname_8) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_format, __pyx_kp_u_asctime_s_name_13_13s_levelname) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
 
   /* "btrader/core/Logger.py":34
  * 

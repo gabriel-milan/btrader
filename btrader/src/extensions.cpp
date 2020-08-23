@@ -84,10 +84,11 @@ double correctQuantity(double quantity, double step)
 struct Action
 {
 public:
-  Action(std::string pair, std::string action)
+  Action(std::string pair, std::string action, double quantity)
   {
     this->pair = pair;
     this->action = action;
+    this->quantity = quantity;
   }
 
   std::string getPair()
@@ -100,9 +101,15 @@ public:
     return this->action;
   }
 
+  double getQuantity()
+  {
+    return this->quantity;
+  }
+
 private:
   std::string pair;
   std::string action;
+  double quantity;
 };
 
 /*
@@ -111,9 +118,9 @@ private:
 struct Deal
 {
 public:
-  void addAction(std::string pair, std::string action)
+  void addAction(std::string pair, std::string action, double quantity)
   {
-    this->actions.push_back(Action(pair, action));
+    this->actions.push_back(Action(pair, action, quantity));
   }
   boost::python::list getActions()
   {
@@ -319,7 +326,6 @@ public:
         {
           // Buying means diving by the price
           // When you're buying, your balance depends on the step size
-          tmpDeal.addAction(pairNames[j], pairActions[j]);
           std::vector<std::vector<double>> prices = this->pairs[pairNames[j]]->getAsks();
           for (unsigned short k = 0; k < prices.size(); k++)
           {
@@ -357,11 +363,12 @@ public:
             if (helperQuantity <= 0)
               break;
           }
+          tmpDeal.addAction(pairNames[j], pairActions[j], currentQuantity);
         }
         else
         {
           // Selling means multiplying by the price
-          tmpDeal.addAction(pairNames[j], pairActions[j]);
+          tmpDeal.addAction(pairNames[j], pairActions[j], correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()));
           std::vector<std::vector<double>> prices = this->pairs[pairNames[j]]->getBids();
           for (unsigned short k = 0; k < prices.size(); k++)
           {
@@ -433,7 +440,8 @@ BOOST_PYTHON_MODULE(extensions)
       .def("createRelationship", &TraderMatrix::createRelationship)
       .def("updatePair", &TraderMatrix::updatePair)
       .def("computeRelationship", &TraderMatrix::computeRelationship);
-  class_<Action>("Action", init<std::string, std::string>())
+  class_<Action>("Action", init<std::string, std::string, double>())
       .def("getPair", &Action::getPair)
-      .def("getAction", &Action::getAction);
+      .def("getAction", &Action::getAction)
+      .def("getQuantity", &Action::getQuantity);
 }
