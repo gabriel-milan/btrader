@@ -1111,7 +1111,6 @@ static const char __pyx_k_extend[] = "extend";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_bTrader[] = "bTrader";
 static const char __pyx_k_DepthWorker[] = "DepthWorker";
-static const char __pyx_k_TradeWorker[] = "TradeWorker";
 static const char __pyx_k_TradingPair[] = "TradingPair";
 static const char __pyx_k_ComputeWorker[] = "ComputeWorker";
 static const char __pyx_k_StoppableThread[] = "StoppableThread";
@@ -1122,7 +1121,6 @@ static PyObject *__pyx_n_s_ComputeWorker;
 static PyObject *__pyx_n_s_DepthWorker;
 static PyObject *__pyx_n_s_Logger;
 static PyObject *__pyx_n_s_StoppableThread;
-static PyObject *__pyx_n_s_TradeWorker;
 static PyObject *__pyx_n_s_TradingPair;
 static PyObject *__pyx_n_s_TriangularRelationship;
 static PyObject *__pyx_n_s__2;
@@ -1315,7 +1313,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_DepthWorker, __pyx_k_DepthWorker, sizeof(__pyx_k_DepthWorker), 0, 0, 1, 1},
   {&__pyx_n_s_Logger, __pyx_k_Logger, sizeof(__pyx_k_Logger), 0, 0, 1, 1},
   {&__pyx_n_s_StoppableThread, __pyx_k_StoppableThread, sizeof(__pyx_k_StoppableThread), 0, 0, 1, 1},
-  {&__pyx_n_s_TradeWorker, __pyx_k_TradeWorker, sizeof(__pyx_k_TradeWorker), 0, 0, 1, 1},
   {&__pyx_n_s_TradingPair, __pyx_k_TradingPair, sizeof(__pyx_k_TradingPair), 0, 0, 1, 1},
   {&__pyx_n_s_TriangularRelationship, __pyx_k_TriangularRelationship, sizeof(__pyx_k_TriangularRelationship), 0, 0, 1, 1},
   {&__pyx_n_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 1},
@@ -1983,7 +1980,7 @@ if (!__Pyx_RefNanny) {
  * __all__.extend(bTrader.__all__)
  * from .bTrader import *             # <<<<<<<<<<<<<<
  * 
- * from . import TradeWorker
+ * from . import Logger
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1999,37 +1996,36 @@ if (!__Pyx_RefNanny) {
   /* "btrader/core/__init__.py":27
  * from .bTrader import *
  * 
- * from . import TradeWorker             # <<<<<<<<<<<<<<
- * __all__.extend(TradeWorker.__all__)
- * from .TradeWorker import *
+ * from . import Logger             # <<<<<<<<<<<<<<
+ * __all__.extend(Logger.__all__)
+ * from .Logger import *
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_TradeWorker);
-  __Pyx_GIVEREF(__pyx_n_s_TradeWorker);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_TradeWorker);
+  __Pyx_INCREF(__pyx_n_s_Logger);
+  __Pyx_GIVEREF(__pyx_n_s_Logger);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Logger);
   __pyx_t_2 = __Pyx_Import(__pyx_n_s_, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_TradeWorker); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TradeWorker, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Logger, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "btrader/core/__init__.py":28
  * 
- * from . import TradeWorker
- * __all__.extend(TradeWorker.__all__)             # <<<<<<<<<<<<<<
- * from .TradeWorker import *
- * 
+ * from . import Logger
+ * __all__.extend(Logger.__all__)             # <<<<<<<<<<<<<<
+ * from .Logger import *
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_extend); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TradeWorker); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -2041,91 +2037,30 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "btrader/core/__init__.py":29
- * from . import TradeWorker
- * __all__.extend(TradeWorker.__all__)
- * from .TradeWorker import *             # <<<<<<<<<<<<<<
- * 
  * from . import Logger
+ * __all__.extend(Logger.__all__)
+ * from .Logger import *             # <<<<<<<<<<<<<<
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s__2);
   __Pyx_GIVEREF(__pyx_n_s__2);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s__2);
-  __pyx_t_3 = __Pyx_Import(__pyx_n_s_TradeWorker, __pyx_t_2, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Import(__pyx_n_s_Logger, __pyx_t_2, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_import_star(__pyx_t_3) < 0) __PYX_ERR(0, 29, __pyx_L1_error);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "btrader/core/__init__.py":31
- * from .TradeWorker import *
- * 
- * from . import Logger             # <<<<<<<<<<<<<<
- * __all__.extend(Logger.__all__)
- * from .Logger import *
- */
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_INCREF(__pyx_n_s_Logger);
-  __Pyx_GIVEREF(__pyx_n_s_Logger);
-  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_Logger);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_, __pyx_t_3, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Logger); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Logger, __pyx_t_3) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "btrader/core/__init__.py":32
- * 
- * from . import Logger
- * __all__.extend(Logger.__all__)             # <<<<<<<<<<<<<<
- * from .Logger import *
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_extend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "btrader/core/__init__.py":33
- * from . import Logger
- * __all__.extend(Logger.__all__)
- * from .Logger import *             # <<<<<<<<<<<<<<
- */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_n_s__2);
-  __Pyx_GIVEREF(__pyx_n_s__2);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s__2);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_Logger, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_import_star(__pyx_t_1) < 0) __PYX_ERR(0, 33, __pyx_L1_error);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "btrader/core/__init__.py":1
  * __all__ = []             # <<<<<<<<<<<<<<
  * 
  * from . import TradingPair
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /*--- Wrapped vars code ---*/
 

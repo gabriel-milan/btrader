@@ -2333,7 +2333,7 @@ static PyObject *__pyx_pf_7btrader_4core_7bTrader_7bTrader___init__(CYTHON_UNUSE
  *     self.__computeWorkers     = []    # List of ComputeWorker
  *     self.__traderMatrix       = None  # Main trading matrix             # <<<<<<<<<<<<<<
  *     self.__traderLock         = None  # Lock for TradingMatrix
- *     self.__tradingQueue       = None  # Queue for TradeWorkers to trade
+ *     self.__tradingQueue       = None  # Queue for trade
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_bTrader__traderMatrix, Py_None) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
 
@@ -2341,32 +2341,32 @@ static PyObject *__pyx_pf_7btrader_4core_7bTrader_7bTrader___init__(CYTHON_UNUSE
  *     self.__computeWorkers     = []    # List of ComputeWorker
  *     self.__traderMatrix       = None  # Main trading matrix
  *     self.__traderLock         = None  # Lock for TradingMatrix             # <<<<<<<<<<<<<<
- *     self.__tradingQueue       = None  # Queue for TradeWorkers to trade
- *     self.__tradingLock        = None  # Lock for TradeWorkers to trade
+ *     self.__tradingQueue       = None  # Queue for trade
+ *     self.__tradingLock        = None  # Lock for trade
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_bTrader__traderLock, Py_None) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":60
  *     self.__traderMatrix       = None  # Main trading matrix
  *     self.__traderLock         = None  # Lock for TradingMatrix
- *     self.__tradingQueue       = None  # Queue for TradeWorkers to trade             # <<<<<<<<<<<<<<
- *     self.__tradingLock        = None  # Lock for TradeWorkers to trade
+ *     self.__tradingQueue       = None  # Queue for trade             # <<<<<<<<<<<<<<
+ *     self.__tradingLock        = None  # Lock for trade
  *     self.__tradingCount       = None  # mp.Value used to hold number of deals executed
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_bTrader__tradingQueue, Py_None) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":61
  *     self.__traderLock         = None  # Lock for TradingMatrix
- *     self.__tradingQueue       = None  # Queue for TradeWorkers to trade
- *     self.__tradingLock        = None  # Lock for TradeWorkers to trade             # <<<<<<<<<<<<<<
+ *     self.__tradingQueue       = None  # Queue for trade
+ *     self.__tradingLock        = None  # Lock for trade             # <<<<<<<<<<<<<<
  *     self.__tradingCount       = None  # mp.Value used to hold number of deals executed
  * 
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_bTrader__tradingLock, Py_None) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":62
- *     self.__tradingQueue       = None  # Queue for TradeWorkers to trade
- *     self.__tradingLock        = None  # Lock for TradeWorkers to trade
+ *     self.__tradingQueue       = None  # Queue for trade
+ *     self.__tradingLock        = None  # Lock for trade
  *     self.__tradingCount       = None  # mp.Value used to hold number of deals executed             # <<<<<<<<<<<<<<
  * 
  *     # Init super

@@ -57,8 +57,8 @@ class bTrader (StoppableThread):
     self.__computeWorkers     = []    # List of ComputeWorker
     self.__traderMatrix       = None  # Main trading matrix
     self.__traderLock         = None  # Lock for TradingMatrix
-    self.__tradingQueue       = None  # Queue for TradeWorkers to trade
-    self.__tradingLock        = None  # Lock for TradeWorkers to trade
+    self.__tradingQueue       = None  # Queue for trade
+    self.__tradingLock        = None  # Lock for trade
     self.__tradingCount       = None  # mp.Value used to hold number of deals executed
 
     # Init super

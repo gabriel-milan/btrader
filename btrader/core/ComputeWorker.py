@@ -4,9 +4,9 @@ __all__ = [
 
 import logging
 from time import time
+from binance.exceptions import *
 from btrader.core.Logger import Logger
 from btrader.core.StoppableThread import StoppableThread
-from btrader.core.TradeWorker import TradeWorker
 
 class ComputeWorker (StoppableThread):
 
@@ -91,29 +91,45 @@ class ComputeWorker (StoppableThread):
   def executeDeal (self, deal):
     self.logger.debug("--> Executing deal")
     for i, action in enumerate(deal.getActions()):
+
+      # Get deal data
       buy_sell = action.getAction()
       pair = action.getPair()
       qty = self.correctQuantity(action.getQuantity(), pair)
+
+      # If action is buying
       if buy_sell == "BUY":
         try:
           self.logger.info ("#{}: Buying {} from symbol {}".format(i+1, qty, pair))
           order = self.client.order_market_buy(symbol=pair, quantity=qty)
-          status = self.client.get_order(symbol=pair, orderId=order['orderId'])
-          while (status['status'] != 'FILLED'):
-            status = self.client.get_order(symbol=pair, orderId=order['orderId'])
         except Exception as e:
           self.logger.error("Failed to execute action #{} (symbol={}, qty={})".format(i+1, pair, qty))
           raise e
+
+      # If action is selling
       elif buy_sell == "SELL":
         try:
           self.logger.info ("#{}: Selling {} from symbol {}".format(i+1, qty, pair))
           order = self.client.order_market_sell(symbol=pair, quantity=qty)
-          status = self.client.get_order(symbol=pair, orderId=order['orderId'])
-          while (status['status'] != 'FILLED'):
-            status = self.client.get_order(symbol=pair, orderId=order['orderId'])
         except Exception as e:
           self.logger.error("Failed to execute action #{} (symbol={}, qty={})".format(i+1, pair, qty))
           raise e
+
+      # If something's messed up
       else:
         self.logger.error("Unknown operation {}".format(buy_sell))
+        raise ValueError ("Unknown operation {}".format(buy_sell))
+
+      # Order checking before moving to next action
+      self.logger.debug (order)
+      status = None
+      while (status is None):
+        try:
+          status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+        except BinanceAPIException:
+          self.logger.debug("Couldn't find order yet, retrying...")
+      self.logger.debug (status)
+      while (status['status'] != 'FILLED'):
+        status = self.client.get_order(symbol=pair, orderId=order['orderId'])
+        self.logger.debug (status)
     self.logger.info("--------------------------")

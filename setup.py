@@ -33,7 +33,7 @@ extensions = [
 
 setup(
   name = 'btrader',
-  version = '0.1.2',
+  version = '0.1.3',
   license='GPL-3.0',
   description = 'Arbitrage trading bot for Binance, based on https://github.com/bmino/binance-triangle-arbitrage',
   long_description = long_description,
