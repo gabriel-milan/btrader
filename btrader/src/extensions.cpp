@@ -6,7 +6,11 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-// #include <iostream>
+// #define DEBUG_DEAL
+
+#ifdef DEBUG_DEAL
+#include <iostream>
+#endif
 
 /*
  *  Converting Python iterables to C++ vectors
@@ -80,11 +84,10 @@ double correctQuantity(double quantity, double step)
 struct Action
 {
 public:
-  Action(std::string pair, std::string action, double quantity)
+  Action(std::string pair, std::string action)
   {
     this->pair = pair;
     this->action = action;
-    this->quantity = quantity;
   }
 
   std::string getPair()
@@ -97,13 +100,7 @@ public:
     return this->action;
   }
 
-  double getQuantity()
-  {
-    return this->quantity;
-  }
-
 private:
-  double quantity;
   std::string pair;
   std::string action;
 };
@@ -114,9 +111,9 @@ private:
 struct Deal
 {
 public:
-  void addAction(std::string pair, std::string action, double quantity)
+  void addAction(std::string pair, std::string action)
   {
-    this->actions.push_back(Action(pair, action, quantity));
+    this->actions.push_back(Action(pair, action));
   }
   boost::python::list getActions()
   {
@@ -306,8 +303,10 @@ public:
     {
       // Getting initial quantity
       currentQuantity = this->qtyRange[i];
-      // std::cout << "------------------------------" << std::endl;
-      // std::cout << "Initial: " << currentQuantity << "BTC" << std::endl;
+#ifdef DEBUG_DEAL
+      std::cout << "------------------------------" << std::endl;
+      std::cout << "Initial: " << currentQuantity << "BTC" << std::endl;
+#endif
       tmpDeal = Deal();
       for (unsigned short j = 0; j < pairNames.size(); j++)
       {
@@ -320,27 +319,41 @@ public:
         {
           // Buying means diving by the price
           // When you're buying, your balance depends on the step size
+          tmpDeal.addAction(pairNames[j], pairActions[j]);
           std::vector<std::vector<double>> prices = this->pairs[pairNames[j]]->getAsks();
           for (unsigned short k = 0; k < prices.size(); k++)
           {
+#ifdef DEBUG_DEAL
+            std::cout << pairNames[j] << " Order book: Price=" << prices[k][0] << " TotalQty=" << prices[k][1] << std::endl;
+#endif
             // Each item on prices is a vector of two elements
             // Index 0 refers to the price
             // Index 1 refers to the quantity on that price
-            if (prices[k][1] >= helperQuantity)
+            tmpQuantity = correctQuantity(helperQuantity / prices[k][0], this->pairs[pairNames[j]]->getStep());
+#ifdef DEBUG_DEAL
+            std::cout << "HelperQty=" << helperQuantity << " TmpQty=" << tmpQuantity << std::endl;
+#endif
+            if (prices[k][1] >= tmpQuantity)
             {
               tmpQuantity = correctQuantity(helperQuantity / prices[k][0], this->pairs[pairNames[j]]->getStep());
               currentQuantity += tmpQuantity;
-              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << helperQuantity << " for " << currentQuantity << " " << pairNames[j] << std::endl;
-              tmpDeal.addAction(pairNames[j], pairActions[j], tmpQuantity);
+#ifdef DEBUG_DEAL
+              std::cout << "Buying quota" << std::endl;
+              std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << helperQuantity << " for " << currentQuantity << " " << pairNames[j] << "(price: " << prices[k][0] << ")" << std::endl;
+              std::cout << "--" << std::endl;
+#endif
             }
             else
             {
-              tmpQuantity = correctQuantity(prices[k][1] / prices[k][0], this->pairs[pairNames[j]]->getStep());
+              tmpQuantity = correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep());
               currentQuantity += tmpQuantity;
-              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << prices[k][1] << " for " << currentQuantity << " " << pairNames[j] << std::endl;
-              tmpDeal.addAction(pairNames[j], pairActions[j], tmpQuantity);
+#ifdef DEBUG_DEAL
+              std::cout << "Buying whole thing" << std::endl;
+              std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << (prices[k][1] * prices[k][0]) << " for " << currentQuantity << " " << pairNames[j] << "(price: " << prices[k][0] << ")" << std::endl;
+              std::cout << "--" << std::endl;
+#endif
             }
-            helperQuantity -= prices[k][1];
+            helperQuantity -= (prices[k][1] * prices[k][0]);
             if (helperQuantity <= 0)
               break;
           }
@@ -348,23 +361,33 @@ public:
         else
         {
           // Selling means multiplying by the price
+          tmpDeal.addAction(pairNames[j], pairActions[j]);
           std::vector<std::vector<double>> prices = this->pairs[pairNames[j]]->getBids();
           for (unsigned short k = 0; k < prices.size(); k++)
           {
+#ifdef DEBUG_DEAL
+            std::cout << pairNames[j] << " Order book: Price=" << prices[k][0] << " TotalQty=" << prices[k][1] << std::endl;
+#endif
             // Each item on prices is a vector of two elements
             // Index 0 refers to the price
             // Index 1 refers to the quantity on that price
             if (prices[k][1] >= helperQuantity)
             {
               currentQuantity += correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) * prices[k][0];
-              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
-              tmpDeal.addAction(pairNames[j], pairActions[j], helperQuantity);
+#ifdef DEBUG_DEAL
+              std::cout << "Selling quota" << std::endl;
+              std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(helperQuantity, this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << "(price: " << prices[k][0] << ")" << std::endl;
+              std::cout << "--" << std::endl;
+#endif
             }
             else
             {
               currentQuantity += correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) * prices[k][0];
-              // std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << std::endl;
-              tmpDeal.addAction(pairNames[j], pairActions[j], prices[k][1]);
+#ifdef DEBUG_DEAL
+              std::cout << "Selling whole thing" << std::endl;
+              std::cout << "Trade #" << j + 1 << ": " << pairActions[j] << " " << correctQuantity(prices[k][1], this->pairs[pairNames[j]]->getStep()) << " for " << currentQuantity << " " << pairNames[j] << "(price: " << prices[k][0] << ")" << std::endl;
+              std::cout << "--" << std::endl;
+#endif
             }
             helperQuantity -= prices[k][1];
             if (helperQuantity <= 0)
@@ -380,7 +403,9 @@ public:
         results = tmpDeal;
         bestProfit = profit;
       }
-      // std::cout << "Profit: " << profit << std::endl;
+#ifdef DEBUG_DEAL
+      std::cout << "Profit: " << profit << std::endl;
+#endif
     }
 
     results.setProfit(bestProfit);
@@ -408,8 +433,7 @@ BOOST_PYTHON_MODULE(extensions)
       .def("createRelationship", &TraderMatrix::createRelationship)
       .def("updatePair", &TraderMatrix::updatePair)
       .def("computeRelationship", &TraderMatrix::computeRelationship);
-  class_<Action>("Action", init<std::string, std::string, double>())
+  class_<Action>("Action", init<std::string, std::string>())
       .def("getPair", &Action::getPair)
-      .def("getAction", &Action::getAction)
-      .def("getQuantity", &Action::getQuantity);
+      .def("getAction", &Action::getAction);
 }

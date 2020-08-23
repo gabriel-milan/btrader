@@ -1887,6 +1887,7 @@ static PyObject *__pyx_pf_7btrader_4core_7bTrader_7bTrader_20run(CYTHON_UNUSED P
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
+static PyObject *__pyx_int_6;
 static PyObject *__pyx_int_8;
 static PyObject *__pyx_int_10;
 static PyObject *__pyx_int_100;
@@ -9614,6 +9615,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_6 = PyInt_FromLong(6); if (unlikely(!__pyx_int_6)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_8 = PyInt_FromLong(8); if (unlikely(!__pyx_int_8)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_10 = PyInt_FromLong(10); if (unlikely(!__pyx_int_10)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_100 = PyInt_FromLong(100); if (unlikely(!__pyx_int_100)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -10306,40 +10308,40 @@ if (!__Pyx_RefNanny) {
  * from btrader.core.TriangularRelationship import TriangularRelationship
  * 
  * SOCKET_WORKERS  = 8             # <<<<<<<<<<<<<<
- * DEPTH_WORKERS   = 8
- * COMPUTE_WORKERS = 8
+ * DEPTH_WORKERS   = 2
+ * COMPUTE_WORKERS = 6
  */
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_SOCKET_WORKERS, __pyx_int_8) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":28
  * 
  * SOCKET_WORKERS  = 8
- * DEPTH_WORKERS   = 8             # <<<<<<<<<<<<<<
- * COMPUTE_WORKERS = 8
- * TRADE_WORKERS   = 2
+ * DEPTH_WORKERS   = 2             # <<<<<<<<<<<<<<
+ * COMPUTE_WORKERS = 6
+ * TRADE_WORKERS   = 0
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DEPTH_WORKERS, __pyx_int_8) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DEPTH_WORKERS, __pyx_int_2) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":29
  * SOCKET_WORKERS  = 8
- * DEPTH_WORKERS   = 8
- * COMPUTE_WORKERS = 8             # <<<<<<<<<<<<<<
- * TRADE_WORKERS   = 2
+ * DEPTH_WORKERS   = 2
+ * COMPUTE_WORKERS = 6             # <<<<<<<<<<<<<<
+ * TRADE_WORKERS   = 0
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPUTE_WORKERS, __pyx_int_8) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPUTE_WORKERS, __pyx_int_6) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":30
- * DEPTH_WORKERS   = 8
- * COMPUTE_WORKERS = 8
- * TRADE_WORKERS   = 2             # <<<<<<<<<<<<<<
+ * DEPTH_WORKERS   = 2
+ * COMPUTE_WORKERS = 6
+ * TRADE_WORKERS   = 0             # <<<<<<<<<<<<<<
  * 
  * class bTrader (StoppableThread):
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TRADE_WORKERS, __pyx_int_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TRADE_WORKERS, __pyx_int_0) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
 
   /* "btrader/core/bTrader.py":32
- * TRADE_WORKERS   = 2
+ * TRADE_WORKERS   = 0
  * 
  * class bTrader (StoppableThread):             # <<<<<<<<<<<<<<
  * 
@@ -10533,7 +10535,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
   /* "btrader/core/bTrader.py":32
- * TRADE_WORKERS   = 2
+ * TRADE_WORKERS   = 0
  * 
  * class bTrader (StoppableThread):             # <<<<<<<<<<<<<<
  * 

@@ -25,9 +25,9 @@ from btrader.core.StoppableThread import StoppableThread
 from btrader.core.TriangularRelationship import TriangularRelationship
 
 SOCKET_WORKERS  = 8
-DEPTH_WORKERS   = 8
-COMPUTE_WORKERS = 8
-TRADE_WORKERS   = 2
+DEPTH_WORKERS   = 2
+COMPUTE_WORKERS = 6
+TRADE_WORKERS   = 0
 
 class bTrader (StoppableThread):
 
