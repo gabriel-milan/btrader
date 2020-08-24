@@ -6,7 +6,7 @@
 
   "INVESTMENT": {
     "BASE": "BTC",
-    "MIN": 0.0006,
+    "MIN": 0.0010,
     "MAX": 0.0015,
     "STEP": 0.0001
   },
@@ -14,10 +14,10 @@
   "TRADING": {
     "ENABLED": false,
     "EXECUTION_STRATEGY": "linear",
-    "EXECUTION_TEMPLATE": ["BUY", "SELL", "SELL"],
+    "EXECUTION_TEMPLATE": ["", "", ""],
     "EXECUTION_CAP": 1,
     "TAKER_FEE": 0.1,
-    "PROFIT_THRESHOLD": -10.0,
+    "PROFIT_THRESHOLD": 0.15,
     "AGE_THRESHOLD": 100,
     "WHITELIST": []
   },
