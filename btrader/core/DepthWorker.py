@@ -29,7 +29,10 @@ class DepthWorker (StoppableThread):
         self.__queueLock.release()
         # self.logger.debug("Updating symbol {} with {}s delay".format(symbol, time()-timestamp))
         self.__traderLock.acquire()
-        self.__traderMatrix.updatePair(symbol, timestamp, data['asks'], data['bids'])
+        try:
+          self.__traderMatrix.updatePair(symbol, timestamp, data['asks'], data['bids'])
+        except KeyError:
+          self.logger.error("Received data isn't OK")
         self.__traderLock.release()
       else:
         self.__queueLock.release()

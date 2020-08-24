@@ -69,7 +69,7 @@ class TelegramBot (StoppableThread):
         self.logger.debug("/age required by correct user")
         if (self.__traderMatrix is not None):
           avg, std, best = self.__traderMatrix.getAverageAge()
-          context.bot.send_message(chat_id=update.effective_chat.id, text="Age (ms): {}+-{} (latest best is {}ms)".format(avg, std, best))
+          context.bot.send_message(chat_id=update.effective_chat.id, text="Age (ms): {:.2f}+-{:.2f} (latest best is {:.2f}ms)".format(avg, std, best))
         else:
           context.bot.send_message(chat_id=update.effective_chat.id, text="Average age not available")
       else:
