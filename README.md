@@ -57,3 +57,10 @@ python3
 - [ ] TIMING
 
 ## Telegram configuration
+
+- Generate a bot token with BotFather (official tutorial [here](https://core.telegram.org/bots#6-botfather))
+- (Optional) Get your Telegram user ID with the @userinfobot
+- Fill the configuration file with your data
+- Send `/start` to your bot on Telegram so it can identify you as the main user (by doing this or configuring user ID on the config file, the bot will only respond to you)
+- Bot will notify you about executed trades or discovered deals, according to your config file
+- You can check the average/std/best age of deals by sending `/age`
