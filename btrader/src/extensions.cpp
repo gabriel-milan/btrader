@@ -443,11 +443,16 @@ public:
 
   boost::python::list getAverageAge()
   {
+    double val;
+    double bestAge = std::numeric_limits<double>::max();
     std::vector<double> results;
     boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::mean, boost::accumulators::tag::variance>> acc;
     for (unsigned int i = 0; i < this->ageDeque.size(); i++)
     {
-      acc(this->ageDeque.at(i));
+      val = this->ageDeque.at(i);
+      acc(val);
+      if (val < bestAge)
+        bestAge = val;
     }
 
 #ifdef DEBUG_AGE
@@ -456,19 +461,9 @@ public:
 
     results.push_back(boost::accumulators::mean(acc));
     results.push_back(sqrt(boost::accumulators::variance(acc)));
+    results.push_back(bestAge);
 
     return to_py_list<double>(results);
-
-    //     double sum = 0;
-    //     auto size = this->ageDeque.size();
-    //     for (unsigned int i = 0; i < size; i++)
-    //     {
-    //       sum += this->ageDeque.at(i);
-    // #ifdef DEBUG_AGE
-    //       std::cout << "Adding " << this->ageDeque.at(i) << ", sum is now" << sum << std::endl;
-    // #endif
-    //     }
-    //     return sum / size;
   }
 
 private:
