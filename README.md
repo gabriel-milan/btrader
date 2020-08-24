@@ -1,12 +1,16 @@
 # bTrader
 
-This is an arbitrage trading bot based on this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, the configuration files for both of them are fully compatible.
+This is an arbitrage trading bot based on this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, the configuration files for both of them are compatible.
+
+For further information on the status of this bot, refer to [Development status](#development-status)
 
 ## Steps to run the bot
 
 Two-step process:
 
 1. Read the configuration guide from [here](https://github.com/bmino/binance-triangle-arbitrage/blob/master/config/readme.md). I was lazy to write one of my own, so you can read it from the JS implementation repository. After that, generate your own configuration file or just edit the one on the `config/` directory on this repository.
+   **Note #1:** Telegram bot is not available on the JS implementation. For that reason, nothing on their original configuration file refers to that. If you plan on using Telegram, please read the [Telegram configuration](#telegram-configuration) section.
+   **Note #2:** Not all of the variables on their original configuration file are being used. For further information, read the [Config file compatibility](#config-file-compatibility) section.
 
 2. (Recommended) Use the Docker image (`$(pwd)/config.json` is the path to your configuration file):
 
@@ -34,8 +38,10 @@ python3
 - [x] Structure for holding trading actions and quantities
 - [x] Perform trading actions
 - [ ] Checking configuration file
+- [ ] Compatibility for LOG.LEVEL
+- [ ] Compatibility for TRADING.EXECUTION_STRATEGY and TRADING.EXECUTION_TEMPLATE
 - [ ] Best deals printing
-- [ ] Telegram bot
+- [x] Telegram bot
 - [ ] Generate binary distributions
 
 ## Config file compatibility
@@ -49,3 +55,5 @@ python3
 - [x] DEPTH [SIZE]
 - [ ] DEPTH [PRUNE, INITIALIZATION_INTERVAL]
 - [ ] TIMING
+
+## Telegram configuration

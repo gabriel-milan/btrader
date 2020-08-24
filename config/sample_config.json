@@ -42,5 +42,10 @@
     "RECEIVE_WINDOW": 5000,
     "USE_SERVER_TIME": false,
     "CALCULATION_COOLDOWN": 250
+  },
+
+  "TELEGRAM": {
+    "TOKEN": "your-telegram-bot-token",
+    "USER_ID": 0
   }
 }

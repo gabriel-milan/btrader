@@ -21,7 +21,7 @@ END: Cython Metadata */
 #else
 #define CYTHON_ABI "0_29_17"
 #define CYTHON_HEX_VERSION 0x001D11F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -1102,6 +1102,7 @@ int __pyx_module_is_main_btrader____init__ = 0;
 static const char __pyx_k_[] = "";
 static const char __pyx_k__2[] = "*";
 static const char __pyx_k_all[] = "__all__";
+static const char __pyx_k_bot[] = "bot";
 static const char __pyx_k_core[] = "core";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1114,7 +1115,7 @@ static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static PyObject *__pyx_n_s_;
 static PyObject *__pyx_n_s__2;
 static PyObject *__pyx_n_s_all;
-static PyObject *__pyx_n_s_btrader;
+static PyObject *__pyx_n_s_bot;
 static PyObject *__pyx_n_u_btrader;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_core;
@@ -1302,7 +1303,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 1, 1},
   {&__pyx_n_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
-  {&__pyx_n_s_btrader, __pyx_k_btrader, sizeof(__pyx_k_btrader), 0, 0, 1, 1},
+  {&__pyx_n_s_bot, __pyx_k_bot, sizeof(__pyx_k_bot), 0, 0, 1, 1},
   {&__pyx_n_u_btrader, __pyx_k_btrader, sizeof(__pyx_k_btrader), 0, 1, 0, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_core, __pyx_k_core, sizeof(__pyx_k_core), 0, 0, 1, 1},
@@ -1603,7 +1604,7 @@ if (!__Pyx_RefNanny) {
  * 
  * __all__ = []
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_name_2, __pyx_n_s_btrader) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_name_2, __pyx_n_u_btrader) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
 
   /* "btrader/__init__.py":3
  * name = "btrader"
@@ -1643,6 +1644,7 @@ if (!__Pyx_RefNanny) {
  * from . import core
  * __all__.extend(core.__all__)             # <<<<<<<<<<<<<<
  * from .core import *
+ * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1664,6 +1666,8 @@ if (!__Pyx_RefNanny) {
  * from . import core
  * __all__.extend(core.__all__)
  * from .core import *             # <<<<<<<<<<<<<<
+ * 
+ * from . import bot
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1676,15 +1680,74 @@ if (!__Pyx_RefNanny) {
   if (__pyx_import_star(__pyx_t_3) < 0) __PYX_ERR(0, 7, __pyx_L1_error);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
+  /* "btrader/__init__.py":9
+ * from .core import *
+ * 
+ * from . import bot             # <<<<<<<<<<<<<<
+ * __all__.extend(bot.__all__)
+ * from .bot import *
+ */
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_INCREF(__pyx_n_s_bot);
+  __Pyx_GIVEREF(__pyx_n_s_bot);
+  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_bot);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_, __pyx_t_3, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_bot); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_bot, __pyx_t_3) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "btrader/__init__.py":10
+ * 
+ * from . import bot
+ * __all__.extend(bot.__all__)             # <<<<<<<<<<<<<<
+ * from .bot import *
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_extend); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_bot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_all); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "btrader/__init__.py":11
+ * from . import bot
+ * __all__.extend(bot.__all__)
+ * from .bot import *             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_s__2);
+  __Pyx_GIVEREF(__pyx_n_s__2);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s__2);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_bot, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__pyx_import_star(__pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
   /* "btrader/__init__.py":1
  * name = "btrader"             # <<<<<<<<<<<<<<
  * 
  * __all__ = []
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /*--- Wrapped vars code ---*/
 

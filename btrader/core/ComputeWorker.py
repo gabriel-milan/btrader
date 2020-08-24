@@ -10,7 +10,7 @@ from btrader.core.StoppableThread import StoppableThread
 
 class ComputeWorker (StoppableThread):
 
-  def __init__ (self, trader_matrix, trader_lock, queue, queue_lock, config, trading_lock, trading_queue, client, counter, stepDict, level=logging.DEBUG, log_file=None, *args, **kwargs):
+  def __init__ (self, trader_matrix, trader_lock, queue, queue_lock, config, trading_lock, trading_queue, client, counter, stepDict, telegramBot=None, level=logging.DEBUG, log_file=None, *args, **kwargs):
     super (ComputeWorker, self).__init__(*args, **kwargs)
     self.__logger           = Logger(name="ComputeWorker", level=level, filename=log_file)
     self.__traderMatrix     = trader_matrix
@@ -27,6 +27,7 @@ class ComputeWorker (StoppableThread):
     self.counter            = counter
     self.maxCount           = self.__config["TRADING"]["EXECUTION_CAP"] if self.__config["TRADING"]["EXECUTION_CAP"] > 0 else float('inf')
     self.__stepDict         = stepDict
+    self.__telegramBot      = telegramBot
 
   @property
   def tradingEnabled (self):
@@ -39,6 +40,10 @@ class ComputeWorker (StoppableThread):
   @property
   def client (self):
     return self.__client
+  
+  @property
+  def telegramBot (self):
+    return self.__telegramBot
 
   def correctQuantity (self, quantity, symbol):
     step = self.__stepDict[symbol]
@@ -55,23 +60,36 @@ class ComputeWorker (StoppableThread):
         profit = deal.getProfit()
         timestamp = deal.getTimestamp()
         self.__traderLock.release()
-        if ((time()-timestamp) <= self.__ageThreshold) and (profit >= self.__profitThreshold):
-          self.logger.debug("{} \t (age: {:.2f}ms): \t {:.4f}%".format(rel.text, (time()-timestamp)*1000, profit*100))
+        age = (time()-timestamp)
+        age_ms = age*1000
+
+        if (age <= self.__ageThreshold) and (profit >= self.__profitThreshold):
+          self.logger.debug("{} \t (age: {:.2f}ms): \t {:.4f}%".format(rel.text, age_ms, profit*100))
+
           # TODO: Think of a better way of managing this lock.
           # Can trigger multiple times with the same triangle
           # if deal still worth it for couple seconds. Should
           # this be a thing? Or should I execute this trade
           # and then forget about it for a while?
+
+          self.__tradingLock.acquire()
           if self.tradingEnabled:
-            self.__tradingLock.acquire()
-            print (self.counter.value)
+            self.executeDeal(deal)
             with self.counter.get_lock():
               self.counter.value += 1
-            self.executeDeal(deal)
-            self.__tradingLock.release()
           else:
             self.logger.debug("Trading disabled (either by configuration or max count reached)")
             self.printDeal(deal)
+            self.telegramBot.sendMessage("Trading disabled (either by configuration or max count reached)")
+          self.__tradingLock.release()
+
+          if self.telegramBot is not None:
+            self.telegramBot.sendDeal(deal, age_ms)
+
+        self.__traderLock.acquire()
+        self.__traderMatrix.addAge(age_ms)
+        self.__traderLock.release()
+
         self.__queue.put(rel)
       else:
         self.__queueLock.release()

@@ -17,6 +17,7 @@ from binance.client import Client
 from multiprocessing import Value
 from btrader.core.Logger import Logger
 from btrader.extensions import TraderMatrix, Deal
+from btrader.bot.TelegramBot import TelegramBot
 from btrader.core.DepthWorker import DepthWorker
 from btrader.core.TradingPair import TradingPair
 from binance.websockets import BinanceSocketManager
@@ -86,6 +87,24 @@ class bTrader (StoppableThread):
     )
     self.__traderLock = Lock()
 
+    # Trying to configure Telegram Bot
+    if 'TELEGRAM' not in self.__config:
+      self.logger.info("Telegram configuration is not available at configuration file, skipping...")
+      self.__telegramBot = None
+    else:
+      try:
+        self.__telegramBot = TelegramBot(
+          token=self.__config['TELEGRAM']['TOKEN'],
+          user_id=self.__config['TELEGRAM']['USER_ID'],
+          level=level,
+          log_file=log_file,
+          trader_matrix=self.__traderMatrix,
+        )
+        self.__telegramBot.start()
+      except Exception as e:
+        self.logger.error("Failed to setup Telegram Bot")
+        raise e
+
   @property
   def info (self):
     return self.__info
@@ -97,6 +116,10 @@ class bTrader (StoppableThread):
   @property
   def logger (self):
     return self.__logger
+
+  @property
+  def telegramBot (self):
+    return self.__telegramBot
 
   def initialize(self):
     # Connecting to Binance
@@ -246,11 +269,12 @@ class bTrader (StoppableThread):
         queue=self.__relationshipQueue,
         queue_lock=self.__relationshipLock,
         config=self.__config,
-        trading_lock = self.__tradingLock,
-        trading_queue = self.__tradingQueue,
-        client = self.__client,
-        counter = self.__tradingCount,
-        stepDict = self.__stepDict,
+        trading_lock=self.__tradingLock,
+        trading_queue=self.__tradingQueue,
+        client=self.__client,
+        counter=self.__tradingCount,
+        stepDict=self.__stepDict,
+        telegramBot=self.telegramBot,
       )
       worker.setDaemon(True)
       worker.start()

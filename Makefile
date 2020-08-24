@@ -10,6 +10,8 @@ install:
 	python3 setup.py install
 run_test:
 	python3 test/test.py
+run_test_bot:
+	python3 test/test_bot.py
 dist:
 	rm -f dist/*
 	python3 setup.py sdist

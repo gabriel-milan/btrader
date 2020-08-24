@@ -1,14 +1,24 @@
 #include <map>
+#include <deque>
 #include <limits>
 #include <math.h>
 #include <string>
 #include <vector>
 #include <boost/python.hpp>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/variance.hpp>
 using namespace boost::python;
 
+// #define DEBUG_AGE
 // #define DEBUG_DEAL
 
 #ifdef DEBUG_DEAL
+#include <iostream>
+#endif
+
+#ifdef DEBUG_AGE
 #include <iostream>
 #endif
 
@@ -260,6 +270,7 @@ public:
   void createPair(std::string symbol, double step)
   {
     this->pairs.insert(std::make_pair(symbol, new Pair(symbol, step)));
+    this->pairsLen++;
   }
 
   void createRelationship(std::string relationshipName, boost::python::list pairs, boost::python::list actions)
@@ -421,9 +432,50 @@ public:
     return results;
   }
 
+  void addAge(double age)
+  {
+    if (age > 1e10)
+      return;
+    if (this->ageDeque.size() >= this->pairsLen)
+      this->ageDeque.pop_front();
+    this->ageDeque.push_back(age);
+  }
+
+  boost::python::list getAverageAge()
+  {
+    std::vector<double> results;
+    boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::mean, boost::accumulators::tag::variance>> acc;
+    for (unsigned int i = 0; i < this->ageDeque.size(); i++)
+    {
+      acc(this->ageDeque.at(i));
+    }
+
+#ifdef DEBUG_AGE
+    std::cout << "Size: " << this->ageDeque.size() << " / Count: " << boost::accumulators::count(acc) << " / Mean: " << boost::accumulators::mean(acc) << " / Std: " << sqrt(boost::accumulators::variance(acc)) << std::endl;
+#endif
+
+    results.push_back(boost::accumulators::mean(acc));
+    results.push_back(sqrt(boost::accumulators::variance(acc)));
+
+    return to_py_list<double>(results);
+
+    //     double sum = 0;
+    //     auto size = this->ageDeque.size();
+    //     for (unsigned int i = 0; i < size; i++)
+    //     {
+    //       sum += this->ageDeque.at(i);
+    // #ifdef DEBUG_AGE
+    //       std::cout << "Adding " << this->ageDeque.at(i) << ", sum is now" << sum << std::endl;
+    // #endif
+    //     }
+    //     return sum / size;
+  }
+
 private:
   double fee;
+  double pairsLen = 0;
   double feeMultiplier;
+  std::deque<double> ageDeque;
   std::vector<double> qtyRange;
   std::map<std::string, Pair *> pairs;
   std::map<std::string, Relationship *> relationships;
@@ -439,7 +491,9 @@ BOOST_PYTHON_MODULE(extensions)
       .def("createPair", &TraderMatrix::createPair)
       .def("createRelationship", &TraderMatrix::createRelationship)
       .def("updatePair", &TraderMatrix::updatePair)
-      .def("computeRelationship", &TraderMatrix::computeRelationship);
+      .def("computeRelationship", &TraderMatrix::computeRelationship)
+      .def("addAge", &TraderMatrix::addAge)
+      .def("getAverageAge", &TraderMatrix::getAverageAge);
   class_<Action>("Action", init<std::string, std::string, double>())
       .def("getPair", &Action::getPair)
       .def("getAction", &Action::getAction)
