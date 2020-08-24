@@ -32,7 +32,7 @@ python3
 - [x] Filtering and showing viable operations
 - [x] Implement asset step size
 - [x] Structure for holding trading actions and quantities
-- [ ] Perform trading actions
+- [x] Perform trading actions
 - [ ] Checking configuration file
 - [ ] Best deals printing
 - [ ] Telegram bot
