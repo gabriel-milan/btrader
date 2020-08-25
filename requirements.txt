@@ -1,3 +1,4 @@
 Cython==0.29.17
 python_binance==0.7.5
 numpy==1.18.1
+python_telegram_bot==12.8
