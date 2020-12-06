@@ -2,6 +2,9 @@
 
 This is an arbitrage trading bot based on this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, the configuration files for both of them are compatible.
 
+Refactor in progress, everything will be rewritten in Rust for performance improvement.
+
+<!--
 For further information on the status of this bot, refer to [Development status](#development-status)
 
 ## Steps to run the bot
@@ -12,7 +15,7 @@ Two-step process:
    **Note #1:** Telegram bot is not available on the JS implementation. For that reason, nothing on their original configuration file refers to that. If you plan on using Telegram, please read the [Telegram configuration](#telegram-configuration) section.
    **Note #2:** Not all of the variables on their original configuration file are being used. For further information, read the [Config file compatibility](#config-file-compatibility) section.
 
-2. (Recommended) Use the Docker image (`$(pwd)/config.json` is the path to your configuration file):
+2. (For testing purposes) Use the Docker image (`$(pwd)/config.json` is the path to your configuration file):
 
 ```
 docker run -it --name btrader -v $(pwd)/config.json:/config.json gabrielmilan/btrader
@@ -26,9 +29,9 @@ python3
 >>>> from btrader import bTrader
 >>>> bot = bTrader("config.json")
 >>>> bot.run()
-```
+``` -->
 
-## Development status
+<!-- ## Development status
 
 - [x] C++ implementation of calculations
 - [x] Monitoring websockets
@@ -63,4 +66,4 @@ python3
 - Fill the configuration file with your data
 - Send `/start` to your bot on Telegram so it can identify you as the main user (by doing this or configuring user ID on the config file, the bot will only respond to you)
 - Bot will notify you about executed trades or discovered deals, according to your config file
-- You can check the average/std/best age of deals by sending `/age`
+- You can check the average/std/best age of deals by sending `/age` -->

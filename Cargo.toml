@@ -1,0 +1,19 @@
+[package]
+name = "btrader"
+version = "0.2.0"
+authors = ["Gabriel Gazola Milan <gabriel.gazola@poli.ufrj.br>"]
+edition = "2018"
+description = "Arbitrage trading bot for Binance"
+homepage = "https://github.com/gabriel-milan/btrader"
+repository = "https://github.com/gabriel-milan/btrader"
+license="GPL-3.0"
+keywords=["bot", "algotrading", "cryptocurrencies", "binance", "bitcoin", "arbitrage"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+binance = { git = "https://github.com/wisespace-io/binance-rs.git" }
+
+[lib]
+name = "btrader"
+path = "src/main.rs"
