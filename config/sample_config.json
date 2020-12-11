@@ -1,51 +1,20 @@
 {
-  "KEYS": {
-    "API": "your-api-key-here",
-    "SECRET": "your-api-secret-here"
-  },
+  "api_key": "your-api-key-here",
+  "api_secret": "your-api-secret-here",
 
-  "INVESTMENT": {
-    "BASE": "BTC",
-    "MIN": 0.0010,
-    "MAX": 0.0015,
-    "STEP": 0.0001
-  },
+  "investment_base" : "BTC",
+  "investment_min" : 0.0010,
+  "investment_max" : 0.0015,
+  "investment_step" : 0.0001,
 
-  "TRADING": {
-    "ENABLED": false,
-    "EXECUTION_STRATEGY": "linear",
-    "EXECUTION_TEMPLATE": ["", "", ""],
-    "EXECUTION_CAP": 1,
-    "TAKER_FEE": 0.1,
-    "PROFIT_THRESHOLD": 0.15,
-    "AGE_THRESHOLD": 100,
-    "WHITELIST": []
-  },
+  "trading_enabled" : false,
+  "trading_execution_cap" : 1,
+  "trading_taker_fee" : 0.1,
+  "trading_profit_threshold" : 0.15,
+  "trading_age_threshold" : 100,
 
-  "HUD": {
-    "ENABLED": true,
-    "ARB_COUNT": 10
-  },
+  "depth_size" : 20,
 
-  "LOG": {
-    "LEVEL": "debug",
-    "PRETTY_PRINT": true
-  },
-
-  "DEPTH": {
-    "SIZE": 20,
-    "PRUNE": true,
-    "INITIALIZATION_INTERVAL": 75
-  },
-
-  "TIMING": {
-    "RECEIVE_WINDOW": 5000,
-    "USE_SERVER_TIME": false,
-    "CALCULATION_COOLDOWN": 250
-  },
-
-  "TELEGRAM": {
-    "TOKEN": "your-telegram-bot-token",
-    "USER_ID": 0
-  }
+  "telegram_token" : "your-telegram-bot-token",
+  "telegram_user_id" : 0
 }

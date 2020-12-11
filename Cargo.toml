@@ -13,7 +13,18 @@ keywords=["bot", "algotrading", "cryptocurrencies", "binance", "bitcoin", "arbit
 
 [dependencies]
 binance = { git = "https://github.com/wisespace-io/binance-rs.git" }
+serde = { version = "1.0" }
+serde_json = { version = "1.0" }
+log = "0.4"
+simple_logger = "1.11"
+rayon = "1.5"
+dashmap = "3.11"
+queues = "1.1"
+retain_mut = "0.1"
+indicatif = "0.15"
+console = "0.13"
+rand = "0.7"
 
 [lib]
 name = "btrader"
-path = "src/main.rs"
+path = "src/lib.rs"

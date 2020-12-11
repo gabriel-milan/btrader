@@ -1,0 +1,179 @@
+use crate::config::Configuration;
+use crate::depth_cache::DepthCache;
+use crate::trading_pair::TradingPair;
+use crate::triangular_relationship::TriangularRelationship;
+use binance::api::*;
+use binance::general::*;
+use binance::model::*;
+use console::style;
+use std::collections::HashMap;
+use std::fmt;
+use std::thread::sleep;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+/*
+ *  bTrader
+ */
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+pub struct bTrader {
+  config: Configuration,
+  pairs: Vec<String>,
+  relationships: HashMap<String, TriangularRelationship>,
+  depth_cache: DepthCache,
+  setup: bool,
+}
+
+impl fmt::Display for bTrader {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "<bTrader>")
+  }
+}
+
+impl bTrader {
+  // Constructor
+  pub fn new<'a>(config_path: &'a str) -> bTrader {
+    // Starting with configuration
+    let config: Configuration = Configuration::new(config_path);
+    // Getting information from Binance...
+    print!("{} Connecting to Binance...", style("[1/7]").bold().dim(),);
+    let general: General = Binance::new(None, None);
+    println!(" Successfully connected!");
+    // Get trading pairs
+    print!("{} Getting trading pairs...", style("[2/7]").bold().dim(),);
+    let mut pairs: Vec<TradingPair> = Vec::new();
+    let result = match general.exchange_info() {
+      Ok(answer) => answer,
+      Err(e) => panic!("Error on getting exchange info: {}", e),
+    };
+    for symbol in &result.symbols {
+      // Checks if symbol is currently trading
+      if symbol.status == "TRADING" {
+        let mut step: f64 = 0.0;
+        // Get step for this symbol
+        for filter in &symbol.filters {
+          match filter {
+            Filters::LotSize {
+              min_qty: _,
+              max_qty: _,
+              step_size,
+            } => step = step_size.parse().unwrap(),
+            _ => (),
+          };
+        }
+        pairs.push(TradingPair::new(
+          format!("{}", symbol.symbol),
+          format!("{}", symbol.base_asset),
+          format!("{}", symbol.quote_asset),
+          step,
+        ));
+      }
+    }
+    println!(" {} symbols found!", pairs.len());
+    // Get start/end pairs
+    print!(
+      "{} Getting arbitrage deal starters...",
+      style("[3/7]").bold().dim(),
+    );
+    let mut starters: Vec<TradingPair> = Vec::new();
+    for pair in &pairs {
+      if pair.has_asset(format!("{}", config.investment_base)) {
+        starters.push(pair.clone());
+      }
+    }
+    println!(
+      " {} symbols could start or end a triangular operation.",
+      starters.len()
+    );
+    // Get relationships
+    print!(
+      "{} Computing triangular relationships...",
+      style("[4/7]").bold().dim(),
+    );
+    let mut relationships: HashMap<String, TriangularRelationship> = HashMap::new();
+    let mut socket_pairs: Vec<String> = Vec::new();
+    for (i, start_pair) in starters[0..starters.len() - 1].iter().enumerate() {
+      for end_pair in starters[i + 1..starters.len()].iter() {
+        let middle = TradingPair::new(
+          "".to_string(),
+          start_pair.get_the_other(format!("{}", config.investment_base)),
+          end_pair.get_the_other(format!("{}", config.investment_base)),
+          0.0,
+        );
+        for middle_pair in pairs.iter() {
+          if middle_pair == &middle {
+            // Add start pair to sockets list
+            if !socket_pairs.contains(&start_pair.get_symbol()) {
+              socket_pairs.push(start_pair.get_symbol());
+            }
+            // Add middle pair to sockets list
+            if !socket_pairs.contains(&middle_pair.get_symbol()) {
+              socket_pairs.push(middle_pair.get_symbol());
+            }
+            // Add end pair to sockets list
+            if !socket_pairs.contains(&end_pair.get_symbol()) {
+              socket_pairs.push(end_pair.get_symbol());
+            }
+            relationships.insert(
+              format!(
+                "{} -> {} -> {}",
+                start_pair.get_symbol(),
+                middle_pair.get_symbol(),
+                end_pair.get_symbol()
+              ),
+              TriangularRelationship::new(
+                format!("{}", config.investment_base),
+                TradingPair::new(
+                  start_pair.get_symbol(),
+                  start_pair.get_base_asset(),
+                  start_pair.get_quote_asset(),
+                  start_pair.get_step(),
+                ),
+                TradingPair::new(
+                  middle_pair.get_symbol(),
+                  middle_pair.get_base_asset(),
+                  middle_pair.get_quote_asset(),
+                  middle_pair.get_step(),
+                ),
+                TradingPair::new(
+                  end_pair.get_symbol(),
+                  end_pair.get_base_asset(),
+                  end_pair.get_quote_asset(),
+                  end_pair.get_step(),
+                ),
+              ),
+            );
+            break;
+          }
+        }
+      }
+    }
+    println!(
+      " {} triangular relationships found, will have to handle {} websockets",
+      relationships.len(),
+      socket_pairs.len()
+    );
+    bTrader {
+      config: config,
+      pairs: socket_pairs.clone(),
+      relationships: relationships,
+      depth_cache: DepthCache::new(&socket_pairs),
+      setup: false,
+    }
+  }
+  // Execute
+  pub fn run(&mut self) -> () {
+    loop {
+      // sleep(Duration::from_secs(5));
+      // let book = self.depth_cache.get_depth(&String::from("ETHBTC"));
+      // println!(
+      //   "{}",
+      //   SystemTime::now()
+      //     .duration_since(UNIX_EPOCH)
+      //     .unwrap()
+      //     .as_millis() as u64
+      //     - book.event_time
+      // )
+    }
+  }
+}
