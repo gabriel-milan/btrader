@@ -8,8 +8,9 @@ use rayon::prelude::*;
 use std::collections::{HashMap, VecDeque};
 use std::sync::atomic::AtomicBool;
 use std::sync::mpsc::{self, Receiver, Sender};
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, Mutex, RwLock};
 use std::thread;
+use std::time::Duration;
 
 #[derive(Debug, Clone)]
 pub struct LocalOrderBook {
@@ -23,13 +24,17 @@ pub struct LocalOrderBook {
 #[derive(Debug)]
 pub struct DepthCache {
   map: Arc<RwLock<HashMap<String, LocalOrderBook>>>,
-  in_tx: Sender<String>,
-  out_rx: Receiver<LocalOrderBook>,
+  in_tx: Mutex<Sender<String>>,
+  out_rx: Mutex<Receiver<LocalOrderBook>>,
 }
 
 impl DepthCache {
   // Constructor
-  pub fn new(symbol_vec: &Vec<String>) -> DepthCache {
+  pub fn new(
+    symbol_vec: &Vec<String>,
+    threads_enqueue: u32,
+    threads_process_queue: u32,
+  ) -> DepthCache {
     let symbols = symbol_vec.clone();
     let queue: Arc<RwLock<VecDeque<DepthOrderBookEvent>>> = Arc::new(RwLock::new(VecDeque::new()));
     let global_map: Arc<RwLock<HashMap<String, LocalOrderBook>>> =
@@ -42,88 +47,100 @@ impl DepthCache {
       "{} Starting thread for enqueueing diff depth stream events...",
       style("[5/7]").bold().dim(),
     );
-    start_enqueue_diffs(&symbols, queue.clone());
+    start_enqueue_diffs(&symbols, queue.clone(), threads_enqueue);
     /*
-     * Starts thread that keep updating the HashMap using the enqueued data
+     * Starts threads that keep updating the HashMap using the enqueued data
      */
-    thread::spawn(move || {
-      // Initialize stuff
-      let market: Market = Binance::new(None, None);
-      // Initialize keys on Dashmap
-      println!(
-        "{} Getting snapshots for starter depth books...",
-        style("[6/7]").bold().dim(),
+    println!(
+      "{} Getting snapshots for starter depth books...",
+      style("[6/7]").bold().dim(),
+    );
+    // Initialize stuff
+    let market: Market = Binance::new(None, None);
+    // Initialize keys on Dashmap
+    let pb = ProgressBar::new(symbols.len() as u64);
+    symbols.par_iter().for_each(|symbol| {
+      let order_book: OrderBook = get_snapshot(&market, symbol);
+      let mut m = match map.write() {
+        Ok(v) => v,
+        Err(e) => panic!("Failed to get map for writing while enqueueing data: {}", e),
+      };
+      m.insert(
+        format!("{}", symbol),
+        LocalOrderBook {
+          first_event: true,
+          last_update_id: order_book.last_update_id,
+          event_time: 0,
+          bids: order_book.bids,
+          asks: order_book.asks,
+        },
       );
-      let pb = ProgressBar::new(symbols.len() as u64);
-      symbols.par_iter().for_each(|symbol| {
-        let order_book: OrderBook = get_snapshot(&market, symbol);
-        let mut m = match map.write() {
-          Ok(v) => v,
-          Err(e) => panic!("Failed to get map for writing while enqueueing data: {}", e),
-        };
-        m.insert(
-          format!("{}", symbol),
-          LocalOrderBook {
-            first_event: true,
-            last_update_id: order_book.last_update_id,
-            event_time: 0,
-            bids: order_book.bids,
-            asks: order_book.asks,
-          },
-        );
-        pb.inc(1);
-      });
-      pb.finish_and_clear();
-      print!(
-        "{} Processing depth stream events...",
-        style("[7/7]").bold().dim(),
-      );
-      // Loop processing queue
-      let mut processed = false;
-      loop {
-        let mut q = match queue.write() {
-          Ok(v) => v,
-          Err(e) => panic!(
-            "Failed to get queue for write while processing queue: {}",
-            e
-          ),
-        };
-        if !processed {
-          if q.len() == 0 {
-            processed = true;
-            println!(" done! Trader is now operating")
-          }
-        }
-        match q.pop_front() {
-          Some(event) => {
-            let mut this_map = match map.write() {
-              Ok(m) => m,
-              Err(e) => panic!("Failed to get map for write while processing queue: {}", e),
-            };
-            let mut local_order_book = this_map.get_mut(&event.symbol).unwrap();
-            // First event for this symbol (step 5)
-            if local_order_book.first_event {
-              if (event.first_update_id <= local_order_book.last_update_id + 1)
-                && (event.final_update_id >= local_order_book.last_update_id + 1)
-              {
-                // Update
-                update_local_order_book(event, &mut local_order_book);
-              }
-            }
-            // Every other event after first one (step 6)
-            else {
-              if event.first_update_id == local_order_book.last_update_id + 1 {
-                // Update
-                update_local_order_book(event, &mut local_order_book);
-              }
-            }
-          }
-          None => (),
-        };
-      }
+      pb.inc(1);
     });
+    pb.finish_and_clear();
+    print!(
+      "{} Processing depth stream events...",
+      style("[7/7]").bold().dim(),
+    );
+    for _ in 0..threads_process_queue {
+      let map_clone = map.clone();
+      let queue_clone = queue.clone();
+      thread::spawn(move || {
+        // Loop processing queue
+        let mut processed = false;
+        loop {
+          let mut q = match queue_clone.write() {
+            Ok(v) => v,
+            Err(e) => panic!(
+              "Failed to get queue for write while processing queue: {}",
+              e
+            ),
+          };
+          // println!("Queue size: {}", q.len());
+          if !processed {
+            if q.len() == 0 {
+              processed = true;
+              println!(" done! Trader is now operating")
+            }
+          }
+          match q.pop_front() {
+            Some(event) => {
+              let mut this_map = match map_clone.write() {
+                Ok(m) => m,
+                Err(e) => panic!("Failed to get map for write while processing queue: {}", e),
+              };
+              let mut local_order_book = this_map.get_mut(&event.symbol).unwrap();
+              // First event for this symbol (step 5)
+              if local_order_book.first_event {
+                if (event.first_update_id <= local_order_book.last_update_id + 1)
+                  && (event.final_update_id >= local_order_book.last_update_id + 1)
+                {
+                  // Update
+                  update_local_order_book(event, &mut local_order_book);
+                }
+              }
+              // Every other event after first one (step 6)
+              else {
+                if event.first_update_id == local_order_book.last_update_id + 1 {
+                  // Update
+                  // println!(
+                  //   "Updating symbol {}, queue length is {}",
+                  //   event.symbol,
+                  //   q.len()
+                  // );
+                  update_local_order_book(event, &mut local_order_book);
+                }
+              }
+            }
+            None => (),
+          };
+        }
+      });
+    }
     let (in_tx, in_rx): (Sender<String>, Receiver<String>) = mpsc::channel();
     let (out_tx, out_rx): (Sender<LocalOrderBook>, Receiver<LocalOrderBook>) = mpsc::channel();
+    let in_tx_mutex = Mutex::new(in_tx);
+    let out_rx_mutex = Mutex::new(out_rx);
     let read_map = global_map.clone();
     /*
      * Starts thread that will handle requests for depth cache
@@ -137,16 +154,16 @@ impl DepthCache {
     });
     DepthCache {
       map: global_map,
-      in_tx: in_tx,
-      out_rx: out_rx,
+      in_tx: in_tx_mutex,
+      out_rx: out_rx_mutex,
     }
   }
   // Requires data from HashMap
   pub fn get_depth(&self, symbol: &String) -> LocalOrderBook {
-    if let Err(e) = self.in_tx.send(symbol.clone()) {
+    if let Err(e) = self.in_tx.lock().unwrap().send(symbol.clone()) {
       panic!("Failed to send data to thread, err={}", e);
     };
-    self.out_rx.recv().unwrap()
+    self.out_rx.lock().unwrap().recv().unwrap()
   }
 }
 
@@ -161,36 +178,45 @@ fn get_snapshot(market: &Market, symbol: &String) -> OrderBook {
   res
 }
 
-fn start_enqueue_diffs(symbols: &Vec<String>, queue: Arc<RwLock<VecDeque<DepthOrderBookEvent>>>) {
-  let thread_symbols = symbols.clone();
-  thread::spawn(move || {
-    let mut start_str: String;
-    if thread_symbols.len() > 0 {
-      start_str = format!("{}@depth@100ms", thread_symbols[0].to_lowercase());
-    } else {
-      panic!("Must have at least one symbol!");
-    }
-    for symbol in &thread_symbols[1..thread_symbols.len()] {
-      start_str.push_str(&format!("/{}@depth@100ms", symbol.to_lowercase()));
-    }
-    let keep_running = AtomicBool::new(true);
-    let mut web_socket: WebSockets<'_> = WebSockets::new(|event: WebsocketEvent| {
-      match event {
-        WebsocketEvent::DepthOrderBook(depth_order_book) => {
-          queue.write().unwrap().push_back(depth_order_book);
-          // println!("Adding to queue: {}", queue.read().unwrap().len());
+fn start_enqueue_diffs(
+  symbols: &Vec<String>,
+  queue: Arc<RwLock<VecDeque<DepthOrderBookEvent>>>,
+  threads_enqueue: u32,
+) {
+  let queue_clone = queue.clone();
+  let mut symbols_clone = symbols.clone().into_iter().peekable();
+  let chunk_size = symbols_clone.len() / threads_enqueue as usize;
+  while symbols_clone.peek().is_some() {
+    let chunk: Vec<String> = symbols_clone.by_ref().take(chunk_size).collect();
+    let thread_symbols = chunk.clone();
+    // println!("Thread symbols: {:?}", thread_symbols);
+    let thread_queue = queue_clone.clone();
+    thread::spawn(move || {
+      let mut endpoints: Vec<String> = Vec::new();
+      for symbol in thread_symbols.iter() {
+        endpoints.push(format!("{}@depth@100ms", symbol.to_lowercase()));
+      }
+      loop {
+        let keep_running = AtomicBool::new(true);
+        let mut web_socket: WebSockets<'_> = WebSockets::new(|event: WebsocketEvent| {
+          match event {
+            WebsocketEvent::DepthOrderBook(depth_order_book) => {
+              thread_queue.write().unwrap().push_back(depth_order_book);
+              // println!("Adding to queue: {}", queue.read().unwrap().len());
+            }
+            _ => (),
+          };
+          Ok(())
+        });
+        web_socket.connect_multiple_streams(&endpoints).unwrap(); // check error
+        if let Err(_) = web_socket.event_loop(&keep_running) {
+          thread::sleep(Duration::from_secs(1));
         }
-        _ => (),
-      };
-      Ok(())
+        if let Err(_) = web_socket.disconnect() {}
+        // println!("Enqueue thread disconnected.");
+      }
     });
-    web_socket.connect(&start_str).unwrap(); // check error
-    if let Err(e) = web_socket.event_loop(&keep_running) {
-      panic!("Error while enqueuing diffs: {}", e);
-    }
-    web_socket.disconnect().unwrap();
-    // println!("Enqueue thread disconnected.");
-  });
+  }
 }
 
 fn update_local_order_book(event: DepthOrderBookEvent, lob: &mut LocalOrderBook) -> () {
@@ -200,6 +226,9 @@ fn update_local_order_book(event: DepthOrderBookEvent, lob: &mut LocalOrderBook)
   lob.last_update_id = event.final_update_id;
   // Update event_time
   lob.event_time = event.event_time;
+  if event.symbol == "ETHBTC" {
+    // println!("lob {}, ev {}", lob.event_time, event.event_time);
+  }
   // Iterate over event bids
   for ev_bid in &event.bids {
     // Find bid price on LocalOrderBook bids

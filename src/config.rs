@@ -5,7 +5,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Configuration {
   pub api_key: String,
   pub api_secret: String,
@@ -17,7 +17,7 @@ pub struct Configuration {
   pub trading_execution_cap: i32,
   pub trading_taker_fee: f64,
   pub trading_profit_threshold: f64,
-  pub trading_age_threshold: i32,
+  pub trading_age_threshold: u64,
   pub depth_size: i32,
   pub telegram_token: String,
   pub telegram_user_id: i64,

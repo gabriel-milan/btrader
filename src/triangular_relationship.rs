@@ -103,6 +103,14 @@ impl TriangularRelationship {
     ]
   }
 
+  pub fn get_trading_pairs(&self) -> [TradingPair; 3] {
+    [self.start.clone(), self.middle.clone(), self.end.clone()]
+  }
+
+  pub fn get_actions(&self) -> [String; 3] {
+    self.actions.clone()
+  }
+
   pub fn text(&self) -> String {
     format!(
       "{} -> {} -> {}",

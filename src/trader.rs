@@ -1,3 +1,4 @@
+use crate::calculation_cluster::CalculationCluster;
 use crate::config::Configuration;
 use crate::depth_cache::DepthCache;
 use crate::trading_pair::TradingPair;
@@ -8,8 +9,6 @@ use binance::model::*;
 use console::style;
 use std::collections::HashMap;
 use std::fmt;
-use std::thread::sleep;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /*
  *  bTrader
@@ -20,8 +19,7 @@ pub struct bTrader {
   config: Configuration,
   pairs: Vec<String>,
   relationships: HashMap<String, TriangularRelationship>,
-  depth_cache: DepthCache,
-  setup: bool,
+  calculation_cluster: CalculationCluster,
 }
 
 impl fmt::Display for bTrader {
@@ -153,27 +151,18 @@ impl bTrader {
       relationships.len(),
       socket_pairs.len()
     );
+    let depth_cache = DepthCache::new(&socket_pairs, 8, 1);
+    let calculation_cluster =
+      CalculationCluster::new(relationships.clone(), depth_cache, config.clone());
     bTrader {
       config: config,
       pairs: socket_pairs.clone(),
       relationships: relationships,
-      depth_cache: DepthCache::new(&socket_pairs),
-      setup: false,
+      calculation_cluster: calculation_cluster,
     }
   }
   // Execute
-  pub fn run(&mut self) -> () {
-    loop {
-      // sleep(Duration::from_secs(5));
-      // let book = self.depth_cache.get_depth(&String::from("ETHBTC"));
-      // println!(
-      //   "{}",
-      //   SystemTime::now()
-      //     .duration_since(UNIX_EPOCH)
-      //     .unwrap()
-      //     .as_millis() as u64
-      //     - book.event_time
-      // )
-    }
+  pub fn run(&self) -> () {
+    self.calculation_cluster.start();
   }
 }
