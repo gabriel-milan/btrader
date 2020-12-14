@@ -47,7 +47,9 @@ impl CalculationCluster {
         {
           println!(
             "[{}] Deal: {:?}...",
-            style(format!("{:+.3}%", deal.get_profit())).bold().dim(),
+            style(format!("{:+.3}%", deal.get_profit() * 100.0))
+              .bold()
+              .dim(),
             deal.get_actions()
           );
           if self.config.trading_enabled {
@@ -73,7 +75,13 @@ impl CalculationCluster {
     (quantity / step).floor() * step
   }
   fn custom_round(&self, quantity: f64, step: f64) -> f64 {
-    (quantity / step).round() * step
+    let mut step = step;
+    let mut power: usize = 0;
+    while step < 1.0 {
+      step *= 10.0;
+      power += 1;
+    }
+    format!("{:.1$}", quantity, power).parse().unwrap()
   }
   fn calculate_relationship(&self, relationship: TriangularRelationship) -> Deal {
     let pairs = relationship.get_trading_pairs();
