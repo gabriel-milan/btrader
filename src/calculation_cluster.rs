@@ -33,9 +33,12 @@ impl CalculationCluster {
     }
   }
   pub fn start(&self) {
+    let mut execution_count = 0;
     let relationships = self.relationships.clone();
     let relationships_names: Vec<String> = self.relationships.keys().cloned().collect();
-    loop {
+    while execution_count < self.config.trading_execution_cap
+      || self.config.trading_execution_cap == -1
+    {
       relationships_names.iter().for_each(|rel| {
         // println!("------------------------------------------------------------------------------------------------");
         let deal = self.calculate_relationship(relationships.get(rel).unwrap().clone());
@@ -49,6 +52,7 @@ impl CalculationCluster {
           );
           if self.config.trading_enabled {
             self.execute_deal(deal);
+            execution_count += 1;
           } else {
             println!(
               "[{}] Trading is not enabled, skipping...",
