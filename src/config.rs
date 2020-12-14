@@ -31,7 +31,7 @@ impl fmt::Display for Configuration {
 
 impl Configuration {
   // Constructor
-  pub fn new<'a>(config_path: &'a str) -> Configuration {
+  pub fn new(config_path: &str) -> Configuration {
     match Configuration::parse_config_file(config_path) {
       Ok(v) => v,
       Err(e) => panic!("Failed to parse configuration file, error is {}", e),

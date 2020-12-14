@@ -1,16 +1,20 @@
 use crate::config::Configuration;
 use crate::depth_cache::DepthCache;
+use crate::trading_pair::TradingPair;
 use crate::triangular_relationship::TriangularRelationship;
+use binance::account::*;
+use binance::api::*;
+use binance::model::*;
 use console::style;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-#[derive(Debug)]
 pub struct CalculationCluster {
   relationships: HashMap<String, TriangularRelationship>,
   depth_cache: DepthCache,
   config: Configuration,
+  account: Account,
 }
 
 impl CalculationCluster {
@@ -19,20 +23,23 @@ impl CalculationCluster {
     depth_cache: DepthCache,
     config: Configuration,
   ) -> CalculationCluster {
+    let config_clone = config.clone();
+    let account: Account = Binance::new(Some(config_clone.api_key), Some(config_clone.api_secret));
     CalculationCluster {
-      relationships: relationships,
-      depth_cache: depth_cache,
-      config: config,
+      relationships,
+      depth_cache,
+      config,
+      account,
     }
   }
-  pub fn start(&self) -> () {
+  pub fn start(&self) {
     let relationships = self.relationships.clone();
     let relationships_names: Vec<String> = self.relationships.keys().cloned().collect();
     loop {
       relationships_names.iter().for_each(|rel| {
         // println!("------------------------------------------------------------------------------------------------");
         let deal = self.calculate_relationship(relationships.get(rel).unwrap().clone());
-        if (deal.get_profit() >= self.config.trading_profit_threshold)
+        if (deal.get_profit() >= (self.config.trading_profit_threshold / 100.0))
           && ((self.get_epoch_ms() - deal.get_timestamp()) <= self.config.trading_age_threshold)
         {
           println!(
@@ -40,6 +47,14 @@ impl CalculationCluster {
             style(format!("{:+.3}%", deal.get_profit())).bold().dim(),
             deal.get_actions()
           );
+          if self.config.trading_enabled {
+            self.execute_deal(deal);
+          } else {
+            println!(
+              "[{}] Trading is not enabled, skipping...",
+              style("INFO").bold().dim()
+            )
+          }
         }
       })
     }
@@ -129,11 +144,11 @@ impl CalculationCluster {
               break;
             }
           }
-          tmp_deal.add_action(pair_name.clone(), pair_actions[j].clone(), current_quantity)
+          tmp_deal.add_action(pairs[j].clone(), pair_actions[j].clone(), current_quantity)
         } else {
           // Selling means multiplying by the price
           tmp_deal.add_action(
-            pair_name.clone(),
+            pairs[j].clone(),
             pair_actions[j].clone(),
             self.correct_quantity(helper_quantity, pairs[j].get_step()),
           );
@@ -202,6 +217,88 @@ impl CalculationCluster {
     results.set_timestamp(lowest_timestamp);
     results
   }
+  fn execute_deal(&self, deal: Deal) {
+    let actions = deal.get_actions();
+    let total_actions = actions.len();
+    for (i, action) in actions.iter().enumerate() {
+      // Get deal data
+      let buy_sell = action.get_action();
+      let trading_pair = action.get_pair();
+      let pair = trading_pair.get_symbol();
+      let qty = self.correct_quantity(action.get_quantity(), trading_pair.get_step());
+      let order: Transaction;
+
+      // If action is buying
+      if buy_sell == "BUY" {
+        println!(
+          "[{}] Buying {} from symbol {}",
+          style(format!("{}/{}", i + 1, total_actions)).bold().dim(),
+          qty,
+          pair,
+        );
+        order = match self.account.market_buy(pair.clone(), qty) {
+          Ok(transaction) => transaction,
+          Err(e) => panic!(
+            "Failed to execute action #{} (symbol={}, qty={}): {}",
+            i + 1,
+            pair,
+            qty,
+            e
+          ),
+        };
+      }
+      // If action is selling
+      else if buy_sell == "SELL" {
+        println!(
+          "[{}] Selling {} from symbol {}",
+          style(format!("{}/{}", i + 1, total_actions)).bold().dim(),
+          qty,
+          pair,
+        );
+        order = match self.account.market_sell(pair.clone(), qty) {
+          Ok(transaction) => transaction,
+          Err(e) => panic!(
+            "Failed to execute action #{} (symbol={}, qty={}): {}",
+            i + 1,
+            pair,
+            qty,
+            e
+          ),
+        };
+      }
+      // If something is messed up
+      else {
+        panic!("Unknown operation for action #{}: {}", i + 1, buy_sell);
+      }
+
+      // Checking order before moving on to next action
+      let mut status: String = String::from("");
+      while status != "FILLED" {
+        status = match self.account.order_status(pair.clone(), order.order_id) {
+          Ok(v) => {
+            println!(
+              "[{}] {:?}",
+              style(format!("{}/{}", i + 1, total_actions)).bold().dim(),
+              v,
+            );
+            v.status
+          }
+          Err(e) => {
+            println!(
+              "[{}] Couldn't find order yet, will retry. Error: {}",
+              style(format!("{}/{}", i + 1, total_actions)).bold().dim(),
+              e,
+            );
+            String::from("")
+          }
+        }
+      }
+    }
+    println!(
+      "[{}] Successfully executed deal!",
+      style("INFO").bold().dim(),
+    );
+  }
 }
 
 #[derive(Debug, Clone)]
@@ -219,7 +316,7 @@ impl Deal {
       actions: Vec::new(),
     }
   }
-  pub fn add_action(&mut self, pair: String, action: String, quantity: f64) {
+  pub fn add_action(&mut self, pair: TradingPair, action: String, quantity: f64) {
     self.actions.push(Action::new(pair, action, quantity))
   }
   pub fn get_actions(&self) -> Vec<Action> {
@@ -241,20 +338,20 @@ impl Deal {
 
 #[derive(Debug, Clone)]
 struct Action {
-  pair: String,
+  pair: TradingPair,
   action: String,
   quantity: f64,
 }
 
 impl Action {
-  pub fn new(pair: String, action: String, quantity: f64) -> Action {
+  pub fn new(pair: TradingPair, action: String, quantity: f64) -> Action {
     Action {
-      pair: pair,
-      action: action,
-      quantity: quantity,
+      pair,
+      action,
+      quantity,
     }
   }
-  pub fn get_pair(&self) -> String {
+  pub fn get_pair(&self) -> TradingPair {
     self.pair.clone()
   }
   pub fn get_action(&self) -> String {

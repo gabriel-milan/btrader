@@ -26,10 +26,10 @@ impl TradingPair {
   // Constructor
   pub fn new(symbol: String, base_asset: String, quote_asset: String, step: f64) -> TradingPair {
     TradingPair {
-      symbol: symbol,
-      base_asset: base_asset,
-      quote_asset: quote_asset,
-      step: step,
+      symbol,
+      base_asset,
+      quote_asset,
+      step,
       initialized: false,
       asks: Vec::new(),
       bids: Vec::new(),
@@ -45,16 +45,16 @@ impl TradingPair {
   }
   // Getters
   pub fn get_symbol(&self) -> String {
-    format!("{}", self.symbol)
+    self.symbol.to_string()
   }
   pub fn get_step(&self) -> f64 {
     self.step
   }
   pub fn get_base_asset(&self) -> String {
-    format!("{}", self.base_asset)
+    self.base_asset.to_string()
   }
   pub fn get_quote_asset(&self) -> String {
-    format!("{}", self.quote_asset)
+    self.quote_asset.to_string()
   }
   // Utilities
   pub fn has_asset(&self, asset: String) -> bool {
@@ -65,11 +65,11 @@ impl TradingPair {
   }
   pub fn get_the_other(&self, asset: String) -> String {
     if asset == self.quote_asset {
-      return format!("{}", self.base_asset);
+      self.base_asset.to_string()
     } else if asset == self.base_asset {
-      return format!("{}", self.quote_asset);
+      self.quote_asset.to_string()
     } else {
-      return "".to_string();
+      "".to_string()
     }
   }
 

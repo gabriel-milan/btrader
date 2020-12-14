@@ -27,7 +27,7 @@ impl fmt::Display for TriangularRelationship {
 
 impl TriangularRelationship {
   // Constructor
-  pub fn new<'a>(
+  pub fn new(
     base: String,
     start: TradingPair,
     middle: TradingPair,
@@ -73,13 +73,13 @@ impl TriangularRelationship {
     }
 
     TriangularRelationship {
-      base: base,
-      start: start,
-      middle: middle,
-      end: end,
-      actions: actions,
-      action_wrappers: action_wrappers,
-      intermediates: intermediates,
+      base,
+      start,
+      middle,
+      end,
+      actions,
+      action_wrappers,
+      intermediates,
     }
   }
 
@@ -120,18 +120,12 @@ impl TriangularRelationship {
 
   pub fn get_workflow(&self) -> [(String, String); 3] {
     [
-      (
-        self.start.get_symbol(),
-        format!("{}", self.action_wrappers[0]),
-      ),
+      (self.start.get_symbol(), self.action_wrappers[0].to_string()),
       (
         self.middle.get_symbol(),
-        format!("{}", self.action_wrappers[1]),
+        self.action_wrappers[1].to_string(),
       ),
-      (
-        self.end.get_symbol(),
-        format!("{}", self.action_wrappers[2]),
-      ),
+      (self.end.get_symbol(), self.action_wrappers[2].to_string()),
     ]
   }
 }

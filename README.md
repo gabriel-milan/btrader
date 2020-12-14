@@ -1,5 +1,7 @@
 # bTrader
 
+[![Build Status](https://travis-ci.org/gabriel-milan/btrader.png?branch=master)](https://travis-ci.org/gabriel-milan/btrader)
+
 This is an arbitrage trading bot based on this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, the configuration files for both of them are compatible.
 
 Refactor in progress, everything will be rewritten in Rust for performance improvement.

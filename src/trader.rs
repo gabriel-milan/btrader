@@ -13,12 +13,8 @@ use std::fmt;
 /*
  *  bTrader
  */
-#[derive(Debug)]
 #[allow(non_camel_case_types)]
 pub struct bTrader {
-  config: Configuration,
-  pairs: Vec<String>,
-  relationships: HashMap<String, TriangularRelationship>,
   calculation_cluster: CalculationCluster,
 }
 
@@ -30,7 +26,7 @@ impl fmt::Display for bTrader {
 
 impl bTrader {
   // Constructor
-  pub fn new<'a>(config_path: &'a str) -> bTrader {
+  pub fn new(config_path: &str) -> bTrader {
     // Starting with configuration
     let config: Configuration = Configuration::new(config_path);
     // Getting information from Binance...
@@ -50,19 +46,19 @@ impl bTrader {
         let mut step: f64 = 0.0;
         // Get step for this symbol
         for filter in &symbol.filters {
-          match filter {
-            Filters::LotSize {
-              min_qty: _,
-              max_qty: _,
-              step_size,
-            } => step = step_size.parse().unwrap(),
-            _ => (),
+          if let Filters::LotSize {
+            min_qty: _,
+            max_qty: _,
+            step_size,
+          } = filter
+          {
+            step = step_size.parse().unwrap()
           };
         }
         pairs.push(TradingPair::new(
-          format!("{}", symbol.symbol),
-          format!("{}", symbol.base_asset),
-          format!("{}", symbol.quote_asset),
+          symbol.symbol.to_string(),
+          symbol.base_asset.to_string(),
+          symbol.quote_asset.to_string(),
           step,
         ));
       }
@@ -75,7 +71,7 @@ impl bTrader {
     );
     let mut starters: Vec<TradingPair> = Vec::new();
     for pair in &pairs {
-      if pair.has_asset(format!("{}", config.investment_base)) {
+      if pair.has_asset(config.investment_base.to_string()) {
         starters.push(pair.clone());
       }
     }
@@ -94,8 +90,8 @@ impl bTrader {
       for end_pair in starters[i + 1..starters.len()].iter() {
         let middle = TradingPair::new(
           "".to_string(),
-          start_pair.get_the_other(format!("{}", config.investment_base)),
-          end_pair.get_the_other(format!("{}", config.investment_base)),
+          start_pair.get_the_other(config.investment_base.to_string()),
+          end_pair.get_the_other(config.investment_base.to_string()),
           0.0,
         );
         for middle_pair in pairs.iter() {
@@ -120,7 +116,7 @@ impl bTrader {
                 end_pair.get_symbol()
               ),
               TriangularRelationship::new(
-                format!("{}", config.investment_base),
+                config.investment_base.to_string(),
                 TradingPair::new(
                   start_pair.get_symbol(),
                   start_pair.get_base_asset(),
@@ -152,17 +148,13 @@ impl bTrader {
       socket_pairs.len()
     );
     let depth_cache = DepthCache::new(&socket_pairs, 8, 1);
-    let calculation_cluster =
-      CalculationCluster::new(relationships.clone(), depth_cache, config.clone());
+    let calculation_cluster = CalculationCluster::new(relationships, depth_cache, config);
     bTrader {
-      config: config,
-      pairs: socket_pairs.clone(),
-      relationships: relationships,
-      calculation_cluster: calculation_cluster,
+      calculation_cluster,
     }
   }
   // Execute
-  pub fn run(&self) -> () {
+  pub fn run(&self) {
     self.calculation_cluster.start();
   }
 }

@@ -1,0 +1,16 @@
+language: rust
+sudo: false
+dist: trusty
+matrix:
+  fast_finish: true
+  include:
+    - rust: stable
+before_script:
+  - rustup component add clippy
+script:
+  - cargo clippy -- -D warnings
+cache:
+  apt: true
+  directories:
+    - target/debug/deps
+    - target/debug/build
