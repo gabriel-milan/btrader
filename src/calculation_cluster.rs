@@ -72,6 +72,9 @@ impl CalculationCluster {
   fn correct_quantity(&self, quantity: f64, step: f64) -> f64 {
     (quantity / step).floor() * step
   }
+  fn custom_round(&self, quantity: f64, step: f64) -> f64 {
+    (quantity / step).round() * step
+  }
   fn calculate_relationship(&self, relationship: TriangularRelationship) -> Deal {
     let pairs = relationship.get_trading_pairs();
     let pair_names = relationship.get_pairs();
@@ -229,7 +232,7 @@ impl CalculationCluster {
       let buy_sell = action.get_action();
       let trading_pair = action.get_pair();
       let pair = trading_pair.get_symbol();
-      let qty = self.correct_quantity(action.get_quantity(), trading_pair.get_step());
+      let qty = self.custom_round(action.get_quantity(), trading_pair.get_step());
       let order: Transaction;
 
       // If action is buying
