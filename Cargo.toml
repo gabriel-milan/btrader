@@ -12,7 +12,7 @@ keywords=["bot", "algotrading", "cryptocurrencies", "binance", "bitcoin", "arbit
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-binance = { git = "https://github.com/gabriel-milan/binance-rs.git" }
+binance = "0.11.1"
 serde = { version = "1.0" }
 serde_json = { version = "1.0" }
 rayon = "1.5"

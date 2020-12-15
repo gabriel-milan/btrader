@@ -61,7 +61,7 @@ btrader /path/to/your/configuration/file.json
 ## Development status
 
 - [x] Refactor from Python + Boost to Rust
+- [x] Publish on [crates.io](https://crates.io/) (waiting on https://github.com/wisespace-io/binance-rs/pull/60)
 - [ ] Configuration file checking
 - [ ] Speed things up by computing trades in parallel
-- [ ] Publish on [crates.io](https://crates.io/) (waiting on https://github.com/wisespace-io/binance-rs/pull/60)
 - [ ] Generate binary distributions
