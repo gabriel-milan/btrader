@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM rust:1.48-buster
 
 LABEL maintainer "Gabriel Gazola Milan <gabriel.gazola@poli.ufrj.br>"
 
@@ -11,12 +11,14 @@ USER root
 SHELL [ "/bin/bash", "-c" ]
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Dependencies
-RUN apt update && apt upgrade -y && apt install -y git python3 python3-pip libboost-all-dev
+# Get code
+WORKDIR /
+RUN git clone https://github.com/gabriel-milan/btrader code
 
-# Get bot
-RUN python3 -m pip install btrader
-RUN cd / && git clone https://github.com/gabriel-milan/btrader
+# Install
+RUN cp /code/config/sample_config.json /config.json
+WORKDIR /code
+RUN cargo install --path .
 
 # Set command
-CMD /btrader/scripts/entrypoint.py
+CMD btrader /config.json

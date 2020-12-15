@@ -1,71 +1,67 @@
 # bTrader
 
 [![Build Status](https://travis-ci.org/gabriel-milan/btrader.png?branch=master)](https://travis-ci.org/gabriel-milan/btrader)
+[![Docker Image](https://img.shields.io/docker/v/gabrielmilan/btrader?logo=docker&sort=date)](https://hub.docker.com/r/gabrielmilan/btrader)
 
-This is an arbitrage trading bot based on this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, the configuration files for both of them are compatible.
+This is an arbitrage trading bot initially inspired by this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, you'll find yourself comfortable with the configuration file for this if you have already tried the JS one.
 
-Refactor in progress, everything will be rewritten in Rust for performance improvement.
-
-<!--
 For further information on the status of this bot, refer to [Development status](#development-status)
 
 ## Steps to run the bot
 
-Two-step process:
+First of all, it's important to say that the great bottleneck for triangle arbitrage is related to network delays, not software performance. If you'd like better results, my recommendation is to rent a server with the lowest latency to `api.binance.com` as possible. In some places you'll find that the Binance servers may be located at Seattle(US), Tokyo(Japan) or even Isenburg(Germany). I haven't tried all locations, but I'm getting around 10ms latency on Saitama(Japan), which is probably fine.
 
-1. Read the configuration guide from [here](https://github.com/bmino/binance-triangle-arbitrage/blob/master/config/readme.md). I was lazy to write one of my own, so you can read it from the JS implementation repository. After that, generate your own configuration file or just edit the one on the `config/` directory on this repository.
-   **Note #1:** Telegram bot is not available on the JS implementation. For that reason, nothing on their original configuration file refers to that. If you plan on using Telegram, please read the [Telegram configuration](#telegram-configuration) section.
-   **Note #2:** Not all of the variables on their original configuration file are being used. For further information, read the [Config file compatibility](#config-file-compatibility) section.
+Once you've decided what to do, generate your own configuration file, based on `config/sample_config.json`. It's pretty straightforward, but if you have any doubts please refer to the JS implementation [guide](https://github.com/bmino/binance-triangle-arbitrage/blob/master/config/readme.md). For Telegram stuff, refer to the [Telegram configuration](#telegram-configuration) section.
 
-2. (For testing purposes) Use the Docker image (`$(pwd)/config.json` is the path to your configuration file):
+### The Docker method (easy way)
 
-```
-docker run -it --name btrader -v $(pwd)/config.json:/config.json gabrielmilan/btrader
-```
+This method is the easy way to run this, but be aware that, by using Docker, performance may be a little worse. Use this for debugging purposes.
 
-2. (Few more steps) Use the Python package:
+1. Please be sure that you have Docker installed and access to an user account with enough privilege to run containers.
+
+2. Run the following command (note that `$(pwd)/config.json` is the path to your configuration file!)
 
 ```
-python3 -m pip install btrader
-python3
->>>> from btrader import bTrader
->>>> bot = bTrader("config.json")
->>>> bot.run()
-``` -->
+docker run --net host -it --name btrader -v $(pwd)/config.json:/config.json gabrielmilan/btrader
+```
 
-<!-- ## Development status
+**Note**: the `--net host` argument reduces networking overhead for the container.
 
-- [x] C++ implementation of calculations
-- [x] Monitoring websockets
-- [x] Computing profits over all possible triangles
-- [x] Filtering and showing viable operations
-- [x] Implement asset step size
-- [x] Structure for holding trading actions and quantities
-- [x] Perform trading actions
-- [ ] Checking configuration file
-- [ ] Compatibility for LOG.LEVEL
-- [ ] Compatibility for TRADING.EXECUTION_STRATEGY and TRADING.EXECUTION_TEMPLATE
-- [ ] Best deals printing
-- [x] Telegram bot
-- [ ] Generate binary distributions
+### Compile and install (recommended)
 
-## Config file compatibility
+This method envolves more steps, but it's recommended for performance.
 
-- [x] KEYS
-- [x] INVESTMENT
-- [x] TRADING [ENABLED, EXECUTION_CAP, TAKER_FEE, PROFIT_THRESHOLD, AGE_THRESHOLD]
-- [ ] TRADING [EXECUTION_STRATEGY, EXECUTION_TEMPLATE]
-- [ ] HUD
-- [ ] LOG
-- [x] DEPTH [SIZE]
-- [ ] DEPTH [PRUNE, INITIALIZATION_INTERVAL]
-- [ ] TIMING
+1. Please be sure that you have Rust installed fully. If you don't, refer to [Install Rust](https://www.rust-lang.org/tools/install).
+
+2. Clone this repository:
+
+```
+git clone https://github.com/gabriel-milan/btrader
+```
+
+3. `cd` into the repository directory and run:
+
+```
+cargo install --path .
+```
+
+4. You can then execute it by doing:
+
+```
+btrader /path/to/your/configuration/file.json
+```
 
 ## Telegram configuration
 
 - Generate a bot token with BotFather (official tutorial [here](https://core.telegram.org/bots#6-botfather))
-- (Optional) Get your Telegram user ID with the @userinfobot
-- Fill the configuration file with your data
-- Send `/start` to your bot on Telegram so it can identify you as the main user (by doing this or configuring user ID on the config file, the bot will only respond to you)
+- Get your Telegram user ID with the @userinfobot
+- Fill the configuration file with your data (if you fill your user ID incorrectly, it will send messages to someone else!)
 - Bot will notify you about executed trades or discovered deals, according to your config file
-- You can check the average/std/best age of deals by sending `/age` -->
+
+## Development status
+
+- [x] Refactor from Python + Boost to Rust
+- [ ] Configuration file checking
+- [ ] Speed things up by computing trades in parallel
+- [ ] Publish on [crates.io](https://crates.io/) (waiting on https://github.com/wisespace-io/binance-rs/pull/60)
+- [ ] Generate binary distributions
