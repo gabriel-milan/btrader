@@ -7,7 +7,7 @@ description = "Arbitrage trading bot for Binance"
 homepage = "https://github.com/gabriel-milan/btrader"
 repository = "https://github.com/gabriel-milan/btrader"
 license="GPL-3.0"
-keywords=["bot", "algotrading", "cryptocurrencies", "binance", "bitcoin", "arbitrage"]
+keywords=["bot", "algotrading", "cryptocurrencies", "binance", "arbitrage"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

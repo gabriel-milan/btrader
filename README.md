@@ -1,6 +1,7 @@
 # bTrader
 
 [![Build Status](https://travis-ci.org/gabriel-milan/btrader.png?branch=master)](https://travis-ci.org/gabriel-milan/btrader)
+[![Crate](https://img.shields.io/crates/v/btrader)](https://crates.io/crates/btrader)
 [![Docker Image](https://img.shields.io/docker/v/gabrielmilan/btrader?logo=docker&sort=date)](https://hub.docker.com/r/gabrielmilan/btrader)
 
 This is an arbitrage trading bot initially inspired by this [JS implementation](https://github.com/bmino/binance-triangle-arbitrage). For that reason, you'll find yourself comfortable with the configuration file for this if you have already tried the JS one.
