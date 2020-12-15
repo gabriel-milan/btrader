@@ -15,6 +15,7 @@
 
   "depth_size" : 20,
 
+  "telegram_enabled" : false,
   "telegram_token" : "your-telegram-bot-token",
   "telegram_user_id" : 0
 }

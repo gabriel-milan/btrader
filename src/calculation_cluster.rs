@@ -1,5 +1,6 @@
 use crate::config::Configuration;
 use crate::depth_cache::DepthCache;
+use crate::telegram::TelegramBot;
 use crate::trading_pair::TradingPair;
 use crate::triangular_relationship::TriangularRelationship;
 use binance::account::*;
@@ -15,6 +16,7 @@ pub struct CalculationCluster {
   depth_cache: DepthCache,
   config: Configuration,
   account: Account,
+  bot: TelegramBot,
 }
 
 impl CalculationCluster {
@@ -25,11 +27,17 @@ impl CalculationCluster {
   ) -> CalculationCluster {
     let config_clone = config.clone();
     let account: Account = Binance::new(Some(config_clone.api_key), Some(config_clone.api_secret));
+    let config_clone = config.clone();
+    let bot: TelegramBot = TelegramBot::new(config_clone);
+    if config.telegram_enabled {
+      bot.start();
+    }
     CalculationCluster {
       relationships,
       depth_cache,
       config,
       account,
+      bot,
     }
   }
   pub fn start(&self) {
@@ -52,14 +60,27 @@ impl CalculationCluster {
               .dim(),
             deal.get_actions()
           );
+          if self.config.telegram_enabled {
+            self.bot.send_message(format!(
+              "[{:+.3}%] Deal: {:?}...",
+              deal.get_profit() * 100.0,
+              deal.get_actions()
+            ));
+          }
           if self.config.trading_enabled {
             self.execute_deal(deal);
+            self.bot.send_message("Deal executed.".to_string());
             execution_count += 1;
           } else {
             println!(
               "[{}] Trading is not enabled, skipping...",
               style("INFO").bold().dim()
-            )
+            );
+            if self.config.telegram_enabled {
+              self
+                .bot
+                .send_message("[INFO] Trading is not enabled, skipping...".to_string())
+            }
           }
         }
       })

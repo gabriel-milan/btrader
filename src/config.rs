@@ -19,6 +19,7 @@ pub struct Configuration {
   pub trading_profit_threshold: f64,
   pub trading_age_threshold: u64,
   pub depth_size: i32,
+  pub telegram_enabled: bool,
   pub telegram_token: String,
   pub telegram_user_id: i64,
 }

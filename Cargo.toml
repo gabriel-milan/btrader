@@ -15,15 +15,12 @@ keywords=["bot", "algotrading", "cryptocurrencies", "binance", "bitcoin", "arbit
 binance = { git = "https://github.com/gabriel-milan/binance-rs.git" }
 serde = { version = "1.0" }
 serde_json = { version = "1.0" }
-log = "0.4"
-simple_logger = "1.11"
 rayon = "1.5"
-dashmap = "3.11"
-queues = "1.1"
-retain_mut = "0.1"
 indicatif = "0.15"
 console = "0.13"
-rand = "0.7"
+telegram-bot = "0.8"
+futures="0.3"
+tokio = { version = "0.2.23", features = ["macros", "io-util"] }
 
 [lib]
 name = "btrader"
