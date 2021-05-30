@@ -8,6 +8,12 @@ This is an arbitrage trading bot initially inspired by this [JS implementation](
 
 For further information on the status of this bot, refer to [Development status](#development-status)
 
+## Please support the project
+
+If you've enjoyed bTrader, please consider supporting its development:
+
+<a href="https://www.buymeacoffee.com/gabrielmilan" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ## Steps to run the bot
 
 First of all, it's important to say that the great bottleneck for triangle arbitrage is related to network delays, not software performance. If you'd like better results, my recommendation is to rent a server with the lowest latency to `api.binance.com` as possible. In some places you'll find that the Binance servers may be located at Seattle(US), Tokyo(Japan) or even Isenburg(Germany). I haven't tried all locations, but I'm getting around 10ms latency on Saitama(Japan), which is probably fine.
